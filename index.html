@@ -637,7 +637,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Botón de confirmación de escala añadido.</div>
+        <div id="output-log">💬 [Saloon]: Mesa automática configurada.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -800,7 +800,6 @@
             log(`[Saloon]: La crupier ahora es ${d.nombre}.`);
         }
 
-        // AQUÍ ESTÁ EL SALTO CORREGIDO Y BLINDADO QUE FUNCIONA AL INSTANTE
         function entrarAlSaloon() {
             const portada = document.getElementById('pantalla-portada');
             const salon = document.getElementById('pantalla-salon');
@@ -1286,7 +1285,10 @@
                 document.getElementById(`asiento-${i}`).classList.remove('turno-activo');
             }
 
-            log(`🔄 Pulsa **"Repartir"** para la siguiente mano...`);
+            log(`🔄 Próxima mano en 4 segundos...`);
+            setTimeout(() => {
+                repartirCartasAPI();
+            }, 4000);
         }
 
         function verificarGanadorPorAbandono(ganadorId) {
@@ -1298,6 +1300,11 @@
                 log(`🏆 Todos se retiraron. **${nombresAsientos[ganadorId]}** gana el bote de ${boteActual} USDT.`);
                 boteActual = 0;
                 document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
+                
+                log(`🔄 Próxima mano en 4 segundos...`);
+                setTimeout(() => {
+                    repartirCartasAPI();
+                }, 4000);
             }
         }
 
@@ -1330,10 +1337,14 @@
             for (let i = 1; i <= 6; i++) {
                 document.getElementById(`asiento-${i}`).classList.remove('turno-activo');
             }
-            log(`🔄 Pulsa **"Repartir"** para la siguiente mano...`);
+            
+            log(`🔄 Próxima mano en 4 segundos...`);
+            setTimeout(() => {
+                repartirCartasAPI();
+            }, 4000);
         }
 
-        async function avanzarHistoriaAPI() {
+        async function avancarHistoriaAPI() {
             try {
                 const response = await fetch('/api/historia/avanzar', {
                     method: 'POST',
