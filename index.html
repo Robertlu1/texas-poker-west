@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Texas Poker West - Casino Pro con Botón de Escala</title>
+    <title>Texas Poker West - Casino Pro & Lobby</title>
     <style>
         * {
             box-sizing: border-box;
@@ -88,21 +88,25 @@
             justify-content: space-between;
         }
         
-        .btn-ampliar-top {
+        .barra-superior-botones {
             position: absolute;
             top: 4px;
             right: 10px;
-            background-color: #27ae60;
+            display: flex;
+            gap: 6px;
+            z-index: 30;
+        }
+        .btn-top-menu {
+            background-color: #34495e;
             color: white;
-            border: 1px solid #2ecc71;
+            border: 1px solid #7f8c8d;
             padding: 3px 8px;
             font-size: 10px;
             font-weight: bold;
             cursor: pointer;
             border-radius: 4px;
-            z-index: 30;
         }
-        .btn-ampliar-top:hover { background-color: #2ecc71; }
+        .btn-top-menu:hover { background-color: #415b76; }
 
         .poker-table {
             background: #0d4a22;
@@ -216,9 +220,10 @@
             opacity: 0.35;
             filter: grayscale(90%);
         }
-        .seat.allin-estado {
-            border: 2px solid #8e44ad;
-            box-shadow: 0 0 14px #8e44ad;
+        .seat.sinnfichas {
+            border: 2px dashed #e67e22;
+            background: rgba(100, 50, 0, 0.85);
+            opacity: 0.8;
         }
 
         .avatar-box {
@@ -490,7 +495,13 @@
     <!-- PANTALLA 2: SALÓN PRINCIPAL -->
     <div id="pantalla-salon">
         <div class="saloon-container">
-            <button class="btn-ampliar-top" onclick="togglePantallaCompleta()">🗖 Ampliar</button>
+            <!-- BOTONES SUPERIORES: LEVANTARSE, SALIR DE LA MESA Y LOBBY -->
+            <div class="barra-superior-botones">
+                <button class="btn-top-menu" onclick="accionLevantarse()">🛋️ Levantarse</button>
+                <button class="btn-top-menu" onclick="accionSalirMesa()">🚪 Salir de la Mesa</button>
+                <button class="btn-top-menu" onclick="accionIrLobby()" style="background-color: #c0392b; border-color: #e74c3c;">🏠 Lobby</button>
+                <button class="btn-top-menu" onclick="togglePantallaCompleta()" style="background-color: #27ae60; border-color: #2ecc71;">🗖 Ampliar</button>
+            </div>
 
             <h2>Texas Poker West: Casino Pro</h2>
             
@@ -637,7 +648,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Mesa automática configurada.</div>
+        <div id="output-log">💬 [Saloon]: Opciones de lobby y salida de mesa añadidas.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -651,6 +662,9 @@
         let cartasBotsPrivadas = { 1: [], 2: [], 3: [], 5: [], 6: [] };
         let retirados = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
         let allInJugadores = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
+        let sinEfectivo = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
+        let temporizadoresRecarga = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null };
+
         let boteActual = 200;
         let turnoActual = 1;
         let contadorAccionesRonda = 0;
@@ -807,6 +821,29 @@
             if (salon) salon.style.display = 'flex';
         }
 
+        // -------------------------------------------------------------
+        // NUEVAS FUNCIONES DE CONTROL DE MESA Y LOBBY
+        // -------------------------------------------------------------
+        function accionLevantarse() {
+            retirados[4] = true;
+            document.getElementById('asiento-4').classList.add('retirado');
+            log(`🛋️ [Reposo]: Te has levantado temporalmente de la mesa. Estás en pausa.`);
+        }
+
+        function accionSalirMesa() {
+            retirados[4] = true;
+            document.getElementById('asiento-4').style.display = 'none';
+            log(`🚪 [Salón]: Has salido de la mesa de póker.`);
+        }
+
+        function accionIrLobby() {
+            // Ocultar salón y mostrar portada principal
+            document.getElementById('pantalla-salon').style.display = 'none';
+            document.getElementById('pantalla-portada').style.display = 'flex';
+            log(`🏠 [Lobby]: Has regresado a la portada principal del salón.`);
+        }
+        // -------------------------------------------------------------
+
         function togglePantallaCompleta() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => {
@@ -845,11 +882,13 @@
                 log(`🤠 [Tú]: ${texto}`);
                 input.value = "";
                 setTimeout(() => {
-                    let botsActivos = [1, 2, 3, 5, 6];
-                    let botAzar = botsActivos[Math.floor(Math.random() * botsActivos.length)];
-                    let respuestasBot = ["¡Así se habla, vaquero!", "¡Ese bote es mío!", "Juego prudente...", "¡No cantes victoria todavía!"];
-                    let resp = respuestasBot[Math.floor(Math.random() * respuestasBot.length)];
-                    log(`🤖 [${nombresAsientos[botAzar]}]: ${resp}`);
+                    let botsActivos = [1, 2, 3, 5, 6].filter(id => !sinEfectivo[id]);
+                    if (botsActivos.length > 0) {
+                        let botAzar = botsActivos[Math.floor(Math.random() * botsActivos.length)];
+                        let respuestasBot = ["¡Así se habla, vaquero!", "¡Ese bote es mío!", "Juego prudente...", "¡No cantes victoria todavía!"];
+                        let resp = respuestasBot[Math.floor(Math.random() * respuestasBot.length)];
+                        log(`🤖 [${nombresAsientos[botAzar]}]: ${resp}`);
+                    }
                 }, 1500);
             }
         }
@@ -904,7 +943,7 @@
             for (let i = 1; i <= 6; i++) {
                 let asientoDiv = document.getElementById(`asiento-${i}`);
                 if (asientoDiv) {
-                    if (i === turnoActual) {
+                    if (i === turnoActual && !sinEfectivo[i]) {
                         asientoDiv.classList.add('turno-activo');
                     } else {
                         asientoDiv.classList.remove('turno-activo');
@@ -932,6 +971,41 @@
             setTimeout(() => { ficha.remove(); }, 700);
         }
 
+        function verificarBancarrota() {
+            if (fichasJugador <= 0 && !sinEfectivo[4]) {
+                sinEfectivo[4] = true;
+                retirados[4] = true;
+                document.getElementById('asiento-4').classList.add('sinnfichas');
+                log(`⚠️ **[Cajero]: ¡Te has quedado sin fichas! Tienes 35 segundos para recargar (WhatsApp +58 424-9266340)[cite: 2] o serás expulsado.**`);[cite: 2]
+                
+                let segundosRestantesRecarga = 35;
+                document.getElementById('chips-s4').innerText = `⏳ Recarga (${segundosRestantesRecarga}s)`;
+
+                temporizadoresRecarga[4] = setInterval(() => {
+                    segundosRestantesRecarga--;
+                    if (segundosRestantesRecarga > 0 && sinEfectivo[4]) {
+                        document.getElementById('chips-s4').innerText = `⏳ Recarga (${segundosRestantesRecarga}s)`;
+                    } else {
+                        clearInterval(temporizadoresRecarga[4]);
+                        if (sinEfectivo[4] && fichasJugador <= 0) {
+                            log(`❌ [Expulsión]: Tiempo agotado sin recarga. Has sido retirado de la mesa.`);
+                            document.getElementById('asiento-4').style.display = 'none';
+                        }
+                    }
+                }, 1000);
+            }
+
+            [1, 2, 3, 5, 6].forEach(id => {
+                if (fichasBots[id] <= 0 && !sinEfectivo[id]) {
+                    sinEfectivo[id] = true;
+                    retirados[id] = true;
+                    document.getElementById(`asiento-${id}`).classList.add('sinnfichas');
+                    document.getElementById(`chips-s${id}`).innerText = `⏳ Sin Fondos`;
+                    log(`⚠️ [Saloon]: ${nombresAsientos[id]} se quedó sin fichas y entró en reposo.`);
+                }
+            });
+        }
+
         async function registrarUsuarioAPI() {
             try {
                 const response = await fetch('/api/usuario/registrar', {
@@ -952,6 +1026,12 @@
         }
 
         async function repartirCartasAPI() {
+            verificarBancarrota();
+            if (sinEfectivo[4]) {
+                log(`🛑 [Aviso]: No puedes jugar sin fichas. Recarga saldo para continuar.`);
+                return;
+            }
+
             try {
                 const response = await fetch('/api/juego/repartir', { method: 'POST' });
                 const data = await response.json();
@@ -963,13 +1043,14 @@
                 
                 document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
                 document.getElementById('mazo-info').innerText = `Cartas mazo: ${data.cartas_restantes_mazo}`;
-                retirados = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
-                allInJugadores = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
                 
                 for(let i=1; i<=6; i++) {
-                    let asientoDiv = document.getElementById(`asiento-${i}`);
-                    asientoDiv.classList.remove('retirado');
-                    asientoDiv.classList.remove('allin-estado');
+                    if (!sinEfectivo[i]) {
+                        retirados[i] = false;
+                        allInJugadores[i] = false;
+                        let asientoDiv = document.getElementById(`asiento-${i}`);
+                        asientoDiv.classList.remove('retirado', 'allin-estado');
+                    }
                 }
 
                 for (let c = 0; c < 5; c++) {
@@ -986,6 +1067,7 @@
                 }
 
                 for (let i = 1; i <= 6; i++) {
+                    if (sinEfectivo[i]) continue;
                     let cartas = data.cartas_jugadores[`jugador_${i}`];
                     let contenedor = document.getElementById(`cartas-s${i}`);
                     if (contenedor) {
@@ -1041,7 +1123,7 @@
         }
 
         function iniciarTurno(asientoNum) {
-            if (retirados[asientoNum] || allInJugadores[asientoNum]) {
+            if (retirados[asientoNum] || allInJugadores[asientoNum] || sinEfectivo[asientoNum]) {
                 siguienteTurnoAutomatico(asientoNum);
                 return;
             }
@@ -1078,7 +1160,7 @@
 
             if (asientoNum !== 4) {
                 setTimeout(() => {
-                    if (turnoActual === asientoNum && !retirados[asientoNum] && !allInJugadores[asientoNum]) {
+                    if (turnoActual === asientoNum && !retirados[asientoNum] && !allInJugadores[asientoNum] && !sinEfectivo[asientoNum]) {
                         clearInterval(temporizadorTurno);
                         ejecutarAccionBot(asientoNum);
                     }
@@ -1088,7 +1170,7 @@
 
         function siguienteTurnoAutomatico(asientoActual) {
             let activos = [];
-            for (let i = 1; i <= 6; i++) { if (!retirados[i]) activos.push(i); }
+            for (let i = 1; i <= 6; i++) { if (!retirados[i] && !sinEfectivo[i]) activos.push(i); }
 
             if (activos.length === 1) {
                 if (temporizadorTurno) clearInterval(temporizadorTurno);
@@ -1162,8 +1244,8 @@
         }
 
         function apostarJugador(accion) {
-            if (turnoActual !== 4) {
-                log(`⚠️ [Aviso]: Espera tu turno.`);
+            if (turnoActual !== 4 || sinEfectivo[4]) {
+                log(`⚠️ [Aviso]: No es tu turno o estás sin fichas.`);
                 return;
             }
 
@@ -1204,7 +1286,7 @@
 
         function ejecutarShowdownFinalReal() {
             let activos = [];
-            for (let i = 1; i <= 6; i++) { if (!retirados[i]) activos.push(i); }
+            for (let i = 1; i <= 6; i++) { if (!retirados[i] && !sinEfectivo[i]) activos.push(i); }
 
             let mejorPuntaje = -1;
             let ganadorId = activos[0];
@@ -1226,7 +1308,7 @@
             log(`🏆 ¡SHOWDOWN FINAL! Ganador evaluado por reglas oficiales.`);
 
             for (let i = 1; i <= 6; i++) {
-                if (!retirados[i] && i !== ganadorId) {
+                if (!retirados[i] && !sinEfectivo[i] && i !== ganadorId) {
                     document.getElementById(`cartas-s${i}`).innerHTML = `<div class="card card-back">🂠</div><div class="card card-back">🂠</div>`;
                 }
             }
@@ -1285,6 +1367,8 @@
                 document.getElementById(`asiento-${i}`).classList.remove('turno-activo');
             }
 
+            verificarBancarrota();
+
             log(`🔄 Próxima mano en 4 segundos...`);
             setTimeout(() => {
                 repartirCartasAPI();
@@ -1301,6 +1385,8 @@
                 boteActual = 0;
                 document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
                 
+                verificarBancarrota();
+
                 log(`🔄 Próxima mano en 4 segundos...`);
                 setTimeout(() => {
                     repartirCartasAPI();
@@ -1338,24 +1424,12 @@
                 document.getElementById(`asiento-${i}`).classList.remove('turno-activo');
             }
             
+            verificarBancarrota();
+
             log(`🔄 Próxima mano en 4 segundos...`);
             setTimeout(() => {
                 repartirCartasAPI();
             }, 4000);
-        }
-
-        async function avancarHistoriaAPI() {
-            try {
-                const response = await fetch('/api/historia/avanzar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ usuario_id: idUsuarioActual, jefe_id: "El Rápido", resultado: "victoria" })
-                });
-                const data = await response.json();
-                log(`[Modo Historia]: ${data.mensaje}`);
-            } catch (error) {
-                log(`[Error]: No se pudo registrar.`);
-            }
         }
 
         async function toggleMicrofono() {
