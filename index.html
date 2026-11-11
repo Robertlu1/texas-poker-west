@@ -833,7 +833,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Sistema de avance de fase corregido y listo.</div>
+        <div id="output-log">💬 [Saloon]: Simulación local activada y lista.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1002,9 +1002,9 @@
             }
         }
 
-        async function registrarUsuarioAPI() { log(`[Telegram]: Conectado como @${nombreTelegram}`); }
+        function registrarUsuarioAPI() { log(`[Saloon]: Conectado localmente como @${nombreTelegram}`); }
 
-        async function repartirCartasAPI() {
+        function repartirCartasAPI() {
             simularMazoLocal();
         }
 
@@ -1044,11 +1044,10 @@
                 el.className = `card ${roja ? 'red' : ''}`;
                 el.innerText = carta;
             }
-            // Ocultar Turn y River al iniciar
             document.getElementById('com-3').className = "card card-back"; document.getElementById('com-3').innerText = "🂠";
             document.getElementById('com-4').className = "card card-back"; document.getElementById('com-4').innerText = "🂠";
 
-            log(`🃏 [Flop]: Cartas repartidas.`);
+            log(`🃏 [Flop]: Cartas comunitarias repartidas.`);
             iniciarTurno(1);
         }
 
@@ -1134,10 +1133,6 @@
             siguienteTurnoAutomatico(4);
         }
 
-        function evaluarManoPoker(cartasJugador, comunitarias) {
-            return { score: Math.floor(Math.random() * 5000), nombre: "Pareja o Carta Alta" };
-        }
-
         function ejecutarShowdownFinalReal() {
             log(`🏆 ¡SHOWDOWN FINAL! Evaluando manos...`);
             setTimeout(() => {
@@ -1150,7 +1145,7 @@
             }, 1500);
         }
 
-        async function toggleMicrofono() { alert("🎙️ Micrófono simulado."); }
+        function toggleMicrofono() { alert("🎙️ Micrófono simulado."); }
     </script>
 </body>
 </html>
