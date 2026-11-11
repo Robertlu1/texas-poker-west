@@ -27,23 +27,25 @@
             font-size: 1.1em;
         }
         #pantalla-portada {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
             background-image: url('portada_bandido.jpg');
             background-size: cover; background-position: center;
-            display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
-            padding-bottom: 50px; z-index: 10;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 20px; z-index: 9999;
         }
         #portada-titulo {
-            font-size: 3.5em; margin-bottom: 10px;
+            font-size: 3em; margin-bottom: 20px;
             text-shadow: 3px 3px #000; color: #f1c40f;
+            background: rgba(0, 0, 0, 0.7); padding: 10px 20px; border-radius: 10px;
+            border: 2px solid #f1c40f;
         }
         .btn-entrar {
             background-color: #e67e22; color: white; border: 2px solid #f1c40f;
-            padding: 12px 35px; font-size: 20px; font-weight: bold; cursor: pointer;
-            border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.6); margin-bottom: 40px;
+            padding: 15px 40px; font-size: 22px; font-weight: bold; cursor: pointer;
+            border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.8); z-index: 10000;
         }
-        .btn-entrar:hover { background-color: #d35400; }
+        .btn-entrar:hover { background-color: #d35400; transform: scale(1.05); }
 
         #pantalla-salon {
             display: none; width: 100vw; height: 100vh;
@@ -288,7 +290,7 @@
     <!-- PANTALLA 1: PORTADA -->
     <div id="pantalla-portada">
         <div id="portada-titulo">Texas Poker West</div>
-        <button class="btn-entrar" onclick="entrarAlSaloon()">🤠 Entrar al Salón 🌵</button>
+        <button class="btn-entrar" id="btn-entrar-salon">🤠 Entrar al Salón 🌵</button>
     </div>
 
     <!-- PANTALLA 2: SALÓN PRINCIPAL -->
@@ -478,7 +480,7 @@
     </div>
 
     <!-- CHAT FLOTANTE -->
-    <div id="chat-flotante">
+    <div id="chat-flotante" class="oculto">
         <div class="chat-header">
             <span>💬 Salón & Motor Pro</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
@@ -743,13 +745,21 @@
         let fichasJugador = 1000;
         let monedasOro = 50;
 
-        // Cargar preferencias guardadas al iniciar la página
         window.addEventListener('DOMContentLoaded', () => {
             const panoGuardado = localStorage.getItem('poker_pano');
             if (panoGuardado) cambiarColorPano(panoGuardado, false);
             
             const dorsoGuardado = localStorage.getItem('poker_dorso');
             if (dorsoGuardado) cambiarDorsoCarta(dorsoGuardado, false);
+
+            // Asegurar enlace directo al botón de entrada con evento explícito
+            const btnEntrar = document.getElementById('btn-entrar-salon');
+            if (btnEntrar) {
+                btnEntrar.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    entrarAlSaloon();
+                });
+            }
         });
 
         function cambiarColorPano(colorHex, guardar = true) {
@@ -786,8 +796,10 @@
         }
 
         function entrarAlSaloon() {
-            document.getElementById('pantalla-portada').style.display = 'none';
-            document.getElementById('pantalla-salon').style.display = 'flex';
+            let portada = document.getElementById('pantalla-portada');
+            let salon = document.getElementById('pantalla-salon');
+            if (portada) portada.style.display = 'none';
+            if (salon) salon.style.display = 'flex';
             iniciarNuevaManoMotor();
         }
 
@@ -796,7 +808,12 @@
             else if (document.exitFullscreen) document.exitFullscreen();
         }
 
-        function toggleChat() { document.getElementById('chat-flotante').classList.toggle('oculto'); }
+        function toggleChat() { 
+            let chat = document.getElementById('chat-flotante');
+            chat.classList.toggle('oculto');
+            document.getElementById('btn-toggle-chat').innerText = chat.classList.contains('oculto') ? '▲ Mostrar' : '▲ Ocultar';
+        }
+
         function actualizarValorSlider(val) { document.getElementById('slider-valor').innerText = val; }
         function enviarMensajeChat() {
             let input = document.getElementById('input-mensaje');
