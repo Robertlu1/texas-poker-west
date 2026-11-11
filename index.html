@@ -757,7 +757,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Simulación local 100% activa. IA de bots inteligente integrada.</div>
+        <div id="output-log">💬 [Saloon]: Simulación local 100% activa. Bots con apuestas reales activadas.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -942,7 +942,7 @@
                 let esRoja = cartaVal.includes('♥') || cartaVal.includes('♦');
                 let cardElem = document.getElementById(`com-4`);
                 cardElem.className = `card ${esRoja ? 'red' : ''}`;
-                cardElem.innerText = cartaVal;
+                cardElem.innerText = cardVal;
                 log(`[River]: ¡5ta carta descubierta! Showdown final.`);
                 
                 setTimeout(() => {
@@ -1028,14 +1028,13 @@
             }
         }
 
-        // 🧠 INTELIGENCIA DE BOTS: EVALUACIÓN DE MANO Y ANÁLISIS DE ALL-IN (FAROL VS REAL)
+        // 🧠 IA DE BOTS AUTÓNOMA CON APUESTAS REALES Y CÁLCULO DE MANO
         function evaluarManoPoker(cartasJugador, comunitarias) {
             let visibleCom = comunitarias.slice(0, faseMano === 1 ? 3 : (faseMano === 2 ? 4 : 5));
             let todas = cartasJugador.concat(visibleCom);
             let parsed = todas.map(c => {
                 let v = c.slice(0, -1);
-                let p = c.slice(-1);
-                return { val: valoresCartas[v], palo: p };
+                return { val: valoresCartas[v] };
             });
             parsed.sort((a, b) => b.val - a.val);
 
@@ -1048,7 +1047,6 @@
                 if (counts[v] === 2) pairs++;
             }
 
-            // Puntaje de confianza heurístico para el bot
             let score = parsed.length > 0 ? parsed[0].val : 0;
             if (pairs === 1) score += 100;
             if (pairs >= 2) score += 250;
@@ -1062,27 +1060,40 @@
             if (relojBadge) relojBadge.style.display = 'none';
 
             let hayAlguienAllIn = Object.values(allInJugadores).includes(true);
+            let fuerzaManoBot = evaluarManoPoker(cartasBotsPrivadas[botId], cartasComunitariasGlobales);
 
             if (hayAlguienAllIn) {
-                // El bot calcula la fuerza de su propia mano con las comunitarias actuales
-                let fuerzaManoBot = evaluarManoPoker(cartasBotsPrivadas[botId], cartasComunitariasGlobales);
-                
-                // Si el bot tiene una mano decente (pareja alta o mejor) o un nivel de osadía analítico (detecta posible farol)
-                let umbralDecision = 14 + (botId * 3); // Criterio variable por bot
-
-                if (fuerzaManoBot >= umbralDecision || Math.random() < 0.35) {
+                if (fuerzaManoBot >= 15 || Math.random() < 0.4) {
                     allInJugadores[botId] = true;
                     document.getElementById(`asiento-${botId}`).classList.add('allin-estado');
-                    log(`🤖 [${nombresAsientos[botId]}]: Analizó tus cartas, sospechó un farol y ¡**Igualó (Call)** tu All-In! 🤠🔥`);
+                    log(`🤖 [${nombresAsientos[botId]}]: ¡Igualó tu All-In (Call)! Va a ver cartas. 🤠`);
                 } else {
                     retirados[botId] = true;
                     document.getElementById(`asiento-${botId}`).classList.add('retirado');
-                    log(`🤖 [${nombresAsientos[botId]}]: Analizó su mano, vio el peligro y se retiró (Fold). 🐔`);
+                    log(`🤖 [${nombresAsientos[botId]}]: Se asustó y se retiró (Fold). 🐔`);
                 }
             } else {
-                let acciones = ["igualar", "pasar"];
-                let eleccion = acciones[Math.floor(Math.random() * acciones.length)];
-                log(`🤖 [${nombresAsientos[botId]}]: ${eleccion}`);
+                // 🪙 APUESTAS Y ACCIONES DINÁMICAS ENTRE BOTS Y RONDAS NORMALES
+                let accionesDisponibles = ["igualar", "subir", "pasar"];
+                let eleccion = accionesDisponibles[Math.floor(Math.random() * accionesDisponibles.length)];
+                let montoApuesta = 0;
+
+                if (eleccion === "igualar") {
+                    montoApuesta = 50;
+                    log(`🤖 [${nombresAsientos[botId]}]: Igualó (Call) por 50 fichas.`);
+                } else if (eleccion === "subir") {
+                    montoApuesta = 100;
+                    log(`🤖 [${nombresAsientos[botId]}]: Subió la apuesta a 100 fichas. 📈`);
+                } else {
+                    log(`🤖 [${nombresAsientos[botId]}]: Pasó (Check).`);
+                }
+
+                if (montoApuesta > 0 && fichasBots[botId] >= montoApuesta) {
+                    fichasBots[botId] -= montoApuesta;
+                    boteActual += montoApuesta;
+                    document.getElementById(`chips-s${botId}`).innerText = `🎰 ${fichasBots[botId]} Fichas`;
+                    document.getElementById('pot-display').innerText = `BOTE: ${boteActual} Fichas`;
+                }
             }
 
             siguienteTurnoAutomatico(botId);
@@ -1109,7 +1120,7 @@
                 boteActual += monto;
                 document.getElementById('chips-s4').innerText = `🎰 0 Fichas`;
                 document.getElementById('pot-display').innerText = `BOTE: ${boteActual} Fichas`;
-                log(`🔥 [Tú]: ¡¡ALL-IN con ${monto} Fichas!! 💥 (Los bots están analizando tu jugada...)`);
+                log(`🔥 [Tú]: ¡¡ALL-IN con ${monto} Fichas!! 💥`);
             } else {
                 let monto = accion === 'igualar' ? 50 : (accion === 'subir' ? parseInt(document.getElementById('range-subir').value) : 0);
                 if (fichasJugador >= monto) {
