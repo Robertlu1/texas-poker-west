@@ -757,7 +757,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Simulación local 100% activa. Bengalas listas.</div>
+        <div id="output-log">💬 [Saloon]: Simulación local activada. All-in automático arreglado.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -919,7 +919,7 @@
             document.getElementById('com-3').className = "card card-back"; document.getElementById('com-3').innerText = "🂠";
             document.getElementById('com-4').className = "card card-back"; document.getElementById('com-4').innerText = "🂠";
 
-            log(`🃏 [Flop]: Cartas repartidas localmente.`);
+            log(`🃏 [Flop]: Cartas comunitarias repartidas.`);
             iniciarTurno(1);
         }
 
@@ -953,6 +953,13 @@
 
         function iniciarTurno(asientoNum) {
             if (temporizadorTurno) clearInterval(temporizadorTurno);
+
+            // 🛑 CORRECCIÓN ALL-IN: Si el jugador o bot está en All-In o retirado, salta automáticamente
+            if (retirados[asientoNum] || allInJugadores[asientoNum]) {
+                siguienteTurnoAutomatico(asientoNum);
+                return;
+            }
+
             actualizarTurnoVisual(asientoNum);
             segundosRestantes = 20;
 
@@ -967,7 +974,7 @@
             }, 1000);
 
             if (asientoNum !== 4) {
-                setTimeout(() => { if (turnoActual === asientoNum && !retirados[asientoNum]) ejecutarAccionBot(asientoNum); }, 1500);
+                setTimeout(() => { if (turnoActual === asientoNum && !retirados[asientoNum] && !allInJugadores[asientoNum]) ejecutarAccionBot(asientoNum); }, 1500);
             }
         }
 
@@ -985,16 +992,42 @@
                 return;
             }
 
-            if (contadorAccionesRonda >= activos.length * 2 || faseMano >= 3 && contadorAccionesRonda >= activos.length) {
+            // Verificar si todos los activos están en All-In
+            let pendientesAccion = activos.filter(id => !allInJugadores[id]);
+            if (pendientesAccion.length === 0) {
+                log(`💥 ¡Todos los jugadores en All-In! Revelando mesa...`);
+                avanzarFaseComunitariaCompleta();
+                return;
+            }
+
+            if (contadorAccionesRonda >= activos.length * 2 || (faseMano >= 3 && contadorAccionesRonda >= activos.length)) {
                 avanzarFaseComunitaria();
                 return;
             }
 
             let siguiente = (actual % 6) + 1;
-            while (retirados[siguiente]) {
+            while (retirados[siguiente] || allInJugadores[siguiente]) {
                 siguiente = (siguiente % 6) + 1;
+                if (siguiente === actual) break; // Evitar bucle infinito
             }
             iniciarTurno(siguiente);
+        }
+
+        function avanzarFaseComunitariaCompleta() {
+            if (temporizadorTurno) clearInterval(temporizadorTurno);
+            if (faseMano === 1) faseMano = 2;
+            if (faseMano === 2) {
+                let c3 = cartasComunitariasGlobales[3];
+                let c4 = cartasComunitariasGlobales[4];
+                document.getElementById('com-3').className = `card ${c3.includes('♥')||c3.includes('♦')?'red':''}`;
+                document.getElementById('com-3').innerText = c3;
+                document.getElementById('com-4').className = `card ${c4.includes('♥')||c4.includes('♦')?'red':''}`;
+                document.getElementById('com-4').innerText = c4;
+                faseMano = 3;
+                setTimeout(() => { ejecutarShowdownFinalReal(); }, 1500);
+            } else {
+                ejecutarShowdownFinalReal();
+            }
         }
 
         function ejecutarAccionBot(botId) {
@@ -1012,8 +1045,17 @@
                 retirados[4] = true;
                 document.getElementById('asiento-4').classList.add('retirado');
                 log(`[Tú]: Te retiraste (Fold).`);
+            } else if (accion === 'allin') {
+                allInJugadores[4] = true;
+                document.getElementById('asiento-4').classList.add('allin-estado');
+                let monto = fichasJugador;
+                fichasJugador = 0;
+                boteActual += monto;
+                document.getElementById('chips-s4').innerText = `🎰 0 Fichas`;
+                document.getElementById('pot-display').innerText = `BOTE: ${boteActual} Fichas`;
+                log(`🔥 [Tú]: ¡¡ALL-IN con ${monto} Fichas!!`);
             } else {
-                let monto = accion === 'igualar' ? 50 : (accion === 'subir' ? parseInt(document.getElementById('range-subir').value) : (accion === 'allin' ? fichasJugador : 0));
+                let monto = accion === 'igualar' ? 50 : (accion === 'subir' ? parseInt(document.getElementById('range-subir').value) : 0);
                 if (fichasJugador >= monto) {
                     fichasJugador -= monto;
                     boteActual += monto;
@@ -1023,10 +1065,6 @@
                 }
             }
             siguienteTurnoAutomatico(4);
-        }
-
-        function evaluarManoPoker(cartasJugador, comunitarias) {
-            return { score: Math.floor(1000 + Math.random() * 6000), nombre: "Mano de Póker del Oeste" };
         }
 
         function lanzarBengalasMajestuosas(asientoId) {
