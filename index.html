@@ -2,10 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Texas Poker West - Casino Pro & Cajero Seguro</title>
-    <!-- 📱 SCRIPT OFICIAL DE TELEGRAM WEB APPS -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texas Poker West - Casino Pro con Botón de Escala</title>
     <style>
         * {
             box-sizing: border-box;
@@ -88,46 +86,6 @@
             justify-content: space-between;
         }
         
-        .barra-superior-izquierda {
-            position: absolute;
-            top: 4px;
-            left: 10px;
-            z-index: 30;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            font-size: 10px;
-        }
-        .grupo-personalizacion {
-            background: rgba(0,0,0,0.4);
-            border: 1px solid #4f5d73;
-            padding: 2px 6px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .btn-color-circulo {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            border: 1px solid #fff;
-            cursor: pointer;
-        }
-        .btn-color-circulo:hover { transform: scale(1.2); }
-
-        .btn-tienda-top {
-            background-color: #f39c12;
-            color: #000;
-            border: 1px solid #f1c40f;
-            padding: 3px 8px;
-            font-size: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        .btn-tienda-top:hover { background-color: #f1c40f; }
-
         .btn-ampliar-top {
             position: absolute;
             top: 4px;
@@ -188,7 +146,7 @@
 
         .community-cards {
             display: flex;
-            gap: 8px;
+            gap: 5px;
             justify-content: center;
         }
         
@@ -196,27 +154,23 @@
             background: #ffffff;
             color: #000000;
             font-weight: bold;
-            width: 48px;
-            height: 66px;
-            border-radius: 5px;
+            width: 36px;
+            height: 50px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.7);
+            font-size: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.6);
             border: 1px solid #bdc3c7;
             position: relative;
-            flex-shrink: 0;
         }
         .card.red { color: #e74c3c; }
         .card-back {
-            background-color: #c0392b;
-            background-image: radial-gradient(#e74c3c 15%, transparent 16%), radial-gradient(#e74c3c 15%, transparent 16%);
-            background-size: 10px 10px;
-            background-position: 0 0, 5px 5px;
+            background: #c0392b;
             color: #f1c40f;
             border: 1px solid #f1c40f;
-            font-size: 16px;
+            font-size: 13px;
         }
 
         @keyframes explosionFuegoOro {
@@ -237,127 +191,69 @@
 
         .seat {
             position: absolute;
-            background: linear-gradient(135deg, #3d2314 0%, #22120a 100%);
-            border: 3px solid #8b5a2b;
-            border-radius: 10px;
-            padding: 6px 10px;
+            background: rgba(18, 26, 36, 0.95);
+            border: 2px solid #4f5d73;
+            border-radius: 8px;
+            padding: 3px 6px;
             font-size: 10px;
-            width: 195px;
+            width: 130px;
             color: #ffffff;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.8), inset 0 0 10px rgba(0,0,0,0.6);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.6);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
             text-align: left;
             z-index: 10;
         }
-        .seat::before {
-            content: "";
-            position: absolute;
-            top: -10px;
-            left: 20%;
-            width: 60%;
-            height: 8px;
-            background: #5c3317;
-            border: 1px solid #8b5a2b;
-            border-radius: 4px;
-            z-index: -1;
-        }
-        .seat.vacio {
-            border: 2px dashed #7f8c8d;
-            background: rgba(0,0,0,0.4);
-            color: #95a5a6;
-            justify-content: center;
-            text-align: center;
-            width: 165px;
-        }
-        .seat.vacio::before { display: none; }
-
         .seat.turno-activo {
-            border: 3px solid #e74c3c;
-            box-shadow: 0 0 18px #e74c3c, inset 0 0 10px rgba(231, 76, 60, 0.4);
-            background: linear-gradient(135deg, #4a1c1c 0%, #200a0a 100%);
+            border: 2px solid #e74c3c;
+            box-shadow: 0 0 14px #e74c3c;
+            background: rgba(44, 24, 24, 0.95);
         }
         .seat.retirado {
             opacity: 0.35;
             filter: grayscale(90%);
         }
         .seat.allin-estado {
-            border: 3px solid #8e44ad;
-            box-shadow: 0 0 18px #8e44ad, inset 0 0 10px rgba(142, 68, 173, 0.4);
+            border: 2px solid #8e44ad;
+            box-shadow: 0 0 14px #8e44ad;
         }
 
         .avatar-box {
-            width: 30px;
-            height: 30px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             border: 2px solid #f1c40f;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 15px;
+            font-size: 13px;
             flex-shrink: 0;
-            background: #1a1a1a;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            background: #2c3e50;
         }
         .seat-info { line-height: 1.1; overflow: hidden; width: 100%; }
-        .seat-name { font-weight: bold; color: #f1c40f; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; justify-content: space-between; align-items: center; }
-        .seat-chips { color: #2ecc71; font-size: 9px; font-weight: bold; text-shadow: 1px 1px #000; }
-        .seat-cards { display: flex; gap: 4px; margin-top: 4px; }
+        .seat-name { font-weight: bold; color: #ffffff; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .seat-chips { color: #f1c40f; font-size: 9px; font-weight: bold; }
+        .seat-cards { display: flex; gap: 2px; margin-top: 2px; }
 
-        .reloj-badge {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            color: #ffffff;
-            font-size: 12px;
-            padding: 2px 6px;
-            border-radius: 6px;
-            border: 2px solid #f1c40f;
-            font-weight: bold;
-            display: none;
-            box-shadow: 0 0 10px #e74c3c;
-            animation: pulseReloj 0.8s infinite alternate;
-        }
-        @keyframes pulseReloj {
-            0% { transform: scale(1); filter: brightness(1); }
-            100% { transform: scale(1.15); filter: brightness(1.3); }
-        }
+        .seat-1 { top: 2px; left: 22%; }
+        .seat-2 { top: 2px; right: 22%; }
+        .seat-3 { top: 38%; right: -25px; }
+        .seat-4 { bottom: 2px; right: 22%; border-color: #2ecc71; background: rgba(15, 38, 25, 0.95); }
+        .seat-5 { bottom: 2px; left: 22%; }
+        .seat-6 { top: 38%; left: -25px; }
 
-        .seat-1 { top: -8px; left: 16%; }
-        .seat-2 { top: -8px; right: 16%; }
-        .seat-3 { top: 38%; right: -45px; }
-        .seat-4 { bottom: -8px; right: 16%; border-color: #27ae60; background: linear-gradient(135deg, #12351e 0%, #081a0f 100%); }
-        .seat-5 { bottom: -8px; left: 16%; }
-        .seat-6 { top: 38%; left: -45px; }
-
-        #modal-tienda {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(10, 18, 28, 0.98);
-            border: 3px solid #f1c40f;
-            padding: 20px 30px;
-            border-radius: 14px;
-            z-index: 200;
-            box-shadow: 0 0 50px rgba(0,0,0,0.95);
-            text-align: center;
-            width: 650px;
-            max-width: 95vw;
-            max-height: 94vh;
-            overflow-y: auto;
+        @keyframes volarFicha {
+            0% { transform: scale(1) translateY(0); opacity: 1; }
+            50% { transform: scale(1.4) translateY(-30px); opacity: 0.9; }
+            100% { transform: scale(0.5) translate(-100px, -50px); opacity: 0; }
         }
-        #modal-tienda h3 { color: #f1c40f; margin-top: 0; font-size: 1.3em; }
-        .paquete-tienda {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid #4f5d73;
-            padding: 8px 12px;
-            margin: 8px 0;
-            border-radius: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
+        .ficha-volando {
+            position: absolute;
+            font-size: 18px;
+            z-index: 100;
+            pointer-events: none;
+            animation: volarFicha 0.7s ease-in-out forwards;
         }
 
         .modo-container {
@@ -422,7 +318,6 @@
             padding: 5px 10px;
             border-radius: 6px;
             border: 1px solid #2c3e50;
-            flex-wrap: wrap;
         }
         .btn-bet {
             background-color: #27ae60;
@@ -507,7 +402,6 @@
             bottom: 12px;
             left: 12px;
             width: 320px;
-            max-width: 85vw;
             height: 160px;
             background: rgba(6, 10, 15, 0.95);
             border: 1px solid #2c3e50;
@@ -581,46 +475,6 @@
             border-radius: 4px;
         }
         .btn-enviar-chat:hover { background: #2ecc71; }
-
-        /* 📱 AJUSTES ADAPTATIVOS PARA MÓVILES Y TELEGRAM MINI APP */
-        @media screen and (max-width: 768px) {
-            .poker-table {
-                width: 95vw;
-                height: 48vh;
-                border-radius: 90px;
-                border-width: 6px;
-            }
-            .seat {
-                width: 130px;
-                padding: 3px 5px;
-                font-size: 8px;
-            }
-            .seat-1 { top: -6px; left: 10%; }
-            .seat-2 { top: -6px; right: 10%; }
-            .seat-3 { top: 35%; right: -30px; }
-            .seat-4 { bottom: -6px; right: 10%; }
-            .seat-5 { bottom: -6px; left: 10%; }
-            .seat-6 { top: 35%; left: -30px; }
-            .card {
-                width: 34px;
-                height: 48px;
-                font-size: 14px;
-            }
-            .card-back {
-                font-size: 11px;
-            }
-            #portada-titulo {
-                font-size: 2.5em;
-            }
-            .betting-container {
-                gap: 4px;
-                padding: 3px;
-            }
-            .btn-bet {
-                padding: 4px 8px;
-                font-size: 9px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -634,32 +488,6 @@
     <!-- PANTALLA 2: SALÓN PRINCIPAL -->
     <div id="pantalla-salon">
         <div class="saloon-container">
-            
-            <!-- BARRA SUPERIOR: PAÑO, DORSO, ORO Y TIENDA COMPLETA -->
-            <div class="barra-superior-izquierda">
-                <div class="grupo-personalizacion">
-                    <span>Paño:</span>
-                    <div class="btn-color-circulo" style="background:#0d4a22;" onclick="cambiarColorPano('#0d4a22')" title="Verde Clásico"></div>
-                    <div class="btn-color-circulo" style="background:#512e5f;" onclick="cambiarColorPano('#512e5f')" title="Violeta"></div>
-                    <div class="btn-color-circulo" style="background:#1b3b6f;" onclick="cambiarColorPano('#1b3b6f')" title="Azul"></div>
-                    <div class="btn-color-circulo" style="background:#78281f;" onclick="cambiarColorPano('#78281f')" title="Rojo"></div>
-                </div>
-
-                <div class="grupo-personalizacion">
-                    <span>Dorso:</span>
-                    <div class="btn-color-circulo" style="background:#c0392b;" onclick="cambiarDorsoCarta('#c0392b')" title="Rojo"></div>
-                    <div class="btn-color-circulo" style="background:#8e44ad;" onclick="cambiarDorsoCarta('#8e44ad')" title="Violeta"></div>
-                    <div class="btn-color-circulo" style="background:#2980b9;" onclick="cambiarDorsoCarta('#2980b9')" title="Azul"></div>
-                </div>
-
-                <!-- MOSTRADOR DE ORO / FICHAS GENERAL -->
-                <div style="background: rgba(241,196,15,0.2); border: 1px solid #f1c40f; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: #f1c40f;">
-                    🪙 Caja: <span id="monedas-oro-display">50</span>
-                </div>
-
-                <button class="btn-tienda-top" onclick="abrirTienda(true)">🛒 Comprar Fichas / Oro</button>
-            </div>
-
             <button class="btn-ampliar-top" onclick="togglePantallaCompleta()">🗖 Ampliar</button>
 
             <h2>Texas Poker West: Casino Pro</h2>
@@ -669,8 +497,8 @@
                 <div class="seat seat-1" id="asiento-1">
                     <div class="avatar-box">🤠</div>
                     <div class="seat-info">
-                        <div class="seat-name">El Gambusino <span id="reloj-s1" class="reloj-badge">⏱️ 20s</span></div>
-                        <div class="seat-chips" id="chips-s1">🎰 1,000 Fichas</div>
+                        <div class="seat-name">El Gambusino</div>
+                        <div class="seat-chips" id="chips-s1">[$] 1,000</div>
                         <div class="seat-cards" id="cartas-s1"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                     </div>
                 </div>
@@ -679,8 +507,8 @@
                 <div class="seat seat-2" id="asiento-2">
                     <div class="avatar-box">🤵</div>
                     <div class="seat-info">
-                        <div class="seat-name">Don Aurelio <span id="reloj-s2" class="reloj-badge">⏱️ 20s</span></div>
-                        <div class="seat-chips" id="chips-s2">🎰 1,000 Fichas</div>
+                        <div class="seat-name">Don Aurelio</div>
+                        <div class="seat-chips" id="chips-s2">[$] 1,000</div>
                         <div class="seat-cards" id="cartas-s2"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                     </div>
                 </div>
@@ -689,18 +517,18 @@
                 <div class="seat seat-3" id="asiento-3">
                     <div class="avatar-box">🤠</div>
                     <div class="seat-info">
-                        <div class="seat-name">Forajido Joe <span id="reloj-s3" class="reloj-badge">⏱️ 20s</span></div>
-                        <div class="seat-chips" id="chips-s3">🎰 1,000 Fichas</div>
+                        <div class="seat-name">Forajido Joe</div>
+                        <div class="seat-chips" id="chips-s3">[$] 1,000</div>
                         <div class="seat-cards" id="cartas-s3"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                     </div>
                 </div>
 
-                <!-- Asiento 4 (Tú - Jugador) -->
+                <!-- Asiento 4 (Tú) -->
                 <div class="seat seat-4" id="asiento-4">
                     <div class="avatar-box">⭐</div>
                     <div class="seat-info">
                         <div class="seat-name">Tú (Vaquero) <span id="timer-ui" class="timer-display"></span></div>
-                        <div class="seat-chips" id="chips-s4">🎰 1,000 Fichas</div>
+                        <div class="seat-chips" id="chips-s4">[$] 1,000</div>
                         <div class="seat-cards" id="cartas-s4">
                             <div class="card card-back">🂠</div><div class="card card-back">🂠</div>
                         </div>
@@ -711,8 +539,8 @@
                 <div class="seat seat-5" id="asiento-5">
                     <div class="avatar-box">⭐</div>
                     <div class="seat-info">
-                        <div class="seat-name">Sheriff Miller <span id="reloj-s5" class="reloj-badge">⏱️ 20s</span></div>
-                        <div class="seat-chips" id="chips-s5">🎰 1,000 Fichas</div>
+                        <div class="seat-name">Sheriff Miller</div>
+                        <div class="seat-chips" id="chips-s5">[$] 1,000</div>
                         <div class="seat-cards" id="cartas-s5"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                     </div>
                 </div>
@@ -721,8 +549,8 @@
                 <div class="seat seat-6" id="asiento-6">
                     <div class="avatar-box">🎩</div>
                     <div class="seat-info">
-                        <div class="seat-name">El Forastero <span id="reloj-s6" class="reloj-badge">⏱️ 20s</span></div>
-                        <div class="seat-chips" id="chips-s6">🎰 1,000 Fichas</div>
+                        <div class="seat-name">El Forastero</div>
+                        <div class="seat-chips" id="chips-s6">[$] 1,000</div>
                         <div class="seat-cards" id="cartas-s6"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                     </div>
                 </div>
@@ -738,7 +566,7 @@
                     </div>
 
                     <div style="font-size: 1.1em; color: #f1c40f; font-weight: bold; text-shadow: 2px 2px #000;" id="pot-display">
-                        BOTE: 200 Fichas
+                        BOTE: 200 USDT
                     </div>
 
                     <!-- 5 CARTAS COMUNITARIAS GIGANTES -->
@@ -763,7 +591,7 @@
             <div id="torneo-panel">
                 <span id="torneo-serie">🏆 Serie Torneo: Partida 1 de 3 (Gana 2)</span>
                 <span id="torneo-victorias">⭐ Tus Victorias: 0 / 2</span>
-                <span id="jackpot-display">💰 Jackpot Progresivo: $1,500 Fichas</span>
+                <span id="jackpot-display">💰 Jackpot Progresivo: $1,500 USDT</span>
             </div>
 
             <!-- CONTROLES GENERALES -->
@@ -774,13 +602,13 @@
                 <span id="mic-status">🎙️ Silenciado</span>
             </div>
 
-            <!-- BOTONERA DE ACCIÓN INFERIOR -->
+            <!-- BOTONERA DE ACCIÓN INFERIOR CON BOTÓN DEDICADO PARA LA ESCALA -->
             <div class="betting-container">
                 <button class="btn-bet" onclick="apostarJugador('pasar')">Pasar (Check)</button>
                 <button class="btn-bet" onclick="apostarJugador('igualar')">Igualar (Call)</button>
                 
                 <div class="slider-box">
-                    <span>Apuesta: 🎰<span id="slider-valor">100</span></span>
+                    <span>Apuesta: $<span id="slider-valor">100</span></span>
                     <input type="range" id="range-subir" min="50" max="1000" step="50" value="100" oninput="actualizarValorSlider(this.value)">
                     <button class="btn-enviar-slider" onclick="apostarJugador('subir')">Enviar Apuesta</button>
                 </div>
@@ -789,96 +617,6 @@
                 <button class="btn-bet btn-fold" onclick="apostarJugador('retirarse')">Retirarse (Fold)</button>
             </div>
         </div>
-    </div>
-
-    <!-- VENTANA MODAL: TIENDA Y PANEL DE CAJERO CON USUARIO Y PIN DE 60 SEGUNDOS -->
-    <div id="modal-tienda">
-        <h3>🛒 Tienda del Salón: Monedas y Fichas</h3>
-        
-        <!-- SECCIÓN DE CONTACTO DIRECTO -->
-        <div style="background: rgba(241,196,15,0.15); border: 1px solid #f1c40f; padding: 8px; border-radius: 6px; margin-bottom: 8px; text-align: center; font-size: 11px;">
-            📞 <b>¿Ya pagaste? Envía tu comprobante a nuestro WhatsApp / Telegram:</b> <br>
-            <span style="color: #f1c40f; font-weight: bold; font-size: 12px;">+58 424-9266340</span>
-        </div>
-
-        <!-- ESPACIO 1: WALLET CRIPTO -->
-        <div style="background: rgba(0,0,0,0.5); border: 1px solid #f1c40f; padding: 8px; border-radius: 6px; margin-bottom: 6px; text-align: left;">
-            <div style="font-size: 11px; color: #f1c40f; font-weight: bold;">💎 Criptomonedas: USDT, USDC, TON (TRC-20, MATIC, BEP-20, SOL)</div>
-            <div id="texto-wallet" style="font-size: 10px; color: #fff; word-break: break-all; font-family: monospace; background: rgba(0,0,0,0.7); padding: 4px; border-radius: 4px; margin-top: 3px;">TU_DIRECCION_DE_WALLET_AQUI</div>
-            <button onclick="copiarTexto('texto-wallet')" style="background: #27ae60; color: white; border: none; padding: 3px 8px; font-size: 9px; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 3px;">📋 Copiar Wallet</button>
-        </div>
-
-        <!-- SECCIÓN 2: PAGOS DIGITALES (ZINLI, WALLY, PAYPAL) -->
-        <div style="background: rgba(0,0,0,0.5); border: 1px solid #3498db; padding: 8px; border-radius: 6px; margin-bottom: 6px; text-align: left;">
-            <div style="font-size: 11px; color: #3498db; font-weight: bold;">💳 Pagos Digitales (Zinli, Wally, PayPal)</div>
-            <div id="texto-digital" style="font-size: 10px; color: #fff; word-break: break-all; font-family: monospace; background: rgba(0,0,0,0.7); padding: 4px; border-radius: 4px; margin-top: 3px; line-height: 1.3;">
-                • Zinli: omega161716@gmail.com<br>
-                • Wally: robertocarrasquel18@gmail.com (+58 424-9266340)<br>
-                • PayPal: confenacapv.oficial@gmail.com
-            </div>
-            <button onclick="copiarTexto('texto-digital')" style="background: #27ae60; color: white; border: none; padding: 3px 8px; font-size: 9px; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 3px;">📋 Copiar Datos Digitales</button>
-        </div>
-
-        <!-- SECCIÓN 3: BANESCO PANAMÁ & CUENTA AMERICANA ACH -->
-        <div style="background: rgba(0,0,0,0.5); border: 1px solid #9b59b6; padding: 8px; border-radius: 6px; margin-bottom: 6px; text-align: left;">
-            <div style="font-size: 11px; color: #9b59b6; font-weight: bold;">🌐 Cuentas Internacionales</div>
-            <div id="texto-internacional" style="font-size: 10px; color: #fff; word-break: break-all; font-family: monospace; background: rgba(0,0,0,0.7); padding: 4px; border-radius: 4px; margin-top: 3px; line-height: 1.3;">
-                <b>Banesco Panamá:</b> Banco: Banesco (Panamá), S.A. | SWIFT: BANSPAPAXXX | Cuenta: 221023123327 | Beneficiario: Luis Carrasquel | Dir: Ave. Aquilino De La Guardia y Calle 47, Torre Banesco, Panamá. | <i>Banco Interm. (USD):</i> Citibank N.A. | ABA: 021000089 | SWIFT: CITIUS33XX<br>
-                <b>Cuenta Americana ACH (Lead Bank):</b> Routing: 101019644 | Cuenta: 214511315697 | Tipo: Corriente | Beneficiario: LUIS ROBERTO CARRASQUEL DELGADILLO | Dir Banco: 1801 Main St., Kansas City, MO 64108 | Dir Beneficiario: Brisas Del Paraiso, calle las cayenas casa 25, Guayana, BOLIVAR 8051, VE
-            </div>
-            <button onclick="copiarTexto('texto-internacional')" style="background: #27ae60; color: white; border: none; padding: 3px 8px; font-size: 9px; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 3px;">📋 Copiar Datos Internacionales</button>
-        </div>
-
-        <!-- SECCIÓN 4: PAGO MÓVIL NACIONAL -->
-        <div style="background: rgba(0,0,0,0.5); border: 1px solid #2ecc71; padding: 8px; border-radius: 6px; margin-bottom: 8px; text-align: left;">
-            <div style="font-size: 11px; color: #2ecc71; font-weight: bold;">🏦 Pago Móvil (Nacional)</div>
-            <div id="texto-pagomovil" style="font-size: 10px; color: #fff; word-break: break-all; font-family: monospace; background: rgba(0,0,0,0.7); padding: 4px; border-radius: 4px; margin-top: 3px; line-height: 1.3;">
-                C.I: 10044076 | Teléfono: 0424-9266340<br>
-                • Opción 1: Banco Mercantil (0105)<br>
-                • Opción 2: BFC Banco Fondo Común (0151)
-            </div>
-            <button onclick="copiarTexto('texto-pagomovil')" style="background: #27ae60; color: white; border: none; padding: 3px 8px; font-size: 9px; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 3px;">📋 Copiar Pago Móvil</button>
-        </div>
-
-        <!-- 🔒 PANEL DE CAJERO / ADMIN CORREGIDO CON CAMPO DE USUARIO Y FICHAS 🔒 -->
-        <div style="background: rgba(231, 76, 60, 0.2); border: 2px dashed #e74c3c; padding: 10px; border-radius: 8px; margin-bottom: 10px; text-align: left;">
-            <div style="font-size: 11px; color: #e74c3c; font-weight: bold; margin-bottom: 4px;">🛠️ Panel de Cajero / Despacho de Fichas</div>
-            
-            <div style="margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
-                <button onclick="generarYEnviarPinWhatsApp()" style="background: #25d366; color: white; border: none; padding: 5px 10px; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 4px;">📲 Enviar Nuevo PIN a WhatsApp</button>
-                <span id="pin-timer" style="font-size: 10px; color: #f1c40f; font-weight: bold;"></span>
-            </div>
-
-            <!-- Bloque de Login Admin -->
-            <div id="admin-login-box" style="display: flex; gap: 6px; align-items: center;">
-                <input type="password" id="admin-pin" placeholder="Ingresa PIN (sin comillas)" style="flex-grow: 1; padding: 4px; font-size: 10px; background: #000; color: #fff; border: 1px solid #7f8c8d; border-radius: 4px;">
-                <button onclick="verificarPinAdmin()" style="background: #e74c3c; color: white; border: none; padding: 5px 10px; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 4px;">Desbloquear</button>
-            </div>
-
-            <!-- Bloque de Envío (Usuario + Cantidad de Fichas) -->
-            <div id="admin-panel-despacho" style="display: none; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 4px;">
-                <input type="text" id="admin-usuario" placeholder="Nombre o ID del Jugador" style="flex-grow: 1; padding: 4px; font-size: 10px; background: #000; color: #fff; border: 1px solid #7f8c8d; border-radius: 4px;">
-                <input type="number" id="admin-cantidad-fichas" placeholder="Cant. Fichas" value="1000" style="width: 90px; padding: 4px; font-size: 10px; background: #000; color: #fff; border: 1px solid #7f8c8d; border-radius: 4px;">
-                <button onclick="despacharFichasJugador()" style="background: #27ae60; color: white; border: none; padding: 5px 10px; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 4px;">⚡ Enviar Fichas</button>
-            </div>
-        </div>
-
-        <p style="font-size: 11px; color: #aaa; margin: 4px 0;">Paquetes disponibles en el salón:</p>
-
-        <div class="paquete-tienda">
-            <span>🪙 1,000 Fichas ($10)</span>
-            <button class="btn-bet" onclick="notificarCompra(1000, 10)">Solicitar</button>
-        </div>
-        <div class="paquete-tienda">
-            <span>🪙 5,000 Fichas ($45)</span>
-            <button class="btn-bet" onclick="notificarCompra(5000, 45)">Solicitar</button>
-        </div>
-        <div class="paquete-tienda">
-            <span>🪙 15,000 Fichas ($120)</span>
-            <button class="btn-bet" onclick="notificarCompra(15000, 120)">Solicitar</button>
-        </div>
-
-        <button class="btn-oeste btn-fold" style="margin-top: 10px; width: 100%; padding: 8px;" onclick="abrirTienda(false)">Cerrar Tienda</button>
     </div>
 
     <!-- MODAL PARA DECIDIR SI MUESTRAS CARTAS AL GANAR POR ABANDONO -->
@@ -897,7 +635,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Panel de cajero con casilla de usuario y envío de fichas listo.</div>
+        <div id="output-log">💬 [Saloon]: Botón de confirmación de escala añadido.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -905,16 +643,8 @@
     </div>
 
     <script>
-        // 🚀 INICIALIZACIÓN DE TELEGRAM WEB APP
-        let tg = window.Telegram.WebApp;
-        tg.expand(); // Expande la app a pantalla completa en Telegram
-        tg.ready();
-
-        let idUsuarioActual = tg.initDataUnsafe?.user?.id || 1;
-        let nombreTelegram = tg.initDataUnsafe?.user?.first_name || "Vaquero";
+        let idUsuarioActual = 1;
         let fichasJugador = 1000;
-        let monedasOro = 50;
-        
         let fichasBots = { 1: 1000, 2: 1000, 3: 1000, 5: 1000, 6: 1000 };
         let cartasBotsPrivadas = { 1: [], 2: [], 3: [], 5: [], 6: [] };
         let retirados = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
@@ -933,49 +663,6 @@
         let torneoVictoriasUsuario = 0;
         let jackpotMonto = 1500;
 
-        let temporizadorLobby = null;
-        let segundosLobbyRestantes = 30;
-        let asientosHumanosOcupados = { 1: false, 2: false, 3: false, 5: false, 6: false };
-
-        // 🔐 GESTIÓN DE PIN DINÁMICO
-        let pinActualAdmin = localStorage.getItem("pin_admin_poker") || "1234";
-        let tiempoExpiracionPin = parseInt(localStorage.getItem("pin_expira_poker") || "0");
-        let intervaloRelojPin = null;
-
-        function generarYEnviarPinWhatsApp() {
-            let nuevoPin = Math.floor(1000 + Math.random() * 9000).toString();
-            let tiempoLimite = Date.now() + 60000; // 60 segundos (1 minuto)
-
-            localStorage.setItem("pin_admin_poker", nuevoPin);
-            localStorage.setItem("pin_expira_poker", tiempoLimite);
-            pinActualAdmin = nuevoPin;
-            tiempoExpiracionPin = tiempoLimite;
-
-            iniciarContadorRelojPin();
-
-            let mensaje = `🔑 *[Texas Poker West]*\nTu nuevo PIN dinámico de cajero es: *${nuevoPin}*\n(Válido por 1 minuto).`;
-            let urlWhatsApp = `https://api.whatsapp.com/send?phone=584249266340&text=${encodeURIComponent(mensaje)}`;
-            
-            window.open(urlWhatsApp, '_blank');
-            alert("📲 Se abrió WhatsApp con tu nuevo PIN. Tienes 1 minuto para ingresarlo sin comillas.");
-        }
-
-        function iniciarContadorRelojPin() {
-            if (intervaloRelojPin) clearInterval(intervaloRelojPin);
-
-            intervaloRelojPin = setInterval(() => {
-                let restante = Math.max(0, Math.floor((tiempoExpiracionPin - Date.now()) / 1000));
-                let timerLabel = document.getElementById('pin-timer');
-
-                if (restante > 0) {
-                    if (timerLabel) timerLabel.innerText = `⏱️ Expira en ${restante}s`;
-                } else {
-                    if (timerLabel) timerLabel.innerText = `⚠️ PIN expirado`;
-                    clearInterval(intervaloRelojPin);
-                }
-            }, 1000);
-        }
-
         const nombresAsientos = {
             1: "El Gambusino",
             2: "Don Aurelio",
@@ -986,91 +673,6 @@
         };
 
         const valoresCartas = { "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10": 10, "J": 11, "Q": 12, "K": 13, "A": 14 };
-
-        function cambiarColorPano(colorHex) {
-            const mesa = document.getElementById('mesa-poker');
-            if (mesa) {
-                mesa.style.backgroundColor = colorHex;
-                log(`[Saloon]: Color del paño actualizado.`);
-            }
-        }
-
-        function cambiarDorsoCarta(colorHex) {
-            const estiloDorso = document.createElement('style');
-            estiloDorso.innerHTML = `.card-back { background-color: ${colorHex} !important; }`;
-            document.head.appendChild(estiloDorso);
-            log(`[Saloon]: Diseño del reverso de las cartas actualizado.`);
-        }
-
-        function abrirTienda(abrir) {
-            document.getElementById('modal-tienda').style.display = abrir ? 'block' : 'none';
-            if (abrir && tiempoExpiracionPin > Date.now()) {
-                iniciarContadorRelojPin();
-            }
-        }
-
-        function copiarTexto(idElemento) {
-            const texto = document.getElementById(idElemento).innerText;
-            navigator.clipboard.writeText(texto).then(() => {
-                alert("📋 ¡Datos copiados al portapapeles con éxito!");
-            });
-        }
-
-        function verificarPinAdmin() {
-            let pinIngresado = document.getElementById('admin-pin').value.trim();
-
-            if (Date.now() > tiempoExpiracionPin) {
-                alert("⏰ El PIN ha expirado. Solicita un nuevo PIN en el botón verde de WhatsApp.");
-                return;
-            }
-
-            if (pinIngresado === pinActualAdmin) {
-                document.getElementById('admin-login-box').style.display = 'none';
-                document.getElementById('admin-panel-despacho').style.display = 'flex';
-                alert("🔓 ¡Acceso concedido! Panel de cajero desbloqueado.");
-            } else {
-                alert("❌ PIN incorrecto. Ingrésalo sin comillas.");
-                document.getElementById('admin-pin').value = "";
-            }
-        }
-
-        // ⚡ FUNCIÓN DE DESPACHO RESTAURADA CON USUARIO Y FICHAS
-        function despacharFichasJugador() {
-            let usuario = document.getElementById('admin-usuario').value.trim();
-            let cantidadFichas = parseInt(document.getElementById('admin-cantidad-fichas').value);
-
-            if (!usuario) {
-                alert("⚠️ Por favor ingresa el nombre o ID del jugador.");
-                return;
-            }
-
-            if (isNaN(cantidadFichas) || cantidadFichas <= 0) {
-                alert("⚠️ Ingresa una cantidad válida de fichas.");
-                return;
-            }
-
-            fichasJugador += cantidadFichas;
-            document.getElementById('chips-s4').innerText = `🎰 ${fichasJugador.toLocaleString()} Fichas`;
-            document.getElementById('range-subir').max = fichasJugador;
-
-            log(`⚡ [Cajero Admin]: Se enviaron **${cantidadFichas.toLocaleString()} Fichas** al jugador **${usuario}**. 🎰`);
-            alert(`✅ ¡Despacho exitoso! Se acreditaron ${cantidadFichas.toLocaleString()} fichas a ${usuario}.`);
-            
-            // 🔄 BLOQUEAR PANEL DE NUEVO TRAS DESPACHAR
-            document.getElementById('admin-usuario').value = "";
-            document.getElementById('admin-pin').value = "";
-            document.getElementById('admin-panel-despacho').style.display = 'none';
-            document.getElementById('admin-login-box').style.display = 'flex';
-            tiempoExpiracionPin = 0;
-            
-            abrirTienda(false);
-        }
-
-        function notificarCompra(cantidadFichas, costoUsdt) {
-            abrirTienda(false);
-            log(`🛒 [Tienda]: Solicitud enviada por ${cantidadFichas.toLocaleString()} Fichas ($${costoUsdt}). Escribe al WhatsApp +58 424-9266340 con tu comprobante.`);
-            alert(`🤠 ¡Solicitud registrada! Envía tu comprobante de pago a nuestro WhatsApp: +58 424-9266340 para que el cajero te acredite tus fichas de inmediato.`);
-        }
 
         function evaluarManoPoker(cartasJugador, comunitarias) {
             let todas = cartasJugador.concat(comunitarias);
@@ -1199,7 +801,6 @@
         function entrarAlSaloon() {
             document.getElementById('pantalla-portada').style.display = 'none';
             document.getElementById('pantalla-salon').style.display = 'flex';
-            seleccionarModo('Práctica');
         }
 
         function togglePantallaCompleta() {
@@ -1242,7 +843,7 @@
                 setTimeout(() => {
                     let botsActivos = [1, 2, 3, 5, 6];
                     let botAzar = botsActivos[Math.floor(Math.random() * botsActivos.length)];
-                    let respuestasBot = ["¡Así se habla, vaquero!", "¡Ese bote es mío!", "Juego prudente...", "¡Nadie canta victoria todavía!"];
+                    let respuestasBot = ["¡Así se habla, vaquero!", "¡Ese bote es mío!", "Juego prudente...", "¡No cantes victoria todavía!"];
                     let resp = respuestasBot[Math.floor(Math.random() * respuestasBot.length)];
                     log(`🤖 [${nombresAsientos[botAzar]}]: ${resp}`);
                 }, 1500);
@@ -1261,93 +862,28 @@
             document.getElementById('btn-campana').classList.remove('selected');
             document.getElementById('btn-multijugador').classList.remove('selected');
             
-            if (temporizadorLobby) clearInterval(temporizadorLobby);
-            if (temporizadorTurno) clearInterval(temporizadorTurno);
-
             if (modo === 'Práctica') {
                 document.getElementById('btn-practica').classList.add('selected');
                 document.getElementById('torneo-panel').style.display = 'none';
-                restaurarAsientosBots();
-                log(`[Modo Práctica]: Mesa lista con bots.`);
-            } 
-            else if (modo === 'Campaña' || modo === 'Multijugador') {
-                if (modo === 'Campaña') {
-                    document.getElementById('btn-campana').classList.add('selected');
-                    document.getElementById('torneo-panel').style.display = 'flex';
-                    torneoPartidaActual = 1;
-                    torneoVictoriasUsuario = 0;
-                    actualizarPanelTorneo();
-                } else {
-                    document.getElementById('btn-multijugador').classList.add('selected');
-                    document.getElementById('torneo-panel').style.display = 'none';
-                }
-
-                iniciarLobbyEsperaHumanos();
+                log(`[Modo]: Mesa de Práctica libre.`);
+            } else if (modo === 'Campaña') {
+                document.getElementById('btn-campana').classList.add('selected');
+                document.getElementById('torneo-panel').style.display = 'flex';
+                torneoPartidaActual = 1;
+                torneoVictoriasUsuario = 0;
+                actualizarPanelTorneo();
+                log(`🤠 [Torneo Campaña]: ¡Serie al mejor de 3 iniciada contra los pistoleros del salón!`);
+            } else if (modo === 'Multijugador') {
+                document.getElementById('btn-multijugador').classList.add('selected');
+                document.getElementById('torneo-panel').style.display = 'none';
+                log(`🌐 [Multijugador]: Buscando jugadores reales o activando bots de respaldo en 30s...`);
             }
-        }
-
-        function iniciarLobbyEsperaHumanos() {
-            segundosLobbyRestantes = 30;
-            asientosHumanosOcupados = { 1: false, 2: false, 3: false, 5: false, 6: false };
-
-            for (let i = 1; i <= 6; i++) {
-                if (i !== 4) {
-                    let asiento = document.getElementById(`asiento-${i}`);
-                    asiento.className = `seat seat-${i} vacio`;
-                    asiento.innerHTML = `<div style="font-size:9px;">⏳ Esperando jugador... (${segundosLobbyRestantes}s)</div>`;
-                }
-            }
-
-            log(`🌐 [Lobby]: Mesa abierta. Esperando humanos (${segundosLobbyRestantes}s)...`);
-
-            if (temporizadorLobby) clearInterval(temporizadorLobby);
-
-            temporizadorLobby = setInterval(() => {
-                segundosLobbyRestantes--;
-                
-                for (let i = 1; i <= 6; i++) {
-                    if (i !== 4) {
-                        let asiento = document.getElementById(`asiento-${i}`);
-                        if (asiento.classList.contains('vacio')) {
-                            asiento.innerHTML = `<div style="font-size:9px;">⏳ Esperando jugador... (${segundosLobbyRestantes}s)</div>`;
-                        }
-                    }
-                }
-
-                if (segundosLobbyRestantes <= 0) {
-                    clearInterval(temporizadorLobby);
-                    log(`⏰ Tiempo de espera agotado. **Colocando bots de respaldo...**`);
-                    restaurarAsientosBots();
-                }
-            }, 1000);
-        }
-
-        function restaurarAsientosBots() {
-            if (temporizadorLobby) clearInterval(temporizadorLobby);
-
-            const avataresBots = { 1: "🤠", 2: "🤵", 3: "🤠", 5: "⭐", 6: "🎩" };
-
-            for (let i = 1; i <= 6; i++) {
-                if (i !== 4) {
-                    let asiento = document.getElementById(`asiento-${i}`);
-                    asiento.className = `seat seat-${i}`;
-                    asiento.innerHTML = `
-                        <div class="avatar-box">${avataresBots[i]}</div>
-                        <div class="seat-info">
-                            <div class="seat-name">${nombresAsientos[i]} <span id="reloj-s${i}" class="reloj-badge">⏱️ 20s</span></div>
-                            <div class="seat-chips" id="chips-s${i}">🎰 ${fichasBots[i]} Fichas</div>
-                            <div class="seat-cards" id="cartas-s${i}"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
-                        </div>
-                    `;
-                }
-            }
-            log(`🤖 [Saloon]: Bots de respaldo sentados y listos.`);
         }
 
         function actualizarPanelTorneo() {
             document.getElementById('torneo-serie').innerText = `🏆 Torneo: Partida ${torneoPartidaActual} (Serie al mejor de 3)`;
             document.getElementById('torneo-victorias').innerText = `⭐ Tus Victorias: ${torneoVictoriasUsuario} / 2`;
-            document.getElementById('jackpot-display').innerText = `💰 Jackpot: $${jackpotMonto} Fichas`;
+            document.getElementById('jackpot-display').innerText = `💰 Jackpot: $${jackpotMonto} USDT`;
         }
 
         let localStream = null;
@@ -1363,15 +899,11 @@
             turnoActual = nuevoTurno;
             for (let i = 1; i <= 6; i++) {
                 let asientoDiv = document.getElementById(`asiento-${i}`);
-                let relojBadge = document.getElementById(`reloj-s${i}`);
-                
-                if (asientoDiv && !asientoDiv.classList.contains('vacio')) {
+                if (asientoDiv) {
                     if (i === turnoActual) {
                         asientoDiv.classList.add('turno-activo');
-                        if (relojBadge) relojBadge.style.display = 'inline-block';
                     } else {
                         asientoDiv.classList.remove('turno-activo');
-                        if (relojBadge) relojBadge.style.display = 'none';
                     }
                 }
             }
@@ -1383,7 +915,7 @@
             
             const ficha = document.createElement('div');
             ficha.className = 'ficha-volando';
-            ficha.innerHTML = '🎰';
+            ficha.innerHTML = '🪙';
 
             const rectAsiento = asiento.getBoundingClientRect();
             const rectMesa = mesa.getBoundingClientRect();
@@ -1401,27 +933,21 @@
                 const response = await fetch('/api/usuario/registrar', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ telegram_id: idUsuarioActual, username: nombreTelegram })
+                    body: JSON.stringify({ telegram_id: "999888", username: "Vaquero" })
                 });
                 const data = await response.json();
-                fichasJugador = data.fichas_gratis || fichasJugador;
+                idUsuarioActual = data.usuario_id;
+                fichasJugador = data.fichas_gratis;
                 
-                document.getElementById('chips-s4').innerText = `🎰 ${fichasJugador} Fichas`;
+                document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
                 document.getElementById('range-subir').max = fichasJugador;
-                log(`[Telegram]: Conectado como @${nombreTelegram} (ID: ${idUsuarioActual})`);
+                log(`[API Registro]: Conectado. Fichas: ${fichasJugador}`);
             } catch (error) {
-                log(`[API Registro]: Modo local activo.`);
+                log(`[Error]: No se pudo conectar con el servidor.`);
             }
         }
 
         async function repartirCartasAPI() {
-            if (temporizadorLobby) {
-                clearInterval(temporizadorLobby);
-                restaurarAsientosBots();
-            }
-
-            if (temporizadorTurno) clearInterval(temporizadorTurno);
-
             try {
                 const response = await fetch('/api/juego/repartir', { method: 'POST' });
                 const data = await response.json();
@@ -1431,19 +957,15 @@
                 faseMano = 1;
                 cartasComunitariasGlobales = data.comunitarias;
                 
-                document.getElementById('pot-display').innerText = `BOTE: ${boteActual} Fichas`;
+                document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
                 document.getElementById('mazo-info').innerText = `Cartas mazo: ${data.cartas_restantes_mazo}`;
                 retirados = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
                 allInJugadores = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
                 
                 for(let i=1; i<=6; i++) {
                     let asientoDiv = document.getElementById(`asiento-${i}`);
-                    let relojBadge = document.getElementById(`reloj-s${i}`);
-                    if (!asientoDiv.classList.contains('vacio')) {
-                        asientoDiv.classList.remove('retirado');
-                        asientoDiv.classList.remove('allin-estado');
-                        if (relojBadge) relojBadge.style.display = 'none';
-                    }
+                    asientoDiv.classList.remove('retirado');
+                    asientoDiv.classList.remove('allin-estado');
                 }
 
                 for (let c = 0; c < 5; c++) {
@@ -1464,16 +986,18 @@
                     let contenedor = document.getElementById(`cartas-s${i}`);
                     if (contenedor) {
                         let htmlCartas = "";
-                        cartas.forEach(c => {
-                            let esRoja = c.includes('♥') || c.includes('♦');
-                            if (i === 4) {
-                                cartasJugadorPrivadas = cartas;
+                        if (i === 4) {
+                            cartasJugadorPrivadas = cartas;
+                            cartas.forEach(c => {
+                                let esRoja = c.includes('♥') || c.includes('♦');
                                 htmlCartas += `<div class="card ${esRoja ? 'red' : ''}">${c}</div>`;
-                            } else {
-                                cartasBotsPrivadas[i] = cartas;
+                            });
+                        } else {
+                            cartasBotsPrivadas[i] = cartas;
+                            cartas.forEach(() => {
                                 htmlCartas += `<div class="card card-back">🂠</div>`;
-                            }
-                        });
+                            });
+                        }
                         contenedor.innerHTML = htmlCartas;
                     }
                 }
@@ -1481,56 +1005,13 @@
                 log(`[Flop]: Cartas comunitarias repartidas.`);
                 iniciarTurno(1);
             } catch (error) {
-                // Simulación local en caso de no tener backend activo corriendo en ese momento
-                simularMazoLocal();
+                log(`[Error]: No se pudo repartir.`);
             }
-        }
-
-        function simularMazoLocal() {
-            const palos = ['♠', '♣', '♥', '♦'];
-            const valores = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
-            let mazoLocal = [];
-            palos.forEach(p => valores.forEach(v => mazoLocal.push(v + p)));
-            // Barajar
-            mazoLocal.sort(() => Math.random() - 0.5);
-
-            cartasJugadorPrivadas = [mazoLocal.pop(), mazoLocal.pop()];
-            cartasComunitariasGlobales = [mazoLocal.pop(), mazoLocal.pop(), mazoLocal.pop(), mazoLocal.pop(), mazoLocal.pop()];
-
-            boteActual = 200;
-            document.getElementById('pot-display').innerText = `BOTE: ${boteActual} Fichas`;
-
-            let htmlTú = "";
-            cartasJugadorPrivadas.forEach(c => {
-                let esRoja = c.includes('♥') || c.includes('♦');
-                htmlTú += `<div class="card ${esRoja ? 'red' : ''}">${c}</div>`;
-            });
-            document.getElementById('cartas-s4').innerHTML = htmlTú;
-
-            for(let b=1; b<=6; b++) {
-                if(b!==4) {
-                    cartasBotsPrivadas[b] = [mazoLocal.pop(), mazoLocal.pop()];
-                    document.getElementById(`cartas-s${b}`).innerHTML = `<div class="card card-back">🂠</div><div class="card card-back">🂠</div>`;
-                }
-            }
-
-            for(let c=0; c<3; c++) {
-                let cartaVal = cartasComunitariasGlobales[c];
-                let esRoja = cartaVal.includes('♥') || cartaVal.includes('♦');
-                let cardElem = document.getElementById(`com-${c}`);
-                cardElem.className = `card ${esRoja ? 'red' : ''}`;
-                cardElem.innerText = cartaVal;
-            }
-
-            log(`🃏 [Modo Práctica Local]: Repartido con éxito.`);
-            iniciarTurno(1);
         }
 
         function avanzarFaseComunitaria() {
             faseMano++;
             contadorAccionesRonda = 0;
-
-            if (temporizadorTurno) clearInterval(temporizadorTurno);
 
             if (faseMano === 2) {
                 let cartaVal = cartasComunitariasGlobales[3];
@@ -1556,10 +1037,7 @@
         }
 
         function iniciarTurno(asientoNum) {
-            if (temporizadorTurno) clearInterval(temporizadorTurno);
-
-            let asientoDiv = document.getElementById(`asiento-${asientoNum}`);
-            if (!asientoDiv || asientoDiv.classList.contains('vacio') || retirados[asientoNum] || allInJugadores[asientoNum]) {
+            if (retirados[asientoNum] || allInJugadores[asientoNum]) {
                 siguienteTurnoAutomatico(asientoNum);
                 return;
             }
@@ -1567,25 +1045,23 @@
             actualizarTurnoVisual(asientoNum);
             segundosRestantes = 20;
             
-            let relojBadge = document.getElementById(`reloj-s${asientoNum}`);
-            if (relojBadge) relojBadge.innerText = `⏱️ ${segundosRestantes}s`;
+            if (asientoNum === 4) {
+                document.getElementById('timer-ui').innerText = `(⏱️ ${segundosRestantes}s)`;
+            } else {
+                document.getElementById('timer-ui').innerText = "";
+            }
+
+            if (temporizadorTurno) clearInterval(temporizadorTurno);
 
             temporizadorTurno = setInterval(() => {
                 segundosRestantes--;
-                
-                if (relojBadge) relojBadge.innerText = `⏱️ ${segundosRestantes}s`;
                 if (asientoNum === 4) {
-                    let rb4 = document.getElementById('timer-ui');
-                    if (rb4) rb4.innerText = `(⏱️ ${segundosRestantes}s)`;
+                    document.getElementById('timer-ui').innerText = `(⏱️ ${segundosRestantes}s)`;
                 }
 
                 if (segundosRestantes <= 0) {
                     clearInterval(temporizadorTurno);
-                    if (relojBadge) relojBadge.style.display = 'none';
-                    if (asientoNum === 4) {
-                        let rb4 = document.getElementById('timer-ui');
-                        if (rb4) rb4.innerText = "";
-                    }
+                    if (asientoNum === 4) document.getElementById('timer-ui').innerText = "";
                     
                     log(`⏰ ¡Tiempo agotado para **${nombresAsientos[asientoNum]}**! Fold automático.`);
                     retirados[asientoNum] = true;
@@ -1600,7 +1076,6 @@
                 setTimeout(() => {
                     if (turnoActual === asientoNum && !retirados[asientoNum] && !allInJugadores[asientoNum]) {
                         clearInterval(temporizadorTurno);
-                        if (relojBadge) relojBadge.style.display = 'none';
                         ejecutarAccionBot(asientoNum);
                     }
                 }, 2000);
@@ -1608,43 +1083,28 @@
         }
 
         function siguienteTurnoAutomatico(asientoActual) {
-            if (temporizadorTurno) clearInterval(temporizadorTurno);
-
             let activos = [];
-            for (let i = 1; i <= 6; i++) {
-                let asientoDiv = document.getElementById(`asiento-${i}`);
-                if (!asientoDiv.classList.contains('vacio') && !retirados[i]) activos.push(i);
-            }
+            for (let i = 1; i <= 6; i++) { if (!retirados[i]) activos.push(i); }
 
             if (activos.length === 1) {
-                let rb = document.getElementById(`reloj-s${asientoActual}`);
-                if (rb) rb.style.display = 'none';
-                let ui = document.getElementById('timer-ui');
-                if (ui) ui.innerText = "";
+                if (temporizadorTurno) clearInterval(temporizadorTurno);
+                document.getElementById('timer-ui').innerText = "";
                 setTimeout(() => { verificarGanadorPorAbandono(activos[0]); }, 800);
                 return;
             }
 
             let pendientesAccion = activos.filter(id => !allInJugadores[id]);
             if (pendientesAccion.length === 0) {
-                let ui = document.getElementById('timer-ui');
-                if (ui) ui.innerText = "";
-                for (let i = 1; i <= 6; i++) {
-                    let rb = document.getElementById(`reloj-s${i}`);
-                    if (rb) rb.style.display = 'none';
-                }
+                if (temporizadorTurno) clearInterval(temporizadorTurno);
+                document.getElementById('timer-ui').innerText = "";
                 log(`💥 ¡Todos los jugadores activos están en ALL-IN! Avanzando cartas comunitarias...`);
                 setTimeout(() => { avanzarFaseComunitariaCompleta(); }, 1000);
                 return;
             }
 
             if (contadorAccionesRonda >= 6) {
-                let ui = document.getElementById('timer-ui');
-                if (ui) ui.innerText = "";
-                for (let i = 1; i <= 6; i++) {
-                    let rb = document.getElementById(`reloj-s${i}`);
-                    if (rb) rb.style.display = 'none';
-                }
+                if (temporizadorTurno) clearInterval(temporizadorTurno);
+                document.getElementById('timer-ui').innerText = "";
                 avanzarFaseComunitaria();
                 return;
             }
@@ -1654,8 +1114,6 @@
         }
 
         function avanzarFaseComunitariaCompleta() {
-            if (temporizadorTurno) clearInterval(temporizadorTurno);
-
             if (faseMano === 1) {
                 faseMano = 3;
                 let cartaVal3 = cartasComunitariasGlobales[3];
@@ -1679,9 +1137,6 @@
         }
 
         function ejecutarAccionBot(botId) {
-            let relojBadge = document.getElementById(`reloj-s${botId}`);
-            if (relojBadge) relojBadge.style.display = 'none';
-
             const jugadasBot = ["igualar", "subir", "pasar"];
             const eleccion = jugadasBot[Math.floor(Math.random() * jugadasBot.length)];
             let monto = eleccion === "subir" ? 50 : (eleccion === "igualar" ? 50 : 0);
@@ -1689,8 +1144,8 @@
             if (fichasBots[botId] >= monto) {
                 fichasBots[botId] -= monto;
                 boteActual += monto;
-                document.getElementById(`chips-s${botId}`).innerText = `🎰 ${fichasBots[botId]} Fichas`;
-                document.getElementById('pot-display').innerText = `BOTE: ${boteActual} Fichas`;
+                document.getElementById(`chips-s${botId}`).innerText = `[$] ${fichasBots[botId]}`;
+                document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
                 if (monto > 0) lanzarFichasAlBote(botId);
 
                 if (eleccion === "subir") log(`🤖 [${nombresAsientos[botId]}]: Subió la apuesta.`);
@@ -1704,15 +1159,12 @@
 
         function apostarJugador(accion) {
             if (turnoActual !== 4) {
-                log(`⚠️ [Aviso]: No es tu turno.`);
+                log(`⚠️ [Aviso]: Espera tu turno.`);
                 return;
             }
 
-            if (temporizadorTurno) clearInterval(temporizadorTurno);
-            let ui = document.getElementById('timer-ui');
-            if (ui) ui.innerText = "";
-            let relojBadge = document.getElementById(`reloj-s4`);
-            if (relojBadge) relojBadge.style.display = 'none';
+            clearInterval(temporizadorTurno);
+            document.getElementById('timer-ui').innerText = "";
 
             if (accion === 'retirarse') {
                 retirados[4] = true;
@@ -1732,12 +1184,12 @@
                     fichasJugador -= montoApuesta;
                     boteActual += montoApuesta;
 
-                    document.getElementById('chips-s4').innerText = `🎰 ${fichasJugador} Fichas`;
-                    document.getElementById('pot-display').innerText = `BOTE: ${boteActual} Fichas`;
+                    document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
+                    document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
                     if (montoApuesta > 0) lanzarFichasAlBote(4);
 
-                    if (accion === 'allin') log(`🔥 [Tu Turno]: ¡¡ALL-IN con ${montoApuesta} Fichas!!`);
-                    else if (accion === 'subir') log(`[Tu Turno]: Subiste con la escala: ${montoApuesta} Fichas.`);
+                    if (accion === 'allin') log(`🔥 [Tu Turno]: ¡¡ALL-IN con ${montoApuesta} fichas!!`);
+                    else if (accion === 'subir') log(`[Tu Turno]: Subiste con la escala: $${montoApuesta}.`);
                     else log(`[Tu Turno]: Has ${accion}.`);
                 }
             }
@@ -1747,13 +1199,8 @@
         }
 
         function ejecutarShowdownFinalReal() {
-            if (temporizadorTurno) clearInterval(temporizadorTurno);
-
             let activos = [];
-            for (let i = 1; i <= 6; i++) {
-                let asientoDiv = document.getElementById(`asiento-${i}`);
-                if (!asientoDiv.classList.contains('vacio') && !retirados[i]) activos.push(i);
-            }
+            for (let i = 1; i <= 6; i++) { if (!retirados[i]) activos.push(i); }
 
             let mejorPuntaje = -1;
             let ganadorId = activos[0];
@@ -1775,11 +1222,7 @@
             log(`🏆 ¡SHOWDOWN FINAL! Ganador evaluado por reglas oficiales.`);
 
             for (let i = 1; i <= 6; i++) {
-                let asientoDiv = document.getElementById(`asiento-${i}`);
-                let rb = document.getElementById(`reloj-s${i}`);
-                if (rb) rb.style.display = 'none';
-
-                if (!asientoDiv.classList.contains('vacio') && !retirados[i] && i !== ganadorId) {
+                if (!retirados[i] && i !== ganadorId) {
                     document.getElementById(`cartas-s${i}`).innerHTML = `<div class="card card-back">🂠</div><div class="card card-back">🂠</div>`;
                 }
             }
@@ -1792,12 +1235,13 @@
             });
             document.getElementById(`cartas-s${ganadorId}`).innerHTML = htmlCartasGanador;
 
+            // 🔥 DISPARAR FUEGOS ARTIFICIALES DE FUEGO Y ORO MAJESTUOSOS 🔥
             lanzarBengalasMajestuosas(ganadorId);
 
             if (ganadorId === 4) {
                 fichasJugador += boteActual;
-                document.getElementById('chips-s4').innerText = `🎰 ${fichasJugador} Fichas`;
-                log(`🎉 ¡VICTORIA! **¡Ganaste el bote de ${boteActual} Fichas con ${nombreMejorMano}!** 🪙✨`);
+                document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
+                log(`🎉 ¡VICTORIA! **¡Ganaste el bote de ${boteActual} USDT con ${nombreMejorMano}!** 🪙✨`);
 
                 if (modoActual === 'Campaña') {
                     torneoVictoriasUsuario++;
@@ -1805,7 +1249,7 @@
 
                     if (mejorPuntaje >= 7000) {
                         jackpotMonto += 2000;
-                        log(`💰🎰 ¡JACKPOT EXPLOSIVO REVENTADO! 💥 Sacaste una mano legendaria (${nombreMejorMano}). ¡Ganas un pozo extra de $2,000 Fichas!`);
+                        log(`💰🎰 ¡JACKPOT EXPLOSIVO REVENTADO! 💥 Sacaste una mano legendaria (${nombreMejorMano}). ¡Ganas un pozo extra de $2,000 USDT!`);
                     }
 
                     if (torneoVictoriasUsuario >= 2) {
@@ -1822,7 +1266,7 @@
 
             } else {
                 fichasBots[ganadorId] += boteActual;
-                document.getElementById(`chips-s${ganadorId}`).innerText = `🎰 ${fichasBots[ganadorId]} Fichas`;
+                document.getElementById(`chips-s${ganadorId}`).innerText = `[$] ${fichasBots[ganadorId]}`;
                 log(`🏠 El ganador es **${nombresAsientos[ganadorId]}** con **${nombreMejorMano}**.`);
                 
                 if (modoActual === 'Campaña') {
@@ -1831,56 +1275,38 @@
             }
 
             boteActual = 0;
-            document.getElementById('pot-display').innerText = `BOTE: 0 Fichas`;
+            document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
             faseMano = 0;
             
             for (let i = 1; i <= 6; i++) {
-                let asientoDiv = document.getElementById(`asiento-${i}`);
-                if (!asientoDiv.classList.contains('vacio')) {
-                    asientoDiv.classList.remove('turno-activo');
-                }
+                document.getElementById(`asiento-${i}`).classList.remove('turno-activo');
             }
 
-            log(`⏳ [Saloon]: La doncella baraja las cartas. Próxima mano en 6 segundos...`);
-            setTimeout(() => {
-                repartirCartasAPI();
-            }, 6000);
+            log(`🔄 Pulsa **"Repartir"** para la siguiente mano...`);
         }
 
         function verificarGanadorPorAbandono(ganadorId) {
-            if (temporizadorTurno) clearInterval(temporizadorTurno);
-
-            for (let i = 1; i <= 6; i++) {
-                let rb = document.getElementById(`reloj-s${i}`);
-                if (rb) rb.style.display = 'none';
-            }
-
             if (ganadorId === 4) {
                 document.getElementById('modal-mostrar-cartas').style.display = 'block';
             } else {
                 fichasBots[ganadorId] += boteActual;
-                document.getElementById(`chips-s${ganadorId}`).innerText = `🎰 ${fichasBots[ganadorId]} Fichas`;
-                log(`🏆 Todos se retiraron. **${nombresAsientos[ganadorId]}** gana el bote de ${boteActual} Fichas.`);
+                document.getElementById(`chips-s${ganadorId}`).innerText = `[$] ${fichasBots[ganadorId]}`;
+                log(`🏆 Todos se retiraron. **${nombresAsientos[ganadorId]}** gana el bote de ${boteActual} USDT.`);
                 boteActual = 0;
-                document.getElementById('pot-display').innerText = `BOTE: 0 Fichas`;
-
-                log(`⏳ [Saloon]: Próxima mano en 6 segundos...`);
-                setTimeout(() => {
-                    repartirCartasAPI();
-                }, 6000);
+                document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
             }
         }
 
         function responderMostrarCartas(mostrar) {
             document.getElementById('modal-mostrar-cartas').style.display = 'none';
             fichasJugador += boteActual;
-            document.getElementById('chips-s4').innerText = `🎰 ${fichasJugador} Fichas`;
+            document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
 
             if (mostrar) {
-                log(`🏆 ¡Ganaste el bote de ${boteActual} Fichas por abandono! Mostraste tus cartas: **[${cartasJugadorPrivadas.join(', ')}]**. 🃏✨`);
+                log(`🏆 ¡Ganaste el bote de ${boteActual} USDT por abandono! Mostraste tus cartas: **[${cartasJugadorPrivadas.join(', ')}]**. 🃏✨`);
                 lanzarBengalasMajestuosas(4);
             } else {
-                log(`🏆 ¡Ganaste el bote de ${boteActual} Fichas por abandono! (Guardaste tus cartas en secreto - Muck). 🂠`);
+                log(`🏆 ¡Ganaste el bote de ${boteActual} USDT por abandono! (Guardaste tus cartas en secreto - Muck). 🂠`);
             }
 
             if (modoActual === 'Campaña') {
@@ -1896,18 +1322,11 @@
             }
 
             boteActual = 0;
-            document.getElementById('pot-display').innerText = `BOTE: 0 Fichas`;
+            document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
             for (let i = 1; i <= 6; i++) {
-                let asientoDiv = document.getElementById(`asiento-${i}`);
-                if (!asientoDiv.classList.contains('vacio')) {
-                    asientoDiv.classList.remove('turno-activo');
-                }
+                document.getElementById(`asiento-${i}`).classList.remove('turno-activo');
             }
-            
-            log(`⏳ [Saloon]: Próxima mano en 6 segundos...`);
-            setTimeout(() => {
-                repartirCartasAPI();
-            }, 6000);
+            log(`🔄 Pulsa **"Repartir"** para la siguiente mano...`);
         }
 
         async function avanzarHistoriaAPI() {
