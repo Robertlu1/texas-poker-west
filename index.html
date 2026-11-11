@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" class="notranslate" translate="no">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -18,7 +18,6 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
-            -webkit-touch-callout: none;
         }
         h2 {
             color: #f1c40f;
@@ -27,12 +26,12 @@
             font-size: 1.1em;
         }
         #pantalla-portada {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-image: url('portada_bandido.jpg');
             background-size: cover; background-position: center;
             display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
-            padding-bottom: 50px; z-index: 99999;
+            padding-bottom: 50px; z-index: 10;
         }
         #portada-titulo {
             font-size: 3.5em; margin-bottom: 10px;
@@ -40,11 +39,10 @@
         }
         .btn-entrar {
             background-color: #e67e22; color: white; border: 2px solid #f1c40f;
-            padding: 14px 40px; font-size: 22px; font-weight: bold; cursor: pointer;
-            border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.8); margin-bottom: 40px;
-            z-index: 100000; position: relative;
+            padding: 12px 35px; font-size: 20px; font-weight: bold; cursor: pointer;
+            border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.6); margin-bottom: 40px;
         }
-        .btn-entrar:hover { background-color: #d35400; transform: scale(1.05); }
+        .btn-entrar:hover { background-color: #d35400; }
 
         #pantalla-salon {
             display: none; width: 100vw; height: 100vh;
@@ -89,7 +87,6 @@
             background: #0d4a22; border: 10px solid #3d2314; border-radius: 140px;
             width: 82vw; height: 52vh; margin: 2px auto; position: relative;
             box-shadow: inset 0 0 60px rgba(0,0,0,0.8), 0 0 15px rgba(0,0,0,0.5);
-            transition: background-color 0.3s ease;
         }
         
         .table-center {
@@ -289,7 +286,7 @@
     <!-- PANTALLA 1: PORTADA -->
     <div id="pantalla-portada">
         <div id="portada-titulo">Texas Poker West</div>
-        <button class="btn-entrar" id="btn-entrar-salon" onclick="entrarAlSaloon()">🤠 Entrar al Salón 🌵</button>
+        <button class="btn-entrar" onclick="entrarAlSaloon()">🤠 Entrar al Salón 🌵</button>
     </div>
 
     <!-- PANTALLA 2: SALÓN PRINCIPAL -->
@@ -322,7 +319,7 @@
 
             <button class="btn-ampliar-top" onclick="togglePantallaCompleta()">🗖 Ampliar</button>
 
-            <h2>Texas Poker West: Motor Pro & Optimizado</h2>
+            <h2>Texas Poker West: Motor Pro</h2>
             
             <div class="poker-table" id="mesa-poker">
                 <!-- Asiento 1 -->
@@ -479,12 +476,12 @@
     </div>
 
     <!-- CHAT FLOTANTE -->
-    <div id="chat-flotante" class="oculto">
+    <div id="chat-flotante">
         <div class="chat-header">
             <span>💬 Salón & Motor Pro</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Arquitectura Pro y LocalStorage sincronizados.</div>
+        <div id="output-log">💬 [Saloon]: Motor modular y arquitectura pro listos.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -660,6 +657,7 @@
             return { ok: true, state, events };
         }
 
+        // Helpers de Acciones (FOLD, CHECK, CALL)
         function finishAction(state, actorId, events) {
             const stateWithAction = { ...state, actedPlayerIds: state.actedPlayerIds.includes(actorId) ? state.actedPlayerIds : [...state.actedPlayerIds, actorId] };
             
@@ -737,44 +735,18 @@
         }
 
         // ==========================================
-        // 5. INTEGRACIÓN VISUAL Y CONTROL DE ENTRADA
+        // 5. INTEGRACIÓN VISUAL Y ADAPTADOR LOCAL
         // ==========================================
         let motorState = null;
         let fichasJugador = 1000;
         let monedasOro = 50;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const panoGuardado = localStorage.getItem('poker_pano');
-            if (panoGuardado) cambiarColorPano(panoGuardado, false);
-            
-            const dorsoGuardado = localStorage.getItem('poker_dorso');
-            if (dorsoGuardado) cambiarDorsoCarta(dorsoGuardado, false);
-
-            const btnEntrar = document.getElementById('btn-entrar-salon');
-            if (btnEntrar) {
-                btnEntrar.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    entrarAlSaloon();
-                });
-            }
-        });
-
-        function cambiarColorPano(colorHex, guardar = true) {
-            document.getElementById('mesa-poker').style.backgroundColor = colorHex;
-            if (guardar) localStorage.setItem('poker_pano', colorHex);
-        }
-
-        function cambiarDorsoCarta(colorHex, guardar = true) {
-            let estiloDorso = document.getElementById('estilo-dorso-dinamico');
-            if (!estiloDorso) {
-                estiloDorso = document.createElement('style');
-                estiloDorso.id = 'estilo-dorso-dinamico';
-                document.head.appendChild(estiloDorso);
-            }
+        function cambiarColorPano(colorHex) { document.getElementById('mesa-poker').style.backgroundColor = colorHex; }
+        function cambiarDorsoCarta(colorHex) {
+            let estiloDorso = document.createElement('style');
             estiloDorso.innerHTML = `.card-back { background-color: ${colorHex} !important; }`;
-            if (guardar) localStorage.setItem('poker_dorso', colorHex);
+            document.head.appendChild(estiloDorso);
         }
-
         function abrirTienda(abrir) { document.getElementById('modal-tienda').style.display = abrir ? 'block' : 'none'; }
         
         function notificarCompra(fichas, precio) {
@@ -793,15 +765,8 @@
         }
 
         function entrarAlSaloon() {
-            const portada = document.getElementById('pantalla-portada');
-            const salon = document.getElementById('pantalla-salon');
-            
-            if (portada) {
-                portada.style.display = 'none';
-            }
-            if (salon) {
-                salon.style.display = 'flex';
-            }
+            document.getElementById('pantalla-portada').style.display = 'none';
+            document.getElementById('pantalla-salon').style.display = 'flex';
             iniciarNuevaManoMotor();
         }
 
@@ -810,12 +775,7 @@
             else if (document.exitFullscreen) document.exitFullscreen();
         }
 
-        function toggleChat() { 
-            let chat = document.getElementById('chat-flotante');
-            chat.classList.toggle('oculto');
-            document.getElementById('btn-toggle-chat').innerText = chat.classList.contains('oculto') ? '▲ Mostrar' : '▲ Ocultar';
-        }
-
+        function toggleChat() { document.getElementById('chat-flotante').classList.toggle('oculto'); }
         function actualizarValorSlider(val) { document.getElementById('slider-valor').innerText = val; }
         function enviarMensajeChat() {
             let input = document.getElementById('input-mensaje');
@@ -863,7 +823,7 @@
 
             motorState = resultado.state;
             renderizarEstadoMotor();
-            log(`🃏 [Motor Pro]: ¡Mano iniciada y configuraciones sincronizadas!`);
+            log(`🃏 [Motor Pro]: ¡Mano iniciada y ciegas publicadas con éxito!`);
         }
 
         function renderizarEstadoMotor() {
