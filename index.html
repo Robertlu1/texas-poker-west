@@ -2,8 +2,10 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Texas Poker West - Casino Pro & Cajero Seguro</title>
+    <!-- 📱 SCRIPT OFICIAL DE TELEGRAM WEB APPS -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -341,6 +343,7 @@
             box-shadow: 0 0 50px rgba(0,0,0,0.95);
             text-align: center;
             width: 650px;
+            max-width: 95vw;
             max-height: 94vh;
             overflow-y: auto;
         }
@@ -419,6 +422,7 @@
             padding: 5px 10px;
             border-radius: 6px;
             border: 1px solid #2c3e50;
+            flex-wrap: wrap;
         }
         .btn-bet {
             background-color: #27ae60;
@@ -503,6 +507,7 @@
             bottom: 12px;
             left: 12px;
             width: 320px;
+            max-width: 85vw;
             height: 160px;
             background: rgba(6, 10, 15, 0.95);
             border: 1px solid #2c3e50;
@@ -576,6 +581,46 @@
             border-radius: 4px;
         }
         .btn-enviar-chat:hover { background: #2ecc71; }
+
+        /* 📱 AJUSTES ADAPTATIVOS PARA MÓVILES Y TELEGRAM MINI APP */
+        @media screen and (max-width: 768px) {
+            .poker-table {
+                width: 95vw;
+                height: 48vh;
+                border-radius: 90px;
+                border-width: 6px;
+            }
+            .seat {
+                width: 130px;
+                padding: 3px 5px;
+                font-size: 8px;
+            }
+            .seat-1 { top: -6px; left: 10%; }
+            .seat-2 { top: -6px; right: 10%; }
+            .seat-3 { top: 35%; right: -30px; }
+            .seat-4 { bottom: -6px; right: 10%; }
+            .seat-5 { bottom: -6px; left: 10%; }
+            .seat-6 { top: 35%; left: -30px; }
+            .card {
+                width: 34px;
+                height: 48px;
+                font-size: 14px;
+            }
+            .card-back {
+                font-size: 11px;
+            }
+            #portada-titulo {
+                font-size: 2.5em;
+            }
+            .betting-container {
+                gap: 4px;
+                padding: 3px;
+            }
+            .btn-bet {
+                padding: 4px 8px;
+                font-size: 9px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -860,7 +905,13 @@
     </div>
 
     <script>
-        let idUsuarioActual = 1;
+        // 🚀 INICIALIZACIÓN DE TELEGRAM WEB APP
+        let tg = window.Telegram.WebApp;
+        tg.expand(); // Expande la app a pantalla completa en Telegram
+        tg.ready();
+
+        let idUsuarioActual = tg.initDataUnsafe?.user?.id || 1;
+        let nombreTelegram = tg.initDataUnsafe?.user?.first_name || "Vaquero";
         let fichasJugador = 1000;
         let monedasOro = 50;
         
@@ -1350,17 +1401,16 @@
                 const response = await fetch('/api/usuario/registrar', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ telegram_id: "999888", username: "Vaquero" })
+                    body: JSON.stringify({ telegram_id: idUsuarioActual, username: nombreTelegram })
                 });
                 const data = await response.json();
-                idUsuarioActual = data.usuario_id;
-                fichasJugador = data.fichas_gratis;
+                fichasJugador = data.fichas_gratis || fichasJugador;
                 
                 document.getElementById('chips-s4').innerText = `🎰 ${fichasJugador} Fichas`;
                 document.getElementById('range-subir').max = fichasJugador;
-                log(`[API Registro]: Conectado. Fichas de Casino: ${fichasJugador}`);
+                log(`[Telegram]: Conectado como @${nombreTelegram} (ID: ${idUsuarioActual})`);
             } catch (error) {
-                log(`[Error]: No se pudo conectar con el servidor.`);
+                log(`[API Registro]: Modo local activo.`);
             }
         }
 
@@ -1431,8 +1481,49 @@
                 log(`[Flop]: Cartas comunitarias repartidas.`);
                 iniciarTurno(1);
             } catch (error) {
-                log(`[Error]: No se pudo repartir.`);
+                // Simulación local en caso de no tener backend activo corriendo en ese momento
+                simularMazoLocal();
             }
+        }
+
+        function simularMazoLocal() {
+            const palos = ['♠', '♣', '♥', '♦'];
+            const valores = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+            let mazoLocal = [];
+            palos.forEach(p => valores.forEach(v => mazoLocal.push(v + p)));
+            // Barajar
+            mazoLocal.sort(() => Math.random() - 0.5);
+
+            cartasJugadorPrivadas = [mazoLocal.pop(), mazoLocal.pop()];
+            cartasComunitariasGlobales = [mazoLocal.pop(), mazoLocal.pop(), mazoLocal.pop(), mazoLocal.pop(), mazoLocal.pop()];
+
+            boteActual = 200;
+            document.getElementById('pot-display').innerText = `BOTE: ${boteActual} Fichas`;
+
+            let htmlTú = "";
+            cartasJugadorPrivadas.forEach(c => {
+                let esRoja = c.includes('♥') || c.includes('♦');
+                htmlTú += `<div class="card ${esRoja ? 'red' : ''}">${c}</div>`;
+            });
+            document.getElementById('cartas-s4').innerHTML = htmlTú;
+
+            for(let b=1; b<=6; b++) {
+                if(b!==4) {
+                    cartasBotsPrivadas[b] = [mazoLocal.pop(), mazoLocal.pop()];
+                    document.getElementById(`cartas-s${b}`).innerHTML = `<div class="card card-back">🂠</div><div class="card card-back">🂠</div>`;
+                }
+            }
+
+            for(let c=0; c<3; c++) {
+                let cartaVal = cartasComunitariasGlobales[c];
+                let esRoja = cartaVal.includes('♥') || cartaVal.includes('♦');
+                let cardElem = document.getElementById(`com-${c}`);
+                cardElem.className = `card ${esRoja ? 'red' : ''}`;
+                cardElem.innerText = cartaVal;
+            }
+
+            log(`🃏 [Modo Práctica Local]: Repartido con éxito.`);
+            iniciarTurno(1);
         }
 
         function avanzarFaseComunitaria() {
