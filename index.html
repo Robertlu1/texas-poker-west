@@ -206,7 +206,7 @@
             animation: volarFichaRecarga 1.2s ease-in-out forwards;
         }
 
-        /* ESTRUCTURA GENERAL DEL ASIENTO (STIKER IZQ, CAJA CENTRO, AVATAR DER) */
+        /* ESTRUCTURA GENERAL DEL ASIENTO */
         .seat {
             position: absolute;
             display: flex;
@@ -231,7 +231,7 @@
             box-shadow: 0 0 14px #8e44ad;
         }
 
-        /* CAJA UNIFICADA Y PROPORCIONAL PARA TODOS LOS ASIENTOS */
+        /* CAJA UNIFICADA Y ESTABLE PARA TODAS (INCLUYENDO LAS ROTADAS) */
         .seat-box {
             background: rgba(18, 26, 36, 0.95);
             border: 2px solid #4f5d73;
@@ -265,22 +265,23 @@
         }
         .seat-cards { display: flex; gap: 3px; }
 
-        /* BOTONES DE STICKERS A LA IZQUIERDA */
+        /* BOTONES DE STICKERS MÁS GRANDES Y CÓMODOS A LA IZQUIERDA */
         .sticker-box {
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 4px;
         }
         .btn-sticker {
-            background: rgba(40, 55, 71, 0.9);
-            border: 1px solid #f1c40f;
-            border-radius: 4px;
-            font-size: 11px;
-            padding: 2px 4px;
+            background: rgba(40, 55, 71, 0.95);
+            border: 1.5px solid #f1c40f;
+            border-radius: 6px;
+            font-size: 15px;
+            padding: 4px 6px;
             cursor: pointer;
             transition: transform 0.1s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.6);
         }
-        .btn-sticker:hover { transform: scale(1.15); background: rgba(212, 172, 13, 0.4); }
+        .btn-sticker:hover { transform: scale(1.2); background: rgba(212, 172, 13, 0.5); }
 
         /* AVATAR GRANDE A LA DERECHA */
         .avatar-box {
@@ -321,15 +322,37 @@
         .seat-1 { top: 2px; left: 16%; }
         .seat-2 { top: 2px; right: 16%; }
         
-        /* ASIENTOS LATERALES ROTADOS HACIA EL CENTRO */
-        .seat-3 { top: 38%; right: -25px; transform: rotate(-90deg); transform-origin: center; }
+        /* ASIENTOS LATERALES CON TAMAÑO EXACTO Y ROTACIÓN PERFECTA */
+        .seat-3 { 
+            top: 38%; 
+            right: -35px; 
+            transform: rotate(-90deg); 
+            transform-origin: center; 
+            width: 75px; 
+            height: 165px; 
+        }
+        .seat-3 .seat-box {
+            width: 165px;
+            height: 75px;
+        }
         
         .seat-4 { bottom: 2px; right: 16%; }
         .seat-4 .seat-box { border-color: #2ecc71; background: rgba(15, 38, 25, 0.95); }
         
         .seat-5 { bottom: 2px; left: 16%; }
         
-        .seat-6 { top: 38%; left: -25px; transform: rotate(90deg); transform-origin: center; }
+        .seat-6 { 
+            top: 38%; 
+            left: -35px; 
+            transform: rotate(90deg); 
+            transform-origin: center; 
+            width: 75px; 
+            height: 165px; 
+        }
+        .seat-6 .seat-box {
+            width: 165px;
+            height: 75px;
+        }
 
         @keyframes volarFicha {
             0% { transform: scale(1) translateY(0); opacity: 1; }
@@ -996,7 +1019,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Cajas simétricas, avatares grandes y botones de stickers activos.</div>
+        <div id="output-log">💬 [Saloon]: Cajas simétricas unificadas y botones de stickers optimizados.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1134,7 +1157,7 @@
             const sticker = document.createElement('div');
             
             sticker.style.position = 'absolute';
-            sticker.style.fontSize = '28px';
+            sticker.style.fontSize = '32px';
             sticker.style.zIndex = '500';
             sticker.style.pointerEvents = 'none';
             sticker.innerText = emoji;
@@ -1142,17 +1165,16 @@
             const rectAsiento = asiento.getBoundingClientRect();
             const rectMesa = mesa.getBoundingClientRect();
 
-            sticker.style.left = (rectAsiento.left - rectMesa.left + 30) + 'px';
+            sticker.style.left = (rectAsiento.left - rectMesa.left + 40) + 'px';
             sticker.style.top = (rectAsiento.top - rectMesa.top - 20) + 'px';
             
             mesa.appendChild(sticker);
 
-            // Animación de vuelo hacia el centro de la mesa
             sticker.style.transition = 'all 1s ease-in-out';
             setTimeout(() => {
                 sticker.style.left = '50%';
                 sticker.style.top = '50%';
-                sticker.style.transform = 'scale(2)';
+                sticker.style.transform = 'scale(2.2)';
                 sticker.style.opacity = '0';
             }, 50);
 
