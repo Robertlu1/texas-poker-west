@@ -104,7 +104,7 @@
         }
         .btn-ampliar-top:hover { background-color: #2ecc71; }
 
-        /* PAÑO DE PÓKER */
+        /* PAÑO DE PÓKER PERSONALIZABLE */
         .poker-table {
             background: #0d4a22;
             border: 10px solid #3d2314;
@@ -206,67 +206,22 @@
             animation: volarFichaRecarga 1.2s ease-in-out forwards;
         }
 
-        /* ESTRUCTURA DE ASIENTOS */
-        .seat-wrapper {
-            position: absolute;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            z-index: 10;
-        }
-
-        .avatar-externo {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            border: 2px solid #f1c40f;
-            overflow: hidden;
-            background: #2c3e50;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.8);
-            flex-shrink: 0;
-            position: relative;
-        }
-        .avatar-externo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .stickers-jugador {
-            position: absolute;
-            bottom: -22px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 2px;
-            background: rgba(0,0,0,0.8);
-            padding: 1px 4px;
-            border-radius: 6px;
-            border: 1px solid #f1c40f;
-            z-index: 25;
-            white-space: nowrap;
-        }
-        .btn-mini-sticker {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 11px;
-            padding: 0 2px;
-            transition: transform 0.1s;
-        }
-        .btn-mini-sticker:hover { transform: scale(1.3); }
-
+        /* ESTRUCTURA DEL ASIENTO CON AVATAR GRANDE AL LADO */
         .seat {
+            position: absolute;
             background: rgba(18, 26, 36, 0.95);
             border: 2px solid #4f5d73;
-            border-radius: 8px;
-            padding: 3px 6px;
+            border-radius: 10px;
+            padding: 4px 8px;
             font-size: 10px;
-            width: 125px;
+            width: 155px;
             color: #ffffff;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.6);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            gap: 8px;
             text-align: left;
-            position: relative;
+            z-index: 10;
         }
         .seat.turno-activo {
             border: 2px solid #e74c3c;
@@ -287,9 +242,26 @@
             box-shadow: 0 0 14px #8e44ad;
         }
 
-        .seat-info { line-height: 1.1; overflow: hidden; width: 100%; }
+        /* AVATAR GRANDE AL LADO DE LA CAJA */
+        .avatar-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid #f1c40f;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #2c3e50;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.8);
+        }
+        .avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .seat-info { line-height: 1.2; overflow: hidden; width: 100%; }
         .seat-name { font-weight: bold; color: #ffffff; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; justify-content: space-between; align-items: center; }
-        .seat-chips { color: #f1c40f; font-size: 9px; font-weight: bold; }
+        .seat-chips { color: #f1c40f; font-size: 10px; font-weight: bold; }
         .seat-cards { display: flex; gap: 2px; margin-top: 2px; }
 
         .btn-sentarse-mesa {
@@ -311,13 +283,12 @@
         }
         .btn-sentarse-mesa:hover { background: #2ecc71; }
 
-        /* POSICIONES DE LOS 6 ASIENTOS */
-        .wrapper-1 { top: 4px; left: 22%; flex-direction: row; }
-        .wrapper-2 { top: 4px; right: 22%; flex-direction: row-reverse; }
-        .wrapper-3 { top: 38%; right: 12px; flex-direction: row-reverse; }
-        .wrapper-4 { bottom: 4px; right: 22%; flex-direction: row-reverse; }
-        .wrapper-5 { bottom: 4px; left: 22%; flex-direction: row; }
-        .wrapper-6 { top: 38%; left: 12px; flex-direction: row; }
+        .seat-1 { top: 2px; left: 20%; }
+        .seat-2 { top: 2px; right: 20%; }
+        .seat-3 { top: 38%; right: -35px; }
+        .seat-4 { bottom: 2px; right: 20%; border-color: #2ecc71; background: rgba(15, 38, 25, 0.95); }
+        .seat-5 { bottom: 2px; left: 20%; }
+        .seat-6 { top: 38%; left: -35px; }
 
         @keyframes volarFicha {
             0% { transform: scale(1) translateY(0); opacity: 1; }
@@ -334,7 +305,7 @@
         .timer-display {
             color: #e74c3c;
             font-weight: bold;
-            font-size: 11px;
+            font-size: 12px;
             margin-left: 4px;
             background: rgba(0,0,0,0.5);
             padding: 1px 4px;
@@ -378,50 +349,22 @@
         .controls-container {
             display: flex;
             justify-content: center;
-            gap: 6px;
+            gap: 10px;
             background: rgba(0,0,0,0.3);
             padding: 4px;
             border-radius: 5px;
-            align-items: center;
-            flex-wrap: wrap;
         }
         .btn-oeste {
             background-color: #d35400;
             color: white;
             border: 1px solid #f1c40f;
-            padding: 4px 10px;
+            padding: 4px 14px;
             font-size: 11px;
             font-weight: bold;
             cursor: pointer;
             border-radius: 5px;
         }
         .btn-oeste:hover { background-color: #e67e22; }
-
-        .btn-mic {
-            background-color: #7f8c8d;
-            color: white;
-            border: 1px solid #bdc3c7;
-            padding: 4px 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-        .btn-mic.active { background-color: #27ae60; border-color: #2ecc71; }
-        #mic-status { font-size: 10px; color: #bdc3c7; margin-left: 2px; }
-
-        @keyframes animSticker {
-            0% { transform: scale(0.3) translateY(0); opacity: 0; }
-            50% { transform: scale(1.5) translateY(-40px); opacity: 1; }
-            100% { transform: scale(1) translateY(-80px); opacity: 0; }
-        }
-        .sticker-flotante {
-            position: fixed;
-            font-size: 36px;
-            z-index: 500000;
-            pointer-events: none;
-            animation: animSticker 1.5s ease-in-out forwards;
-        }
         
         .betting-container {
             display: flex;
@@ -476,6 +419,19 @@
         }
         .btn-enviar-slider:hover { background-color: #f1c40f; }
 
+        .btn-mic {
+            background-color: #7f8c8d;
+            color: white;
+            border: 1px solid #bdc3c7;
+            padding: 4px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 11px;
+        }
+        .btn-mic.active { background-color: #27ae60; border-color: #2ecc71; }
+        #mic-status { font-size: 10px; color: #bdc3c7; margin-left: 5px; }
+
+        /* PANEL INFERIOR DERECHO: PERSONALIZADOR Y TIENDA ORO */
         .customizer-panel {
             position: fixed;
             bottom: 12px;
@@ -522,6 +478,7 @@
         }
         .btn-tienda-oro:hover { background-color: #f1c40f; }
 
+        /* MODAL DE LA TIENDA Y PANEL ADMIN */
         #modal-tienda-oro {
             display: none;
             position: fixed;
@@ -740,119 +697,65 @@
             
             <div class="poker-table" id="mesa-poker">
                 <!-- Asiento 1 -->
-                <div class="seat-wrapper wrapper-1 bot-seat" id="asiento-1">
-                    <div class="avatar-externo">
-                        <img src="avatar1.jpg" alt="Avatar">
-                        <div class="stickers-jugador">
-                            <button class="btn-mini-sticker" onclick="enviarSticker('🔥')">🔥</button>
-                            <button class="btn-mini-sticker" onclick="enviarSticker('💰')">💰</button>
-                            <button class="btn-mini-sticker" onclick="enviarSticker('💀')">💀</button>
-                        </div>
-                    </div>
-                    <div class="seat" id="box-seat-1">
-                        <div class="seat-info">
-                            <div class="seat-name">El Gambusino <span id="timer-ui-1" class="timer-display"></span></div>
-                            <div class="seat-chips" id="chips-s1">[$] 1,000</div>
-                            <div class="seat-cards" id="cartas-s1"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
-                        </div>
+                <div class="seat seat-1 bot-seat" id="asiento-1">
+                    <div class="avatar-box"><img src="avatar1.jpg" alt="Avatar"></div>
+                    <div class="seat-info">
+                        <div class="seat-name">El Gambusino <span id="timer-ui-1" class="timer-display"></span></div>
+                        <div class="seat-chips" id="chips-s1">[$] 1,000</div>
+                        <div class="seat-cards" id="cartas-s1"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                     </div>
                 </div>
 
                 <!-- Asiento 2 -->
-                <div class="seat-wrapper wrapper-2 bot-seat" id="asiento-2">
-                    <div class="avatar-externo">
-                        <img src="avatar2.jpg" alt="Avatar">
-                        <div class="stickers-jugador">
-                            <button class="btn-mini-sticker" onclick="enviarSticker('🔥')">🔥</button>
-                            <button class="btn-mini-sticker" onclick="enviarSticker('💰')">💰</button>
-                            <button class="btn-mini-sticker" onclick="enviarSticker('💀')">💀</button>
-                        </div>
-                    </div>
-                    <div class="seat" id="box-seat-2">
-                        <div class="seat-info">
-                            <div class="seat-name">Don Aurelio <span id="timer-ui-2" class="timer-display"></span></div>
-                            <div class="seat-chips" id="chips-s2">[$] 1,000</div>
-                            <div class="seat-cards" id="cartas-s2"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
-                        </div>
+                <div class="seat seat-2 bot-seat" id="asiento-2">
+                    <div class="avatar-box"><img src="avatar2.jpg" alt="Avatar"></div>
+                    <div class="seat-info">
+                        <div class="seat-name">Don Aurelio <span id="timer-ui-2" class="timer-display"></span></div>
+                        <div class="seat-chips" id="chips-s2">[$] 1,000</div>
+                        <div class="seat-cards" id="cartas-s2"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                     </div>
                 </div>
 
                 <!-- Asiento 3 -->
-                <div class="seat-wrapper wrapper-3 bot-seat" id="asiento-3">
-                    <div class="avatar-externo">
-                        <img src="avatar3.jpg" alt="Avatar">
-                        <div class="stickers-jugador">
-                            <button class="btn-mini-sticker" onclick="enviarSticker('🔥')">🔥</button>
-                            <button class="btn-mini-sticker" onclick="enviarSticker('💰')">💰</button>
-                            <button class="btn-mini-sticker" onclick="enviarSticker('💀')">💀</button>
-                        </div>
-                    </div>
-                    <div class="seat" id="box-seat-3">
-                        <div class="seat-info">
-                            <div class="seat-name">Forajido Joe <span id="timer-ui-3" class="timer-display"></span></div>
-                            <div class="seat-chips" id="chips-s3">[$] 1,000</div>
-                            <div class="seat-cards" id="cartas-s3"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
-                        </div>
+                <div class="seat seat-3 bot-seat" id="asiento-3">
+                    <div class="avatar-box"><img src="avatar3.jpg" alt="Avatar"></div>
+                    <div class="seat-info">
+                        <div class="seat-name">Forajido Joe <span id="timer-ui-3" class="timer-display"></span></div>
+                        <div class="seat-chips" id="chips-s3">[$] 1,000</div>
+                        <div class="seat-cards" id="cartas-s3"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                     </div>
                 </div>
 
                 <!-- Asiento 4 (Tú) -->
-                <div class="seat-wrapper wrapper-4" id="asiento-4">
-                    <div class="avatar-externo">
-                        <img src="avatar4.jpg" alt="Avatar">
-                        <div class="stickers-jugador">
-                            <button class="btn-mini-sticker" onclick="enviarSticker('🔥')">🔥</button>
-                            <button class="btn-mini-sticker" onclick="enviarSticker('💰')">💰</button>
-                            <button class="btn-mini-sticker" onclick="enviarSticker('💀')">💀</button>
+                <div class="seat seat-4" id="asiento-4">
+                    <div class="avatar-box"><img src="avatar4.jpg" alt="Avatar"></div>
+                    <div class="seat-info">
+                        <div class="seat-name"><span id="nombre-etiqueta-tu">Tú (Vaquero) [ID: 4]</span> <span id="timer-ui-4" class="timer-display"></span></div>
+                        <div class="seat-chips" id="chips-s4">[$] 1,000</div>
+                        <div class="seat-cards" id="cartas-s4">
+                            <div class="card card-back">🂠</div><div class="card card-back">🂠</div>
                         </div>
                     </div>
-                    <div class="seat" id="box-seat-4" style="border-color: #2ecc71; background: rgba(15, 38, 25, 0.95);">
-                        <div class="seat-info">
-                            <div class="seat-name"><span id="nombre-etiqueta-tu">Tú [ID: 4]</span> <span id="timer-ui-4" class="timer-display"></span></div>
-                            <div class="seat-chips" id="chips-s4">[$] 1,000</div>
-                            <div class="seat-cards" id="cartas-s4">
-                                <div class="card card-back">🂠</div><div class="card card-back">🂠</div>
-                            </div>
-                        </div>
-                        <button id="btn-sentarse-asiento" class="btn-sentarse-mesa" onclick="togglePausaJugador()">🟢 Sentarse</button>
-                    </div>
+                    <button id="btn-sentarse-asiento" class="btn-sentarse-mesa" onclick="togglePausaJugador()">🟢 Sentarse</button>
                 </div>
 
                 <!-- Asiento 5 -->
-                <div class="seat-wrapper wrapper-5 bot-seat" id="asiento-5">
-                    <div class="avatar-externo">
-                        <img src="avatar5.jpg" alt="Avatar">
-                        <div class="stickers-jugador">
-                            <button class="btn-mini-sticker" onclick="enviarSticker('🔥')">🔥</button>
-                            <button class="btn-mini-sticker" onclick="enviarSticker('💰')">💰</button>
-                            <button class="btn-mini-sticker" onclick="enviarSticker('💀')">💀</button>
-                        </div>
-                    </div>
-                    <div class="seat" id="box-seat-5">
-                        <div class="seat-info">
-                            <div class="seat-name">Sheriff Miller <span id="timer-ui-5" class="timer-display"></span></div>
-                            <div class="seat-chips" id="chips-s5">[$] 1,000</div>
-                            <div class="seat-cards" id="cartas-s5"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
-                        </div>
+                <div class="seat seat-5 bot-seat" id="asiento-5">
+                    <div class="avatar-box"><img src="avatar5.jpg" alt="Avatar"></div>
+                    <div class="seat-info">
+                        <div class="seat-name">Sheriff Miller <span id="timer-ui-5" class="timer-display"></span></div>
+                        <div class="seat-chips" id="chips-s5">[$] 1,000</div>
+                        <div class="seat-cards" id="cartas-s5"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                     </div>
                 </div>
 
                 <!-- Asiento 6 -->
-                <div class="seat-wrapper wrapper-6 bot-seat" id="asiento-6">
-                    <div class="avatar-externo">
-                        <img src="avatar6.jpg" alt="Avatar">
-                        <div class="stickers-jugador">
-                            <button class="btn-mini-sticker" onclick="enviarSticker('🔥')">🔥</button>
-                            <button class="btn-mini-sticker" onclick="enviarSticker('💰')">💰</button>
-                            <button class="btn-mini-sticker" onclick="enviarSticker('💀')">💀</button>
-                        </div>
-                    </div>
-                    <div class="seat" id="box-seat-6">
-                        <div class="seat-info">
-                            <div class="seat-name">El Forastero <span id="timer-ui-6" class="timer-display"></span></div>
-                            <div class="seat-chips" id="chips-s6">[$] 1,000</div>
-                            <div class="seat-cards" id="cartas-s6"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
-                        </div>
+                <div class="seat seat-6 bot-seat" id="asiento-6">
+                    <div class="avatar-box"><img src="avatar6.jpg" alt="Avatar"></div>
+                    <div class="seat-info">
+                        <div class="seat-name">El Forastero <span id="timer-ui-6" class="timer-display"></span></div>
+                        <div class="seat-chips" id="chips-s6">[$] 1,000</div>
+                        <div class="seat-cards" id="cartas-s6"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                     </div>
                 </div>
 
@@ -999,7 +902,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Sistema operativo al 100%.</div>
+        <div id="output-log">💬 [Saloon]: Avatares grandes al lado de la caja configurados.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1129,22 +1032,6 @@
             let btnLiberar = document.getElementById('btn-liberar-fichas-id');
             btnLiberar.setAttribute('disabled', 'true');
             btnLiberar.classList.remove('activo');
-        }
-
-        function enviarSticker(emoji) {
-            log(`🎨 [Sticker]: Reacción ${emoji} enviada a la mesa.`);
-            
-            const asiento = document.getElementById('asiento-4');
-            const sticker = document.createElement('div');
-            sticker.className = 'sticker-flotante';
-            sticker.innerText = emoji;
-
-            const rect = asiento.getBoundingClientRect();
-            sticker.style.left = (rect.left + rect.width / 2 - 20) + 'px';
-            sticker.style.top = (rect.top - 20) + 'px';
-
-            document.body.appendChild(sticker);
-            setTimeout(() => { sticker.remove(); }, 1500);
         }
 
         function evaluarManoPoker(cartasJugador, comunitarias) {
@@ -1437,31 +1324,43 @@
         let localStream = null;
         let micActivo = false;
 
-        async function toggleMicrofono() {
-            const btnHablar = document.getElementById('btn-hablar');
-            const micStatus = document.getElementById('mic-status');
+        function log(mensaje) {
+            const logDiv = document.getElementById('output-log');
+            logDiv.innerHTML += `<br>${mensaje}`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
 
-            if (!micActivo) {
-                try {
-                    localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-                    micActivo = true;
-                    btnHablar.classList.add('active');
-                    btnHablar.innerHTML = "🔇 Silenciar";
-                    micStatus.innerHTML = "🎙️ Transmitiendo...";
-                    micStatus.style.color = "#2ecc71";
-                    log(`[Voz]: Micrófono abierto.`);
-                } catch (err) {
-                    log(`[Error de Voz]: Sin acceso al micrófono.`);
+        function actualizarTurnoVisual(nuevoTurno) {
+            turnoActual = nuevoTurno;
+            for (let i = 1; i <= 6; i++) {
+                let asientoDiv = document.getElementById(`asiento-${i}`);
+                if (asientoDiv) {
+                    if (i === turnoActual) {
+                        asientoDiv.classList.add('turno-activo');
+                    } else {
+                        asientoDiv.classList.remove('turno-activo');
+                    }
                 }
-            } else {
-                if (localStream) { localStream.getTracks().forEach(track => track.stop()); }
-                micActivo = false;
-                btnHablar.classList.remove('active');
-                btnHablar.innerHTML = "🎙️ Micrófono";
-                micStatus.innerHTML = "🎙️ Silenciado";
-                micStatus.style.color = "#bdc3c7";
-                log(`[Voz]: Silenciado.`);
             }
+        }
+
+        function lanzarFichasAlBote(asientoId) {
+            const asiento = document.getElementById(`asiento-${asientoId}`);
+            const mesa = document.getElementById('mesa-poker');
+            
+            const ficha = document.createElement('div');
+            ficha.className = 'ficha-volando';
+            ficha.innerHTML = '<img src="ficha.png" style="width: 32px; height: 32px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));">';
+
+            const rectAsiento = asiento.getBoundingClientRect();
+            const rectMesa = mesa.getBoundingClientRect();
+
+            ficha.style.left = (rectAsiento.left - rectMesa.left + 50) + 'px';
+            ficha.style.top = (rectAsiento.top - rectMesa.top + 10) + 'px';
+
+            mesa.appendChild(ficha);
+
+            setTimeout(() => { ficha.remove(); }, 700);
         }
 
         async function registrarUsuarioAPI() {
@@ -1502,7 +1401,7 @@
                 document.getElementById('mazo-info').innerText = `Cartas mazo: ${data.cartas_restantes_mazo}`;
                 
                 for(let i=1; i<=6; i++) {
-                    let asientoDiv = document.getElementById(`box-seat-${i}`);
+                    let asientoDiv = document.getElementById(`asiento-${i}`);
                     if (i !== 4 || !jugadorEnPausa) {
                         retirados[i] = false;
                         asientoDiv.classList.remove('retirado');
@@ -1512,7 +1411,7 @@
 
                 if (jugadorEnPausa) {
                     retirados[4] = true;
-                    document.getElementById('box-seat-4').classList.add('retirado');
+                    document.getElementById('asiento-4').classList.add('retirado');
                 }
 
                 for (let c = 0; c < 5; c++) {
@@ -1620,7 +1519,7 @@
                     
                     log(`⏰ ¡Tiempo agotado para **${nombresAsientos[asientoNum]}**! Fold automático.`);
                     retirados[asientoNum] = true;
-                    document.getElementById(`box-seat-${asientoNum}`).classList.add('retirado');
+                    document.getElementById(`asiento-${asientoNum}`).classList.add('retirado');
 
                     contadorAccionesRonda++;
                     siguienteTurnoAutomatico(asientoNum);
@@ -1741,7 +1640,7 @@
 
             if (accion === 'retirarse') {
                 retirados[4] = true;
-                document.getElementById('box-seat-4').classList.add('retirado');
+                document.getElementById('asiento-4').classList.add('retirado');
                 log(`[Tu Turno]: Te retiraste (Fold).`);
             } else {
                 let montoApuesta = 0;
@@ -1750,7 +1649,7 @@
                 else if (accion === 'allin') {
                     montoApuesta = fichasJugador;
                     allInJugadores[4] = true;
-                    document.getElementById('box-seat-4').classList.add('allin-estado');
+                    document.getElementById('asiento-4').classList.add('allin-estado');
                 }
 
                 if (fichasJugador >= montoApuesta) {
@@ -1851,7 +1750,7 @@
             faseMano = 0;
             
             for (let i = 1; i <= 6; i++) {
-                document.getElementById(`box-seat-${i}`).classList.remove('turno-activo');
+                document.getElementById(`asiento-${i}`).classList.remove('turno-activo');
             }
 
             log(`🔄 Próxima mano en 5 segundos (reparto automático)...`);
@@ -1904,7 +1803,7 @@
             boteActual = 0;
             document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
             for (let i = 1; i <= 6; i++) {
-                document.getElementById(`box-seat-${i}`).classList.remove('turno-activo');
+                document.getElementById(`asiento-${i}`).classList.remove('turno-activo');
             }
             
             log(`🔄 Próxima mano en 5 segundos (reparto automático)...`);
@@ -1913,17 +1812,44 @@
             }, 5000);
         }
 
-        function actualizarTurnoVisual(nuevoTurno) {
-            turnoActual = nuevoTurno;
-            for (let i = 1; i <= 6; i++) {
-                let asientoDiv = document.getElementById(`box-seat-${i}`);
-                if (asientoDiv) {
-                    if (i === turnoActual) {
-                        asientoDiv.classList.add('turno-activo');
-                    } else {
-                        asientoDiv.classList.remove('turno-activo');
-                    }
+        async function avanzarHistoriaAPI() {
+            try {
+                const response = await fetch('/api/historia/avanzar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuario_id: idUsuarioActual, jefe_id: "El Rápido", resultado: "victoria" })
+                });
+                const data = await response.json();
+                log(`[Modo Historia]: Actualizado.`);
+            } catch (error) {
+                log(`[Error]: No se pudo registrar.`);
+            }
+        }
+
+        async function toggleMicrofono() {
+            const btnHablar = document.getElementById('btn-hablar');
+            const micStatus = document.getElementById('mic-status');
+
+            if (!micActivo) {
+                try {
+                    localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                    micActivo = true;
+                    btnHablar.classList.add('active');
+                    btnHablar.innerHTML = "🔇 Silenciar";
+                    micStatus.innerHTML = "🎙️ Transmitiendo...";
+                    micStatus.style.color = "#2ecc71";
+                    log(`[Voz]: Micrófono abierto.`);
+                } catch (err) {
+                    log(`[Error de Voz]: Sin acceso.`);
                 }
+            } else {
+                if (localStream) { localStream.getTracks().forEach(track => track.stop()); }
+                micActivo = false;
+                btnHablar.classList.remove('active');
+                btnHablar.innerHTML = "🎙️ Micrófono";
+                micStatus.innerHTML = "🎙️ Silenciado";
+                micStatus.style.color = "#bdc3c7";
+                log(`[Voz]: Silenciado.`);
             }
         }
     </script>
