@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -158,13 +159,13 @@
             background: #ffffff;
             color: #000000;
             font-weight: bold;
-            width: 36px;
-            height: 50px;
+            width: 34px;
+            height: 46px;
             border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 15px;
+            font-size: 14px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.6);
             border: 1px solid #bdc3c7;
             position: relative;
@@ -175,7 +176,7 @@
             background: #c0392b;
             color: #f1c40f;
             border: 1px solid #f1c40f;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         @keyframes explosionFuegoOro {
@@ -206,24 +207,15 @@
             animation: volarFichaRecarga 1.2s ease-in-out forwards;
         }
 
-        /* ESTRUCTURA DEL ASIENTO ORIGINAL */
+        /* ESTRUCTURA GENERAL DEL ASIENTO: CAJA A LA IZQUIERDA, AVATAR A LA DERECHA */
         .seat {
             position: absolute;
-            background: rgba(18, 26, 36, 0.95);
-            border: 2px solid #4f5d73;
-            border-radius: 10px;
-            padding: 4px 8px;
-            font-size: 10px;
-            width: 155px;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.8);
             display: flex;
             align-items: center;
-            gap: 8px;
-            text-align: left;
+            gap: 6px;
             z-index: 10;
         }
-        .seat.turno-activo {
+        .seat.turno-activo .seat-box {
             border: 2px solid #e74c3c;
             box-shadow: 0 0 14px #e74c3c;
             background: rgba(44, 24, 24, 0.95);
@@ -234,18 +226,32 @@
         }
         .seat.en-pausa {
             opacity: 0.5;
-            border: 2px dashed #f39c12;
-            background: rgba(50, 40, 10, 0.9);
         }
-        .seat.allin-estado {
+        .seat.allin-estado .seat-box {
             border: 2px solid #8e44ad;
             box-shadow: 0 0 14px #8e44ad;
         }
 
-        /* AVATAR ORIGINAL */
+        /* CUADRO DE LA CAJA (CONTEXO INTERNO: NOMBRE, ID, RELOJ Y CARTAS) */
+        .seat-box {
+            background: rgba(18, 26, 36, 0.95);
+            border: 2px solid #4f5d73;
+            border-radius: 8px;
+            padding: 4px 6px;
+            font-size: 10px;
+            width: 145px;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.8);
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        /* AVATAR GRANDE UBICADO A LA DERECHA DE LA CAJA */
         .avatar-box {
-            width: 48px;
-            height: 48px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             border: 2px solid #f1c40f;
             overflow: hidden;
@@ -259,10 +265,9 @@
             object-fit: cover;
         }
 
-        .seat-info { line-height: 1.2; overflow: hidden; width: 100%; }
-        .seat-name { font-weight: bold; color: #ffffff; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; justify-content: space-between; align-items: center; }
-        .seat-chips { color: #f1c40f; font-size: 10px; font-weight: bold; }
-        .seat-cards { display: flex; gap: 2px; margin-top: 2px; }
+        .seat-name { font-weight: bold; color: #ffffff; font-size: 9px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; justify-content: space-between; align-items: center; }
+        .seat-chips { color: #f1c40f; font-size: 9px; font-weight: bold; }
+        .seat-cards { display: flex; gap: 2px; }
 
         .btn-sentarse-mesa {
             display: none;
@@ -283,16 +288,18 @@
         }
         .btn-sentarse-mesa:hover { background: #2ecc71; }
 
-        .seat-1 { top: 2px; left: 20%; }
-        .seat-2 { top: 2px; right: 20%; }
+        .seat-1 { top: 2px; left: 18%; }
+        .seat-2 { top: 2px; right: 18%; }
         
-        /* ASIENTOS LATERALES CON TAMAÑO ORIGINAL Y ROTADOS HACIA EL CENTRO */
-        .seat-3 { top: 38%; right: -35px; transform: rotate(-90deg); transform-origin: center; }
+        /* ASIENTOS LATERALES ROTADOS HACIA EL CENTRO CON AVATAR A LA DERECHA */
+        .seat-3 { top: 38%; right: -25px; transform: rotate(-90deg); transform-origin: center; }
         
-        .seat-4 { bottom: 2px; right: 20%; border-color: #2ecc71; background: rgba(15, 38, 25, 0.95); }
-        .seat-5 { bottom: 2px; left: 20%; }
+        .seat-4 { bottom: 2px; right: 18%; }
+        .seat-4 .seat-box { border-color: #2ecc71; background: rgba(15, 38, 25, 0.95); }
         
-        .seat-6 { top: 38%; left: -35px; transform: rotate(90deg); transform-origin: center; }
+        .seat-5 { bottom: 2px; left: 18%; }
+        
+        .seat-6 { top: 38%; left: -25px; transform: rotate(90deg); transform-origin: center; }
 
         @keyframes volarFicha {
             0% { transform: scale(1) translateY(0); opacity: 1; }
@@ -309,11 +316,10 @@
         .timer-display {
             color: #e74c3c;
             font-weight: bold;
-            font-size: 12px;
-            margin-left: 4px;
+            font-size: 10px;
             background: rgba(0,0,0,0.5);
-            padding: 1px 4px;
-            border-radius: 4px;
+            padding: 0 3px;
+            border-radius: 3px;
             border: 1px solid #e74c3c;
         }
 
@@ -702,65 +708,65 @@
             <div class="poker-table" id="mesa-poker">
                 <!-- Asiento 1 -->
                 <div class="seat seat-1 bot-seat" id="asiento-1">
-                    <div class="avatar-box"><img src="avatar1.jpg" alt="Avatar"></div>
-                    <div class="seat-info">
+                    <div class="seat-box">
                         <div class="seat-name">El Gambusino <span id="timer-ui-1" class="timer-display"></span></div>
                         <div class="seat-chips" id="chips-s1">[$] 1,000</div>
                         <div class="seat-cards" id="cartas-s1"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                     </div>
+                    <div class="avatar-box"><img src="avatar1.jpg" alt="Avatar"></div>
                 </div>
 
                 <!-- Asiento 2 -->
                 <div class="seat seat-2 bot-seat" id="asiento-2">
-                    <div class="avatar-box"><img src="avatar2.jpg" alt="Avatar"></div>
-                    <div class="seat-info">
+                    <div class="seat-box">
                         <div class="seat-name">Don Aurelio <span id="timer-ui-2" class="timer-display"></span></div>
                         <div class="seat-chips" id="chips-s2">[$] 1,000</div>
                         <div class="seat-cards" id="cartas-s2"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                     </div>
+                    <div class="avatar-box"><img src="avatar2.jpg" alt="Avatar"></div>
                 </div>
 
-                <!-- Asiento 3 -->
+                <!-- Asiento 3 (Lateral Rotado) -->
                 <div class="seat seat-3 bot-seat" id="asiento-3">
-                    <div class="avatar-box"><img src="avatar3.jpg" alt="Avatar"></div>
-                    <div class="seat-info">
+                    <div class="seat-box">
                         <div class="seat-name">Forajido Joe <span id="timer-ui-3" class="timer-display"></span></div>
                         <div class="seat-chips" id="chips-s3">[$] 1,000</div>
                         <div class="seat-cards" id="cartas-s3"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                     </div>
+                    <div class="avatar-box"><img src="avatar3.jpg" alt="Avatar"></div>
                 </div>
 
                 <!-- Asiento 4 (Tú) -->
                 <div class="seat seat-4" id="asiento-4">
-                    <div class="avatar-box"><img src="avatar4.jpg" alt="Avatar"></div>
-                    <div class="seat-info">
-                        <div class="seat-name"><span id="nombre-etiqueta-tu">Tú (Vaquero) [ID: 4]</span> <span id="timer-ui-4" class="timer-display"></span></div>
+                    <div class="seat-box">
+                        <div class="seat-name"><span id="nombre-etiqueta-tu">Tú [ID: 4]</span> <span id="timer-ui-4" class="timer-display"></span></div>
                         <div class="seat-chips" id="chips-s4">[$] 1,000</div>
                         <div class="seat-cards" id="cartas-s4">
                             <div class="card card-back">🂠</div><div class="card card-back">🂠</div>
                         </div>
                     </div>
+                    <div class="avatar-box"><img src="avatar4.jpg" alt="Avatar"></div>
                     <button id="btn-sentarse-asiento" class="btn-sentarse-mesa" onclick="togglePausaJugador()">🟢 Sentarse</button>
                 </div>
 
                 <!-- Asiento 5 -->
                 <div class="seat seat-5 bot-seat" id="asiento-5">
-                    <div class="avatar-box"><img src="avatar5.jpg" alt="Avatar"></div>
-                    <div class="seat-info">
+                    <div class="seat-box">
                         <div class="seat-name">Sheriff Miller <span id="timer-ui-5" class="timer-display"></span></div>
                         <div class="seat-chips" id="chips-s5">[$] 1,000</div>
                         <div class="seat-cards" id="cartas-s5"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                     </div>
+                    <div class="avatar-box"><img src="avatar5.jpg" alt="Avatar"></div>
                 </div>
 
-                <!-- Asiento 6 -->
+                <!-- Asiento 6 (Lateral Rotado) -->
                 <div class="seat seat-6 bot-seat" id="asiento-6">
-                    <div class="avatar-box"><img src="avatar6.jpg" alt="Avatar"></div>
-                    <div class="seat-info">
+                    <div class="seat-box">
                         <div class="seat-name">El Forastero <span id="timer-ui-6" class="timer-display"></span></div>
                         <div class="seat-chips" id="chips-s6">[$] 1,000</div>
                         <div class="seat-cards" id="cartas-s6"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                     </div>
+                    <div class="avatar-box"><img src="avatar6.jpg" alt="Avatar"></div>
                 </div>
 
                 <!-- CENTRO DE LA MESA -->
@@ -906,7 +912,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Asientos laterales rotados y botón Conectar 100% funcional.</div>
+        <div id="output-log">💬 [Saloon]: Cajas y avatares configurados correctamente.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -942,7 +948,7 @@
             1: "El Gambusino",
             2: "Don Aurelio",
             3: "Forajido Joe",
-            4: "Tú (Vaquero)",
+            4: "Tú",
             5: "Sheriff Miller",
             6: "El Forastero"
         };
@@ -1176,7 +1182,7 @@
                 log(`☕ [Pausa]: Te has levantado de la mesa. Tu puesto sigue reservado.`);
             } else {
                 asientoDiv.classList.remove('en-pausa');
-                nombreSpan.innerText = "Tú (Vaquero) [ID: 4]";
+                nombreSpan.innerText = "Tú [ID: 4]";
                 btnSentarse.style.display = 'none';
                 retirados[4] = false;
                 log(`🤠 [Regreso]: ¡Te has vuelto a sentar en la mesa listo para la acción!`);
@@ -1196,7 +1202,7 @@
             document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
             document.getElementById('pot-display').innerText = `BOTE: 200 USDT`;
             document.getElementById('asiento-4').classList.remove('en-pausa', 'retirado', 'turno-activo', 'allin-estado');
-            document.getElementById('nombre-etiqueta-tu').innerText = "Tú (Vaquero) [ID: 4]";
+            document.getElementById('nombre-etiqueta-tu').innerText = "Tú [ID: 4]";
             document.getElementById('btn-sentarse-asiento').style.display = 'none';
             
             for(let c=0; c<5; c++) {
@@ -1367,7 +1373,7 @@
             setTimeout(() => { ficha.remove(); }, 700);
         }
 
-        // FUNCIÓN DE CONEXIÓN BLINDADA PARA USO LOCAL O DIRECTO EN NAVEGADOR
+        // CONECTAR BLINDADO (DOBLE CAPA: SERVIDOR / LOCAL)
         async function registrarUsuarioAPI() {
             try {
                 const response = await fetch('/api/usuario/registrar', {
@@ -1375,26 +1381,23 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ telegram_id: "999888", username: "Vaquero" })
                 });
-                
-                if (!response.ok) throw new Error("Servidor no disponible");
-
+                if (!response.ok) throw new Error("Servidor offline");
                 const data = await response.json();
                 idUsuarioActual = data.usuario_id;
                 fichasJugador = data.fichas_gratis;
-                
                 document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
                 document.getElementById('range-subir').max = fichasJugador;
                 log(`[API Registro]: Conectado. Fichas: ${fichasJugador}`);
             } catch (error) {
-                // Respaldo local automático al hacer clic para que responda siempre
                 idUsuarioActual = 4;
                 fichasJugador = 1000;
                 document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
                 document.getElementById('range-subir').max = fichasJugador;
-                log(`🤠 [Modo Local]: ¡Conectado al Salón exitosamente! Fichas: 1,000 USDT`);
+                log(`🤠 [Modo Local]: ¡Conectado al Salón con éxito! Fichas: 1,000 USDT`);
             }
         }
 
+        // REPARTIR BLINDADO (DOBLE CAPA: SERVIDOR / LOCAL)
         async function repartirCartasAPI() {
             if (jugadorEnPausa) {
                 log(`☕ [Pausa]: Estás en descanso. No participas en esta mano.`);
@@ -1403,6 +1406,7 @@
 
             try {
                 const response = await fetch('/api/juego/repartir', { method: 'POST' });
+                if (!response.ok) throw new Error("Servidor offline");
                 const data = await response.json();
                 
                 boteActual = data.pot;
@@ -1470,7 +1474,66 @@
                 log(`[Flop]: Cartas comunitarias repartidas.`);
                 iniciarTurno(4);
             } catch (error) {
-                log(`[Error]: No se pudo repartir.`);
+                // RESPALDO LOCAL DE EMERGENCIA
+                boteActual = 200;
+                contadorAccionesRonda = 0;
+                faseMano = 1;
+                
+                const palos = ['♠', '♥', '♦', '♣'];
+                const valores = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+                function generarCarta() {
+                    let v = valores[Math.floor(Math.random() * valores.length)];
+                    let p = palos[Math.floor(Math.random() * palos.length)];
+                    return v + p;
+                }
+
+                cartasComunitariasGlobales = [generarCarta(), generarCarta(), generarCarta(), generarCarta(), generarCarta()];
+                document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
+                document.getElementById('mazo-info').innerText = `Cartas mazo: 40`;
+
+                for(let i=1; i<=6; i++) {
+                    let asientoDiv = document.getElementById(`asiento-${i}`);
+                    retirados[i] = false;
+                    asientoDiv.classList.remove('retirado', 'allin-estado');
+                }
+
+                for (let c = 0; c < 5; c++) {
+                    let cardElem = document.getElementById(`com-${c}`);
+                    if (c < 3) {
+                        let cartaVal = cartasComunitariasGlobales[c];
+                        let esRoja = cartaVal.includes('♥') || cartaVal.includes('♦');
+                        cardElem.className = `card ${esRoja ? 'red' : ''}`;
+                        cardElem.style.background = '#ffffff';
+                        cardElem.innerText = cartaVal;
+                    } else {
+                        cardElem.className = `card card-back`;
+                        cardElem.style.background = colorDorsoActual;
+                        cardElem.innerText = '🂠';
+                    }
+                }
+
+                for (let i = 1; i <= 6; i++) {
+                    let c1 = generarCarta();
+                    let c2 = generarCarta();
+                    let contenedor = document.getElementById(`cartas-s${i}`);
+                    if (contenedor) {
+                        let htmlCartas = "";
+                        if (i === 4) {
+                            cartasJugadorPrivadas = [c1, c2];
+                            [c1, c2].forEach(c => {
+                                let esRoja = c.includes('♥') || c.includes('♦');
+                                htmlCartas += `<div class="card ${esRoja ? 'red' : ''}" style="background:#ffffff;">${c}</div>`;
+                            });
+                        } else {
+                            cartasBotsPrivadas[i] = [c1, c2];
+                            htmlCartas = `<div class="card card-back" style="background:${colorDorsoActual}">🂠</div><div class="card card-back" style="background:${colorDorsoActual}">🂠</div>`;
+                        }
+                        contenedor.innerHTML = htmlCartas;
+                    }
+                }
+
+                log(`🃏 [Modo Local]: ¡Cartas comunitarias y privadas repartidas con éxito!`);
+                iniciarTurno(4);
             }
         }
 
