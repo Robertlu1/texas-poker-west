@@ -231,7 +231,7 @@
             box-shadow: 0 0 14px #8e44ad;
         }
 
-        /* CAJA UNIFICADA Y ESTABLE PARA TODAS (INCLUYENDO LAS ROTADAS) */
+        /* CAJA UNIFICADA Y ESTABLE */
         .seat-box {
             background: rgba(18, 26, 36, 0.95);
             border: 2px solid #4f5d73;
@@ -265,7 +265,7 @@
         }
         .seat-cards { display: flex; gap: 3px; }
 
-        /* BOTONES DE STICKERS MÁS GRANDES Y CÓMODOS A LA IZQUIERDA */
+        /* BOTONES DE STICKERS A LA IZQUIERDA */
         .sticker-box {
             display: flex;
             flex-direction: column;
@@ -322,10 +322,10 @@
         .seat-1 { top: 2px; left: 16%; }
         .seat-2 { top: 2px; right: 16%; }
         
-        /* ASIENTOS LATERALES CON TAMAÑO EXACTO Y ROTACIÓN PERFECTA */
+        /* ASIENTOS LATERALES RODADOS BIEN HACIA DENTRO DEL PAÑO */
         .seat-3 { 
             top: 38%; 
-            right: -35px; 
+            right: 15px; 
             transform: rotate(-90deg); 
             transform-origin: center; 
             width: 75px; 
@@ -343,7 +343,7 @@
         
         .seat-6 { 
             top: 38%; 
-            left: -35px; 
+            left: 15px; 
             transform: rotate(90deg); 
             transform-origin: center; 
             width: 75px; 
@@ -797,7 +797,7 @@
                     <div class="avatar-box"><img src="avatar2.jpg" alt="Avatar"></div>
                 </div>
 
-                <!-- Asiento 3 -->
+                <!-- Asiento 3 (Rodado hacia adentro del paño) -->
                 <div class="seat seat-3 bot-seat" id="asiento-3">
                     <div class="sticker-box">
                         <button class="btn-sticker" onclick="lanzarSticker(3, '🔥')">🔥</button>
@@ -857,7 +857,7 @@
                     <div class="avatar-box"><img src="avatar5.jpg" alt="Avatar"></div>
                 </div>
 
-                <!-- Asiento 6 -->
+                <!-- Asiento 6 (Rodado hacia adentro del paño) -->
                 <div class="seat seat-6 bot-seat" id="asiento-6">
                     <div class="sticker-box">
                         <button class="btn-sticker" onclick="lanzarSticker(6, '🔥')">🔥</button>
@@ -1019,7 +1019,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Cajas simétricas unificadas y botones de stickers optimizados.</div>
+        <div id="output-log">💬 [Saloon]: Asientos laterales perfectamente dentro del paño.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
