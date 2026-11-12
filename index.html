@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texas Poker West - Casino Pro</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body, html {
+            background-color: #080d12;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        h2 {
+            color: #f1c40f;
+            text-shadow: 1px 1px #000;
+            margin: 2px 0;
+            font-size: 1.1em;
+        }
+        #pantalla-portada {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('portada_bandido.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 50px;
+            z-index: 999999;
+        }
+        #portada-titulo {
+            font-size: 3.5em;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px #000;
+            color: #f1c40f;
+        }
+        .btn-entrar {
+            background-color: #e67e22;
+            color: white;
+            border: 2px solid #f1c40f;
+            padding: 12px 35px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+            margin-bottom: 40px;
+            z-index: 1000000;
+            position: relative;
+        }
+        .btn-entrar:hover { background-color: #d35400; }
+
+        #pantalla-salon {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle, #1a2634 0%, #080d12 100%);
+            padding: 4px;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .saloon-container {
+            width: 99vw;
+            height: 98vh;
+            background: rgba(12, 18, 25, 0.98);
+            border: 2px solid #2c3e50;
+            border-radius: 10px;
+            padding: 6px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.9);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .btn-ampliar-top {
+            position: absolute;
+            top: 4px;
+            right: 120px;
+            background-color: #27ae60;
+            color: white;
+            border: 1px solid #2ecc71;
+            padding: 3px 8px;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            z-index: 30;
+        }
+        .btn-ampliar-top:hover { background-color: #2ecc71; }
+
+        /* PAÑO DE PÓKER PERSONALIZABLE */
+        .poker-table {
+            background: #0d4a22;
+            border: 10px solid #3d2314;
+            border-radius: 140px;
+            width: 82vw;
+            height: 52vh;
+            margin: 2px auto;
+            position: relative;
+            box-shadow: inset 0 0 60px rgba(0,0,0,0.8), 0 0 15px rgba(0,0,0,0.5);
+            transition: background 0.3s ease;
+        }
+        
+        .table-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            z-index: 5;
+        }
+        .dealer-box {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #f1c40f;
+            border-radius: 12px;
+            padding: 2px 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+        .dealer-box:hover { background: rgba(0, 0, 0, 0.8); }
+        .dealer-avatar { font-size: 12px; }
+        .dealer-info {
+            font-size: 8px;
+            color: #f1c40f;
+            text-align: left;
+            line-height: 1;
+        }
+
+        .community-cards {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+        
+        .card {
+            background: #ffffff;
+            color: #000000;
+            font-weight: bold;
+            width: 36px;
+            height: 50px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.6);
+            border: 1px solid #bdc3c7;
+            position: relative;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        .card.red { color: #e74c3c; }
+        .card-back {
+            background: #c0392b;
+            color: #f1c40f;
+            border: 1px solid #f1c40f;
+            font-size: 13px;
+        }
+
+        @keyframes explosionFuegoOro {
+            0% { transform: translate(0, 0) scale(0.4); opacity: 1; filter: drop-shadow(0 0 8px #ff4500); }
+            50% { filter: drop-shadow(0 0 18px #ffd700); opacity: 0.9; }
+            100% { transform: translate(var(--dx), var(--dy)) scale(2.5); opacity: 0; filter: drop-shadow(0 0 2px #ff8c00); }
+        }
+        .bengala-fuego-oro {
+            position: fixed;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 999;
+            box-shadow: 0 0 12px currentColor;
+            animation: explosionFuegoOro 1.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+        }
+
+        @keyframes volarFichaRecarga {
+            0% { transform: scale(0.5) translateY(0); opacity: 0; }
+            50% { transform: scale(2) translateY(-60px); opacity: 1; filter: drop-shadow(0 0 20px #ffd700); }
+            100% { transform: scale(1) translate(0, 0); opacity: 1; }
+        }
+        .ficha-volando-recarga {
+            position: fixed;
+            z-index: 400000;
+            pointer-events: none;
+            animation: volarFichaRecarga 1.2s ease-in-out forwards;
+        }
+
+        .seat {
+            position: absolute;
+            background: rgba(18, 26, 36, 0.95);
+            border: 2px solid #4f5d73;
+            border-radius: 8px;
+            padding: 3px 6px;
+            font-size: 10px;
+            width: 130px;
+            color: #ffffff;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-align: left;
+            z-index: 10;
+        }
+        .seat.turno-activo {
+            border: 2px solid #e74c3c;
+            box-shadow: 0 0 14px #e74c3c;
+            background: rgba(44, 24, 24, 0.95);
+        }
+        .seat.retirado {
+            opacity: 0.35;
+            filter: grayscale(90%);
+        }
+        .seat.en-pausa {
+            opacity: 0.5;
+            border: 2px dashed #f39c12;
+            background: rgba(50, 40, 10, 0.9);
+        }
+        .seat.allin-estado {
+            border: 2px solid #8e44ad;
+            box-shadow: 0 0 14px #8e44ad;
+        }
+
+        /* AVATAR JPG REDONDO NÍTIDO */
+        .avatar-box {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid #f1c40f;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .seat-info { line-height: 1.1; overflow: hidden; width: 100%; }
+        .seat-name { font-weight: bold; color: #ffffff; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; justify-content: space-between; align-items: center; }
+        .seat-chips { color: #f1c40f; font-size: 9px; font-weight: bold; }
+        .seat-cards { display: flex; gap: 2px; margin-top: 2px; }
+
+        .btn-sentarse-mesa {
+            display: none;
+            position: absolute;
+            bottom: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #27ae60;
+            color: white;
+            border: 1px solid #2ecc71;
+            padding: 2px 8px;
+            font-size: 9px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 10px;
+            z-index: 20;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.8);
+        }
+        .btn-sentarse-mesa:hover { background: #2ecc71; }
+
+        .seat-1 { top: 2px; left: 22%; }
+        .seat-2 { top: 2px; right: 22%; }
+        .seat-3 { top: 38%; right: -25px; }
+        .seat-4 { bottom: 2px; right: 22%; border-color: #2ecc71; background: rgba(15, 38, 25, 0.95); }
+        .seat-5 { bottom: 2px; left: 22%; }
+        .seat-6 { top: 38%; left: -25px; }
+
+        @keyframes volarFicha {
+            0% { transform: scale(1) translateY(0); opacity: 1; }
+            50% { transform: scale(1.5) translateY(-35px); opacity: 0.9; }
+            100% { transform: scale(0.6) translate(-100px, -50px); opacity: 0; }
+        }
+        .ficha-volando {
+            position: absolute;
+            z-index: 100;
+            pointer-events: none;
+            animation: volarFicha 0.7s ease-in-out forwards;
+        }
+
+        .timer-display {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 13px;
+            margin-left: 4px;
+            background: rgba(0,0,0,0.5);
+            padding: 1px 4px;
+            border-radius: 4px;
+            border: 1px solid #e74c3c;
+        }
+
+        .modo-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 1px 0;
+        }
+        .btn-modo {
+            background-color: #34495e;
+            color: #ffffff;
+            border: 1px solid #7f8c8d;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 20%;
+        }
+        .btn-modo:hover { background-color: #415b76; }
+        .btn-modo.selected { background-color: #27ae60; border-color: #2ecc71; }
+
+        #torneo-panel {
+            display: none;
+            background: rgba(142, 68, 173, 0.25);
+            border: 1px solid #9b59b6;
+            border-radius: 6px;
+            padding: 3px 10px;
+            font-size: 11px;
+            color: #f39c12;
+            font-weight: bold;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .controls-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.3);
+            padding: 4px;
+            border-radius: 5px;
+        }
+        .btn-oeste {
+            background-color: #d35400;
+            color: white;
+            border: 1px solid #f1c40f;
+            padding: 4px 14px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn-oeste:hover { background-color: #e67e22; }
+        
+        .betting-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            background: rgba(11, 19, 26, 0.95);
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: 1px solid #2c3e50;
+        }
+        .btn-bet {
+            background-color: #27ae60;
+            color: #fff;
+            border: 1px solid #2ecc71;
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+        .btn-bet:hover { background-color: #27ae60; }
+        .btn-fold { background-color: #c0392b; border-color: #e74c3c; }
+        .btn-fold:hover { background-color: #e74c3c; }
+        .btn-allin { background-color: #8e44ad; border-color: #9b59b6; }
+        .btn-allin:hover { background-color: #9b59b6; }
+
+        .slider-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0,0,0,0.4);
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid #4f5d73;
+            font-size: 11px;
+        }
+        input[type=range] {
+            width: 90px;
+            cursor: pointer;
+        }
+        .btn-enviar-slider {
+            background-color: #f39c12;
+            color: #000;
+            border: 1px solid #f1c40f;
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .btn-enviar-slider:hover { background-color: #f1c40f; }
+
+        .btn-mic {
+            background-color: #7f8c8d;
+            color: white;
+            border: 1px solid #bdc3c7;
+            padding: 4px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 11px;
+        }
+        .btn-mic.active { background-color: #27ae60; border-color: #2ecc71; }
+        #mic-status { font-size: 10px; color: #bdc3c7; margin-left: 5px; }
+
+        /* PANEL INFERIOR DERECHO: PERSONALIZADOR Y TIENDA ORO */
+        .customizer-panel {
+            position: fixed;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(15, 23, 36, 0.95);
+            border: 1px solid #f1c40f;
+            padding: 6px 10px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 200000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            font-size: 10px;
+            text-align: left;
+        }
+        .customizer-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .customizer-row select {
+            background: #111a24;
+            color: #f1c40f;
+            border: 1px solid #4f5d73;
+            padding: 2px 4px;
+            font-size: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-tienda-oro {
+            background-color: #d4ac0d;
+            color: #000;
+            border: 1px solid #f1c40f;
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            width: 100%;
+            text-align: center;
+            margin-top: 2px;
+        }
+        .btn-tienda-oro:hover { background-color: #f1c40f; }
+
+        /* MODAL DE LA TIENDA Y PANEL ADMIN */
+        #modal-tienda-oro {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(12, 18, 25, 0.98);
+            border: 3px solid #f1c40f;
+            padding: 20px;
+            border-radius: 12px;
+            z-index: 300000;
+            width: 450px;
+            max-width: 95vw;
+            box-shadow: 0 0 40px rgba(0,0,0,0.9);
+            text-align: left;
+        }
+        #modal-tienda-oro h3 { color: #f1c40f; margin-top: 0; text-align: center; }
+        .tienda-seccion {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #2c3e50;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 11px;
+        }
+        .tienda-seccion h4 { color: #2ecc71; margin: 0 0 6px 0; font-size: 12px; }
+        .input-admin {
+            width: 100%;
+            background: #111a24;
+            border: 1px solid #4f5d73;
+            color: #fff;
+            padding: 5px;
+            font-size: 11px;
+            border-radius: 4px;
+            margin-top: 4px;
+            margin-bottom: 6px;
+        }
+        .btn-whatsapp {
+            background-color: #25d366;
+            color: white;
+            text-decoration: none;
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 6px;
+            text-align: center;
+            width: 100%;
+        }
+        .btn-whatsapp:hover { background-color: #1ebe5d; }
+        
+        .btn-generar-codigo {
+            background-color: #8e44ad;
+            color: white;
+            border: 1px solid #9b59b6;
+            padding: 5px 8px;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            width: 100%;
+            margin-bottom: 6px;
+        }
+        .btn-generar-codigo:hover { background-color: #9b59b6; }
+
+        .btn-liberar-fichas {
+            background-color: #f1c40f;
+            color: #000;
+            border: 1px solid #d4ac0d;
+            padding: 6px 10px;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 4px;
+            width: 100%;
+            cursor: not-allowed;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+        .btn-liberar-fichas.activo {
+            cursor: pointer;
+            opacity: 1;
+            background-color: #27ae60;
+            color: #fff;
+            border-color: #2ecc71;
+        }
+
+        .btn-cerrar-tienda {
+            background: #c0392b;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            width: 100%;
+            margin-top: 5px;
+        }
+        .btn-cerrar-tienda:hover { background: #e74c3c; }
+
+        #modal-mostrar-cartas {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10, 18, 28, 0.96);
+            border: 3px solid #f1c40f;
+            padding: 15px 25px;
+            border-radius: 10px;
+            z-index: 100;
+            box-shadow: 0 0 30px rgba(0,0,0,0.9);
+            text-align: center;
+        }
+        #modal-mostrar-cartas h3 { color: #f1c40f; margin-top: 0; }
+
+        #chat-flotante {
+            position: fixed;
+            bottom: 12px;
+            left: 12px;
+            width: 300px;
+            height: 150px;
+            background: rgba(6, 10, 15, 0.95);
+            border: 1px solid #2c3e50;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.9);
+            z-index: 200000;
+            transition: all 0.3s ease;
+        }
+        #chat-flotante.oculto {
+            height: 30px;
+            overflow: hidden;
+        }
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #f1c40f;
+            font-weight: bold;
+            border-bottom: 1px solid #2c3e50;
+            padding-bottom: 3px;
+            margin-bottom: 4px;
+        }
+        .btn-minimizar {
+            background: #c0392b;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 3px;
+        }
+        .btn-minimizar:hover { background: #e74c3c; }
+
+        #output-log {
+            flex-grow: 1;
+            text-align: left;
+            overflow-y: auto;
+            font-size: 11px;
+            color: #ffffff;
+            word-break: break-word;
+            line-height: 1.3;
+        }
+        .chat-input-box {
+            display: flex;
+            gap: 4px;
+            margin-top: 4px;
+        }
+        #input-mensaje {
+            flex-grow: 1;
+            background: #111a24;
+            border: 1px solid #4f5d73;
+            color: #ffffff;
+            padding: 5px 8px;
+            font-size: 11px;
+            border-radius: 4px;
+            outline: none;
+        }
+        .btn-enviar-chat {
+            background: #27ae60;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .btn-enviar-chat:hover { background: #2ecc71; }
+    </style>
+</head>
+<body>
+
+    <!-- PANTALLA 1: PORTADA -->
+    <div id="pantalla-portada">
+        <div id="portada-titulo">Texas Poker West</div>
+        <button class="btn-entrar" onclick="entrarAlSaloon()">🤠 Entrar al Salón 🌵</button>
+    </div>
+
+    <!-- PANTALLA 2: SALÓN PRINCIPAL CON 6 ASIENTOS Y AVATARES JPG -->
+    <div id="pantalla-salon">
+        <div class="saloon-container">
+            <button class="btn-ampliar-top" onclick="togglePantallaCompleta()">🗖 Ampliar</button>
+            <div style="position: absolute; top: 4px; right: 10px; display: flex; gap: 6px; z-index: 99;">
+                <button onclick="togglePausaJugador()" style="background: #34495e; color: white; border: 1px solid #7f8c8d; padding: 3px 8px; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 4px;">🛋️ Levantarse</button>
+                <button onclick="regresarAlLobby()" style="background: #c0392b; color: white; border: 1px solid #e74c3c; padding: 3px 8px; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 4px;">🏠 Lobby</button>
+            </div>
+
+            <h2>Texas Poker West: Casino Pro</h2>
+            
+            <div class="poker-table" id="mesa-poker">
+                <!-- Asiento 1 (Bot / Avatar 1.jpg) -->
+                <div class="seat seat-1 bot-seat" id="asiento-1">
+                    <div class="avatar-box"><img src="avatar1.jpg" alt="Avatar"></div>
+                    <div class="seat-info">
+                        <div class="seat-name">El Gambusino <span id="timer-ui-1" class="timer-display"></span></div>
+                        <div class="seat-chips" id="chips-s1">[$] 1,000</div>
+                        <div class="seat-cards" id="cartas-s1"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
+                    </div>
+                </div>
+
+                <!-- Asiento 2 (Bot / Avatar 2.jpg) -->
+                <div class="seat seat-2 bot-seat" id="asiento-2">
+                    <div class="avatar-box"><img src="avatar2.jpg" alt="Avatar"></div>
+                    <div class="seat-info">
+                        <div class="seat-name">Don Aurelio <span id="timer-ui-2" class="timer-display"></span></div>
+                        <div class="seat-chips" id="chips-s2">[$] 1,000</div>
+                        <div class="seat-cards" id="cartas-s2"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
+                    </div>
+                </div>
+
+                <!-- Asiento 3 (Bot / Avatar 3.jpg) -->
+                <div class="seat seat-3 bot-seat" id="asiento-3">
+                    <div class="avatar-box"><img src="avatar3.jpg" alt="Avatar"></div>
+                    <div class="seat-info">
+                        <div class="seat-name">Forajido Joe <span id="timer-ui-3" class="timer-display"></span></div>
+                        <div class="seat-chips" id="chips-s3">[$] 1,000</div>
+                        <div class="seat-cards" id="cartas-s3"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
+                    </div>
+                </div>
+
+                <!-- Asiento 4 (Tú / Avatar 4.jpg) -->
+                <div class="seat seat-4" id="asiento-4">
+                    <div class="avatar-box"><img src="avatar4.jpg" alt="Avatar"></div>
+                    <div class="seat-info">
+                        <div class="seat-name"><span id="nombre-etiqueta-tu">Tú (Vaquero) [ID: 4]</span> <span id="timer-ui-4" class="timer-display"></span></div>
+                        <div class="seat-chips" id="chips-s4">[$] 1,000</div>
+                        <div class="seat-cards" id="cartas-s4">
+                            <div class="card card-back">🂠</div><div class="card card-back">🂠</div>
+                        </div>
+                    </div>
+                    <button id="btn-sentarse-asiento" class="btn-sentarse-mesa" onclick="togglePausaJugador()">🟢 Sentarse</button>
+                </div>
+
+                <!-- Asiento 5 (Bot / Avatar 5.jpg) -->
+                <div class="seat seat-5 bot-seat" id="asiento-5">
+                    <div class="avatar-box"><img src="avatar5.jpg" alt="Avatar"></div>
+                    <div class="seat-info">
+                        <div class="seat-name">Sheriff Miller <span id="timer-ui-5" class="timer-display"></span></div>
+                        <div class="seat-chips" id="chips-s5">[$] 1,000</div>
+                        <div class="seat-cards" id="cartas-s5"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
+                    </div>
+                </div>
+
+                <!-- Asiento 6 (Bot / Avatar 6.jpg) -->
+                <div class="seat seat-6 bot-seat" id="asiento-6">
+                    <div class="avatar-box"><img src="avatar6.jpg" alt="Avatar"></div>
+                    <div class="seat-info">
+                        <div class="seat-name">El Forastero <span id="timer-ui-6" class="timer-display"></span></div>
+                        <div class="seat-chips" id="chips-s6">[$] 1,000</div>
+                        <div class="seat-cards" id="cartas-s6"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
+                    </div>
+                </div>
+
+                <!-- CENTRO DE LA MESA -->
+                <div class="table-center" id="centro-mesa">
+                    <div class="dealer-box" onclick="cambiarDoncella()" title="Haz clic para cambiar de crupier">
+                        <div class="dealer-avatar" id="dealer-icon">💃</div>
+                        <div class="dealer-info">
+                            <div id="dealer-name" style="font-weight:bold;">Doncella Clara</div>
+                            <div id="mazo-info" style="font-size: 7px; color:#bdc3c7;">Cartas mazo: 52</div>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 1.1em; color: #f1c40f; font-weight: bold; text-shadow: 2px 2px #000;" id="pot-display">
+                        BOTE: 200 USDT
+                    </div>
+
+                    <!-- 5 CARTAS COMUNITARIAS GIGANTES -->
+                    <div class="community-cards" id="community-container">
+                        <div class="card card-back" id="com-0">🂠</div>
+                        <div class="card card-back" id="com-1">🂠</div>
+                        <div class="card card-back" id="com-2">🂠</div>
+                        <div class="card card-back" id="com-3">🂠</div>
+                        <div class="card card-back" id="com-4">🂠</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODOS DE JUEGO -->
+            <div class="modo-container">
+                <button id="btn-practica" class="btn-modo selected" onclick="seleccionarModo('Práctica')">🎯 Práctica</button>
+                <button id="btn-campana" class="btn-modo" onclick="seleccionarModo('Campaña')">🤠 Campaña (Torneo)</button>
+                <button id="btn-multijugador" class="btn-modo" onclick="seleccionarModo('Multijugador')">🌐 Multijugador</button>
+            </div>
+
+            <!-- PANEL DE TORNEO Y JACKPOT -->
+            <div id="torneo-panel">
+                <span id="torneo-serie">🏆 Serie Torneo: Partida 1 de 3 (Gana 2)</span>
+                <span id="torneo-victorias">⭐ Tus Victorias: 0 / 2</span>
+                <span id="jackpot-display">💰 Jackpot Progresivo: $1,500 USDT</span>
+            </div>
+
+            <!-- CONTROLES GENERALES -->
+            <div class="controls-container">
+                <button class="btn-oeste" onclick="registrarUsuarioAPI()">Conectar</button>
+                <button class="btn-oeste" onclick="repartirCartasAPI()">🃏 Repartir</button>
+                <button id="btn-hablar" class="btn-mic" onclick="toggleMicrofono()">🎙️ Micrófono</button>
+                <span id="mic-status">🎙️ Silenciado</span>
+            </div>
+
+            <!-- BOTONERA DE ACCIÓN INFERIOR -->
+            <div class="betting-container">
+                <button class="btn-bet" onclick="apostarJugador('pasar')">Pasar (Check)</button>
+                <button class="btn-bet" onclick="apostarJugador('igualar')">Igualar (Call)</button>
+                
+                <div class="slider-box">
+                    <span>Apuesta: $<span id="slider-valor">100</span></span>
+                    <input type="range" id="range-subir" min="50" max="1000" step="50" value="100" oninput="actualizarValorSlider(this.value)">
+                    <button class="btn-enviar-slider" onclick="apostarJugador('subir')">Enviar Apuesta</button>
+                </div>
+
+                <button class="btn-bet btn-allin" onclick="apostarJugador('allin')">💥 ¡All-In!</button>
+                <button class="btn-bet btn-fold" onclick="apostarJugador('retirarse')">Retirarse (Fold)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL INFERIOR DERECHO: PERSONALIZADOR Y TIENDA ORO -->
+    <div class="customizer-panel">
+        <div class="customizer-row">
+            <span>🎨 Paño:</span>
+            <select id="select-pano" onchange="cambiarColorPano(this.value)">
+                <option value="#0d4a22">Verde clásico</option>
+                <option value="#1b365d">Azul casino</option>
+                <option value="#5c1d1d">Rojo vino</option>
+                <option value="#2c2c2c">Negro medianoche</option>
+            </select>
+        </div>
+        <div class="customizer-row">
+            <span>🃏 Dorso:</span>
+            <select id="select-dorso" onchange="cambiarColorDorso(this.value)">
+                <option value="#c0392b">Rojo Forajido</option>
+                <option value="#2980b9">Azul Salón</option>
+                <option value="#8e44ad">Morado Realeza</option>
+                <option value="#d4ac0d">Doro del Oeste</option>
+            </select>
+        </div>
+        <button class="btn-tienda-oro" onclick="abrirTiendaOro()">🛒 Tienda Fichas Oro</button>
+    </div>
+
+    <!-- MODAL DE LA TIENDA Y PANEL ADMIN -->
+    <div id="modal-tienda-oro">
+        <h3>🛒 Tienda Oficial - Fichas Oro</h3>
+        
+        <!-- VISTA PARA EL JUGADOR / COMPRADOR -->
+        <div class="tienda-seccion">
+            <h4>💳 Realiza tu Pago</h4>
+            <p style="margin: 2px 0;"><b>Banesco Panamá (Cta. Corriente):</b> 1234-5678-9000-1111</p>
+            <p style="margin: 2px 0;"><b>Titular:</b> Luis Carrasquel</p>
+            <p style="margin: 2px 0; color: #f1c40f;"><b>Zelle / Binance Pay:</b> pago@texaspokerwest.com</p>
+            <p style="font-size: 10px; color: #aaa; margin-top: 4px;">Realiza tu pago y envíame el comprobante (capture) con tu ID por WhatsApp:</p>
+            <a href="https://wa.me/584249266340?text=Hola%20Luis,%20realice%20el%20pago%20para%20recargar%20fichas%20oro.%20Mi%20ID%20es:%20[Tu%20ID]%20y%20aqui%20esta%20mi%20comprobante:" target="_blank" class="btn-whatsapp">💬 Enviar Capture por WhatsApp</a>
+        </div>
+
+        <!-- PANEL DE ADMINISTRADOR -->
+        <div class="tienda-seccion" style="border-color: #f39c12; background: rgba(40, 30, 10, 0.4);">
+            <h4 style="color: #f39c12;">🔐 Tu Panel Admin (Aprobación Segura)</h4>
+            
+            <label style="font-size: 10px;">ID del Comprador:</label>
+            <input type="text" id="admin-id-comprador" class="input-admin" value="4" placeholder="Ej. 4">
+            
+            <label style="font-size: 10px;">Fichas Oro a Liberar:</label>
+            <input type="number" id="admin-cantidad-fichas" class="input-admin" value="5000" step="1000">
+
+            <!-- BOTÓN QUE GENERA EL CÓDIGO ÚNICO AUTOMÁTICO -->
+            <button class="btn-generar-codigo" onclick="generarCodigoSeguridadUnico()">🔑 Generar Código de Seguridad Único</button>
+            <div id="display-codigo-privado" style="font-size: 11px; color: #f1c40f; margin-bottom: 6px; font-weight: bold;"></div>
+
+            <!-- CAMPO PARA INTRODUCIR EL CÓDIGO -->
+            <label style="font-size: 10px;">Introduce el Código de Seguridad:</label>
+            <input type="text" id="admin-codigo-ingresado" class="input-admin" placeholder="Ingresa el código para habilitar el botón" oninput="verificarCodigoLiberacion()">
+
+            <!-- BOTÓN AMARILLO (BLOQUEADO HASTA PONER EL CÓDIGO) -->
+            <button id="btn-liberar-fichas-id" class="btn-liberar-fichas" onclick="liberarRecargaAdmin()" disabled>⚡ Validar y Liberar Fichas</button>
+            <div id="resultado-admin-liberacion" style="font-size: 11px; color: #2ecc71; margin-top: 6px; font-weight: bold;"></div>
+        </div>
+
+        <button class="btn-cerrar-tienda" onclick="cerrarTiendaOro()">Cerrar Tienda</button>
+    </div>
+
+    <!-- MODAL PARA DECIDIR SI MUESTRAS CARTAS AL GANAR POR ABANDONO -->
+    <div id="modal-mostrar-cartas">
+        <h3>🏆 ¡Has ganado la mano por abandono!</h3>
+        <p style="font-size: 12px; color: #ccc;">¿Deseas mostrar tus cartas privadas a la mesa?</p>
+        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
+            <button class="btn-bet" onclick="responderMostrarCartas(true)">Mostrar Cartas</button>
+            <button class="btn-bet btn-fold" onclick="responderMostrarCartas(false)">Guardar (Muck)</button>
+        </div>
+    </div>
+
+    <!-- CHAT Y BITÁCORA FLOTANTE -->
+    <div id="chat-flotante">
+        <div class="chat-header">
+            <span>💬 Salón & Bitácora</span>
+            <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
+        </div>
+        <div id="output-log">💬 [Saloon]: 6 asientos activos con avatares JPG personalizados.</div>
+        <div class="chat-input-box" id="chat-input-area">
+            <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
+            <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
+        </div>
+    </div>
+
+    <script>
+        let idUsuarioActual = 4;
+        let fichasJugador = 1000;
+        let fichasBots = { 1: 1000, 2: 1000, 3: 1000, 5: 1000, 6: 1000 };
+        let cartasBotsPrivadas = { 1: [], 2: [], 3: [], 5: [], 6: [] };
+        let retirados = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
+        let allInJugadores = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
+        let jugadorEnPausa = false;
+        let boteActual = 200;
+        let turnoActual = 1;
+        let contadorAccionesRonda = 0;
+        let faseMano = 0;
+        let cartasComunitariasGlobales = [];
+        let cartasJugadorPrivadas = [];
+        let temporizadorTurno = null;
+        let segundosRestantes = 25;
+
+        let modoActual = 'Práctica';
+        let torneoPartidaActual = 1;
+        let torneoVictoriasUsuario = 0;
+        let jackpotMonto = 1500;
+        let colorDorsoActual = '#c0392b';
+
+        let codigoSeguridadActual = "";
+
+        const nombresAsientos = {
+            1: "El Gambusino",
+            2: "Don Aurelio",
+            3: "Forajido Joe",
+            4: "Tú (Vaquero)",
+            5: "Sheriff Miller",
+            6: "El Forastero"
+        };
+
+        const valoresCartas = { "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10": 10, "J": 11, "Q": 12, "K": 13, "A": 14 };
+
+        function cambiarColorPano(colorHex) {
+            let mesa = document.getElementById('mesa-poker');
+            if (mesa) mesa.style.background = colorHex;
+            log(`🎨 [Estética]: Paño de la mesa cambiado.`);
+        }
+
+        function cambiarColorDorso(colorHex) {
+            colorDorsoActual = colorHex;
+            let dorsos = document.querySelectorAll('.card-back');
+            dorsos.forEach(d => {
+                d.style.background = colorHex;
+            });
+            log(`🃏 [Estética]: Dorso de las cartas actualizado.`);
+        }
+
+        function abrirTiendaOro() {
+            document.getElementById('modal-tienda-oro').style.display = 'block';
+        }
+
+        function cerrarTiendaOro() {
+            document.getElementById('modal-tienda-oro').style.display = 'none';
+        }
+
+        function generarCodigoSeguridadUnico() {
+            let aleatorio = Math.floor(100000 + Math.random() * 900000);
+            codigoSeguridadActual = `WEST-${aleatorio}`;
+
+            document.getElementById('display-codigo-privado').innerHTML = 
+                `🔒 Código único (Solo tuyo): <span style="color:#2ecc71; font-size:13px; background:#000; padding:2px 6px; border-radius:4px; user-select:all;">${codigoSeguridadActual}</span>`;
+            
+            log(`⚡ [Admin]: Código único generado: ${codigoSeguridadActual}`);
+        }
+
+        function verificarCodigoLiberacion() {
+            let ingresado = document.getElementById('admin-codigo-ingresado').value.trim();
+            let btnLiberar = document.getElementById('btn-liberar-fichas-id');
+
+            if (ingresado !== "" && ingresado === codigoSeguridadActual) {
+                btnLiberar.removeAttribute('disabled');
+                btnLiberar.classList.add('activo');
+            } else {
+                btnLiberar.setAttribute('disabled', 'true');
+                btnLiberar.classList.remove('activo');
+            }
+        }
+
+        function lanzarMonedaDoradaRecarga() {
+            const asiento = document.getElementById('asiento-4');
+            const ficha = document.createElement('div');
+            ficha.className = 'ficha-volando-recarga';
+            ficha.innerHTML = '<img src="ficha.png" style="width: 55px; height: 55px; filter: drop-shadow(0 4px 10px rgba(255,215,0,0.9));">';
+
+            const rect = asiento.getBoundingClientRect();
+            ficha.style.left = (rect.left + rect.width / 2 - 25) + 'px';
+            ficha.style.top = (rect.top + rect.height / 2 - 25) + 'px';
+
+            document.body.appendChild(ficha);
+            setTimeout(() => { ficha.remove(); }, 1200);
+        }
+
+        function liberarRecargaAdmin() {
+            let idCliente = document.getElementById('admin-id-comprador').value.trim();
+            let cantidad = parseInt(document.getElementById('admin-cantidad-fichas').value);
+
+            if (!idCliente || isNaN(cantidad) || cantidad <= 0) {
+                alert("⚠️ Verifica el ID y la cantidad.");
+                return;
+            }
+
+            if (idCliente === "4" || idCliente === idUsuarioActual.toString() || idCliente.toLowerCase() === "vaquero") {
+                fichasJugador += cantidad;
+                document.getElementById('chips-s4').innerText = `[$] ${fichasJugador.toLocaleString()}`;
+                document.getElementById('range-subir').max = fichasJugador;
+            }
+
+            lanzarMonedaDoradaRecarga();
+
+            document.getElementById('resultado-admin-liberacion').innerText = `✅ ¡Fichas acreditadas al ID ${idCliente} con éxito!`;
+            log(`🪙✨ [Tienda]: ¡Recarga aprobada! Se acreditaron ${cantidad.toLocaleString()} fichas oro al ID ${idCliente}.`);
+            alert(`✅ ¡Recarga Exitosa! Se han acreditado ${cantidad.toLocaleString()} fichas oro al usuario ID ${idCliente}.`);
+
+            codigoSeguridadActual = "";
+            document.getElementById('admin-codigo-ingresado').value = "";
+            document.getElementById('display-codigo-privado').innerHTML = "";
+            let btnLiberar = document.getElementById('btn-liberar-fichas-id');
+            btnLiberar.setAttribute('disabled', 'true');
+            btnLiberar.classList.remove('activo');
+        }
+
+        function evaluarManoPoker(cartasJugador, comunitarias) {
+            let todas = cartasJugador.concat(comunitarias);
+            let parsed = todas.map(c => {
+                let v = c.slice(0, -1);
+                let p = c.slice(-1);
+                return { val: valoresCartas[v], palo: p, str: c };
+            });
+
+            parsed.sort((a, b) => b.val - a.val);
+
+            let counts = {};
+            let suits = {};
+            parsed.forEach(c => {
+                counts[c.val] = (counts[c.val] || 0) + 1;
+                suits[c.palo] = (suits[c.palo] || 0) + 1;
+            });
+
+            let flushSuit = null;
+            for (let p in suits) {
+                if (suits[p] >= 5) flushSuit = p;
+            }
+
+            let valsUnicos = [...new Set(parsed.map(c => c.val))].sort((a, b) => b - a);
+
+            let straightHigh = 0;
+            for (let i = 0; i <= valsUnicos.length - 5; i++) {
+                if (valsUnicos[i] - valsUnicos[i+4] === 4) {
+                    straightHigh = valsUnicos[i];
+                    break;
+                }
+            }
+            if (!straightHigh && valsUnicos.includes(14) && valsUnicos.includes(5) && valsUnicos.includes(4) && valsUnicos.includes(3) && valsUnicos.includes(2)) {
+                straightHigh = 5;
+            }
+
+            let isFlush = flushSuit !== null;
+            let isStraight = straightHigh > 0;
+
+            if (isFlush && isStraight) {
+                let flushCards = parsed.filter(c => c.palo === flushSuit);
+                let fVals = [...new Set(flushCards.map(c => c.val))].sort((a, b) => b - a);
+                for (let i = 0; i <= fVals.length - 5; i++) {
+                    if (fVals[i] - fVals[i+4] === 4) {
+                        return { score: 8000 + fVals[i], nombre: fVals[i] === 14 ? "👑 ¡Escalera Real!" : "🔥 ¡Escalera de Color!" };
+                    }
+                }
+            }
+
+            let quads = [], trips = [], pairs = [];
+            for (let v in counts) {
+                let numV = parseInt(v);
+                if (counts[v] === 4) quads.push(numV);
+                else if (counts[v] === 3) trips.push(numV);
+                else if (counts[v] === 2) pairs.push(numV);
+            }
+            quads.sort((a,b)=>b-a);
+            trips.sort((a,b)=>b-a);
+            pairs.sort((a,b)=>b-a);
+
+            if (quads.length > 0) return { score: 7000 + quads[0], nombre: "💥 ¡Póker!" };
+            if (trips.length > 0 && (pairs.length > 0 || trips.length > 1)) {
+                let t = trips[0];
+                let p = trips.length > 1 ? trips[1] : pairs[0];
+                return { score: 6000 + t * 15 + p, nombre: "🏠 Full House" };
+            }
+            if (isFlush) return { score: 5000 + valsUnicos[0], nombre: "🎨 Color (Flush)" };
+            if (isStraight) return { score: 4000 + straightHigh, nombre: "📈 Escalera (Straight)" };
+            if (trips.length > 0) return { score: 3000 + trips[0], nombre: "⚡ Trío" };
+            if (pairs.length >= 2) return { score: 2000 + pairs[0] * 15 + pairs[1], nombre: "👥 Doble Pareja" };
+            if (pairs.length === 1) return { score: 1000 + pairs[0], nombre: "👤 Pareja" };
+
+            return { score: valsUnicos[0], nombre: `Carta Alta (${parsed[0].str})` };
+        }
+
+        function lanzarBengalasMajestuosas(asientoId) {
+            const contenedorCartas = document.getElementById(`cartas-s${asientoId}`);
+            if (!contenedorCartas) return;
+
+            const rect = contenedorCartas.getBoundingClientRect();
+            const centroX = rect.left + rect.width / 2;
+            const centroY = rect.top + rect.height / 2;
+
+            const paletaFuegoOro = ['#ffd700', '#ff8c00', '#ff4500', '#ff2200', '#ffea75', '#e67e22', '#f1c40f'];
+
+            for (let i = 0; i < 70; i++) {
+                let particula = document.createElement('div');
+                particula.className = 'bengala-fuego-oro';
+                particula.style.left = centroX + 'px';
+                particula.style.top = centroY + 'px';
+                
+                particula.style.color = paletaFuegoOro[Math.floor(Math.random() * paletaFuegoOro.length)];
+
+                let angulo = Math.random() * Math.PI * 2;
+                let distancia = 150 + Math.random() * 200;
+                let dx = Math.cos(angulo) * distancia;
+                let dy = Math.sin(angulo) * distancia;
+
+                particula.style.setProperty('--dx', dx + 'px');
+                particula.style.setProperty('--dy', dy + 'px');
+
+                document.body.appendChild(particula);
+
+                setTimeout(() => {
+                    particula.remove();
+                }, 1500);
+            }
+        }
+
+        const doncellas = [
+            { nombre: "Doncella Clara", icono: "💃" },
+            { nombre: "Mademoiselle Scarlett", icono: "🌹" },
+            { nombre: "La Rosa del Oeste", icono: "👑" },
+            { nombre: "Calamity Jane", icono: "🎯" }
+        ];
+        let indiceDoncellaActual = 0;
+
+        function cambiarDoncella() {
+            indiceDoncellaActual = (indiceDoncellaActual + 1) % doncellas.length;
+            let d = doncellas[indiceDoncellaActual];
+            document.getElementById('dealer-icon').innerText = d.icono;
+            document.getElementById('dealer-name').innerText = d.nombre;
+            log(`[Saloon]: La crupier ahora es ${d.nombre}.`);
+        }
+
+        function togglePausaJugador() {
+            jugadorEnPausa = !jugadorEnPausa;
+            let asientoDiv = document.getElementById('asiento-4');
+            let nombreSpan = document.getElementById('nombre-etiqueta-tu');
+            let btnSentarse = document.getElementById('btn-sentarse-asiento');
+            
+            if (jugadorEnPausa) {
+                asientoDiv.classList.add('en-pausa');
+                nombreSpan.innerText = "Tú (En Pausa ☕) [ID: 4]";
+                btnSentarse.style.display = 'block';
+                retirados[4] = true;
+                log(`☕ [Pausa]: Te has levantado de la mesa. Tu puesto sigue reservado.`);
+            } else {
+                asientoDiv.classList.remove('en-pausa');
+                nombreSpan.innerText = "Tú (Vaquero) [ID: 4]";
+                btnSentarse.style.display = 'none';
+                retirados[4] = false;
+                log(`🤠 [Regreso]: ¡Te has vuelto a sentar en la mesa listo para la acción!`);
+            }
+        }
+
+        function regresarAlLobby() {
+            if (temporizadorTurno) clearInterval(temporizadorTurno);
+            
+            document.getElementById('pantalla-salon').style.display = 'none';
+            document.getElementById('pantalla-portada').style.display = 'flex';
+            
+            fichasJugador = 1000;
+            boteActual = 200;
+            jugadorEnPausa = false;
+            faseMano = 0;
+            document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
+            document.getElementById('pot-display').innerText = `BOTE: 200 USDT`;
+            document.getElementById('asiento-4').classList.remove('en-pausa', 'retirado', 'turno-activo', 'allin-estado');
+            document.getElementById('nombre-etiqueta-tu').innerText = "Tú (Vaquero) [ID: 4]";
+            document.getElementById('btn-sentarse-asiento').style.display = 'none';
+            
+            for(let c=0; c<5; c++) {
+                let cardElem = document.getElementById(`com-${c}`);
+                cardElem.className = `card card-back`;
+                cardElem.style.background = colorDorsoActual;
+                cardElem.innerText = '🂠';
+            }
+
+            document.getElementById('cartas-s4').innerHTML = `<div class="card card-back" style="background:${colorDorsoActual}">🂠</div><div class="card card-back" style="background:${colorDorsoActual}">🂠</div>`;
+
+            for(let i=1; i<=6; i++) {
+                document.getElementById(`asiento-${i}`).classList.remove('turno-activo', 'retirado');
+                let t = document.getElementById(`timer-ui-${i}`);
+                if (t) t.innerText = "";
+            }
+            log(`🏠 [Lobby]: Has salido de la mesa y se ha reseteado por completo.`);
+        }
+
+        function entrarAlSaloon() {
+            const portada = document.getElementById('pantalla-portada');
+            const salon = document.getElementById('pantalla-salon');
+            if (portada) portada.style.display = 'none';
+            if (salon) salon.style.display = 'flex';
+            
+            actualizarVisibilidadBots();
+            cambiarColorDorso(colorDorsoActual);
+        }
+
+        function actualizarVisibilidadBots() {
+            let bots = document.querySelectorAll('.bot-seat');
+            bots.forEach(b => {
+                if (modoActual === 'Práctica') {
+                    b.style.display = 'flex';
+                } else {
+                    b.style.display = 'none';
+                }
+            });
+
+            if (modoActual !== 'Práctica') {
+                log(`⏳ [${modoActual}]: Mesa abierta. Esperando jugadores humanos en la sala (60s)...`);
+            }
+        }
+
+        function togglePantallaCompleta() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    log(`[Error]: No se pudo activar pantalla completa.`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        function toggleChat() {
+            const chatBox = document.getElementById('chat-flotante');
+            const btnToggle = document.getElementById('btn-toggle-chat');
+            const inputArea = document.getElementById('chat-input-area');
+
+            chatBox.classList.toggle('oculto');
+            if (chatBox.classList.contains('oculto')) {
+                btnToggle.innerText = "▼ Mostrar";
+                inputArea.style.display = 'none';
+            } else {
+                btnToggle.innerText = "▲ Ocultar";
+                inputArea.style.display = 'flex';
+            }
+        }
+
+        function actualizarValorSlider(val) {
+            document.getElementById('slider-valor').innerText = val;
+        }
+
+        function enviarMensajeChat() {
+            const input = document.getElementById('input-mensaje');
+            const texto = input.value.trim();
+            if (texto !== "") {
+                log(`🤠 [Tú]: ${texto}`);
+                input.value = "";
+                setTimeout(() => {
+                    let botsActivos = [1, 2, 3, 5, 6];
+                    let botAzar = botsActivos[Math.floor(Math.random() * botsActivos.length)];
+                    let respuestasBot = ["¡Así se habla, vaquero!", "¡Ese bote es mío!", "Juego prudente...", "¡No cantes victoria todavía!"];
+                    let resp = respuestasBot[Math.floor(Math.random() * respuestasBot.length)];
+                    log(`🤖 [${nombresAsientos[botAzar]}]: ${resp}`);
+                }, 1500);
+            }
+        }
+
+        function enviarConEnter(event) {
+            if (event.key === 'Enter') {
+                enviarMensajeChat();
+            }
+        }
+
+        function seleccionarModo(modo) {
+            modoActual = modo;
+            document.getElementById('btn-practica').classList.remove('selected');
+            document.getElementById('btn-campana').classList.remove('selected');
+            document.getElementById('btn-multijugador').classList.remove('selected');
+            
+            if (modo === 'Práctica') {
+                document.getElementById('btn-practica').classList.add('selected');
+                document.getElementById('torneo-panel').style.display = 'none';
+                log(`[Modo]: Mesa de Práctica libre con bots.`);
+            } else if (modo === 'Campaña') {
+                document.getElementById('btn-campana').classList.add('selected');
+                document.getElementById('torneo-panel').style.display = 'flex';
+                torneoPartidaActual = 1;
+                torneoVictoriasUsuario = 0;
+                actualizarPanelTorneo();
+                log(`🤠 [Torneo Campaña]: Esperando rivales humanos para iniciar serie...`);
+            } else if (modo === 'Multijugador') {
+                document.getElementById('btn-multijugador').classList.add('selected');
+                document.getElementById('torneo-panel').style.display = 'none';
+                log(`🌐 [Multijugador]: Buscando jugadores en red local / online...`);
+            }
+            actualizarVisibilidadBots();
+        }
+
+        function actualizarPanelTorneo() {
+            document.getElementById('torneo-serie').innerText = `🏆 Torneo: Partida ${torneoPartidaActual} (Serie al mejor de 3)`;
+            document.getElementById('torneo-victorias').innerText = `⭐ Tus Victorias: ${torneoVictoriasUsuario} / 2`;
+            document.getElementById('jackpot-display').innerText = `💰 Jackpot: $${jackpotMonto} USDT`;
+        }
+
+        let localStream = null;
+        let micActivo = false;
+
+        function log(mensaje) {
+            const logDiv = document.getElementById('output-log');
+            logDiv.innerHTML += `<br>${mensaje}`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function actualizarTurnoVisual(nuevoTurno) {
+            turnoActual = nuevoTurno;
+            for (let i = 1; i <= 6; i++) {
+                let asientoDiv = document.getElementById(`asiento-${i}`);
+                if (asientoDiv) {
+                    if (i === turnoActual) {
+                        asientoDiv.classList.add('turno-activo');
+                    } else {
+                        asientoDiv.classList.remove('turno-activo');
+                    }
+                }
+            }
+        }
+
+        function lanzarFichasAlBote(asientoId) {
+            const asiento = document.getElementById(`asiento-${asientoId}`);
+            const mesa = document.getElementById('mesa-poker');
+            
+            const ficha = document.createElement('div');
+            ficha.className = 'ficha-volando';
+            ficha.innerHTML = '<img src="ficha.png" style="width: 32px; height: 32px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));">';
+
+            const rectAsiento = asiento.getBoundingClientRect();
+            const rectMesa = mesa.getBoundingClientRect();
+
+            ficha.style.left = (rectAsiento.left - rectMesa.left + 50) + 'px';
+            ficha.style.top = (rectAsiento.top - rectMesa.top + 10) + 'px';
+
+            mesa.appendChild(ficha);
+
+            setTimeout(() => { ficha.remove(); }, 700);
+        }
+
+        async function registrarUsuarioAPI() {
+            try {
+                const response = await fetch('/api/usuario/registrar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ telegram_id: "999888", username: "Vaquero" })
+                });
+                const data = await response.json();
+                idUsuarioActual = data.usuario_id;
+                fichasJugador = data.fichas_gratis;
+                
+                document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
+                document.getElementById('range-subir').max = fichasJugador;
+                log(`[API Registro]: Conectado. Fichas: ${fichasJugador}`);
+            } catch (error) {
+                log(`[Error]: No se pudo conectar con el servidor.`);
+            }
+        }
+
+        async function repartirCartasAPI() {
+            if (jugadorEnPausa) {
+                log(`☕ [Pausa]: Estás en descanso. No participas en esta mano.`);
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/juego/repartir', { method: 'POST' });
+                const data = await response.json();
+                
+                boteActual = data.pot;
+                contadorAccionesRonda = 0;
+                faseMano = 1;
+                cartasComunitariasGlobales = data.comunitarias;
+                
+                document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
+                document.getElementById('mazo-info').innerText = `Cartas mazo: ${data.cartas_restantes_mazo}`;
+                
+                for(let i=1; i<=6; i++) {
+                    let asientoDiv = document.getElementById(`asiento-${i}`);
+                    if (i !== 4 || !jugadorEnPausa) {
+                        retirados[i] = false;
+                        asientoDiv.classList.remove('retirado');
+                    }
+                    asientoDiv.classList.remove('allin-estado');
+                }
+
+                if (jugadorEnPausa) {
+                    retirados[4] = true;
+                    document.getElementById('asiento-4').classList.add('retirado');
+                }
+
+                for (let c = 0; c < 5; c++) {
+                    let cardElem = document.getElementById(`com-${c}`);
+                    if (c < 3) {
+                        let cartaVal = cartasComunitariasGlobales[c];
+                        let esRoja = cartaVal.includes('♥') || cartaVal.includes('♦');
+                        cardElem.className = `card ${esRoja ? 'red' : ''}`;
+                        cardElem.style.background = '#ffffff';
+                        cardElem.innerText = cartaVal;
+                    } else {
+                        cardElem.className = `card card-back`;
+                        cardElem.style.background = colorDorsoActual;
+                        cardElem.innerText = '🂠';
+                    }
+                }
+
+                for (let i = 1; i <= 6; i++) {
+                    let cartas = data.cartas_jugadores[`jugador_${i}`];
+                    let contenedor = document.getElementById(`cartas-s${i}`);
+                    if (contenedor) {
+                        let htmlCartas = "";
+                        if (i === 4) {
+                            cartasJugadorPrivadas = cartas;
+                            if (jugadorEnPausa) {
+                                htmlCartas = `<div class="card card-back" style="background:${colorDorsoActual}">☕</div><div class="card card-back" style="background:${colorDorsoActual}">☕</div>`;
+                            } else {
+                                cartas.forEach(c => {
+                                    let esRoja = c.includes('♥') || c.includes('♦');
+                                    htmlCartas += `<div class="card ${esRoja ? 'red' : ''}" style="background:#ffffff;">${c}</div>`;
+                                });
+                            }
+                        } else {
+                            cartasBotsPrivadas[i] = cartas;
+                            cartas.forEach(() => {
+                                htmlCartas += `<div class="card card-back" style="background:${colorDorsoActual}">🂠</div>`;
+                            });
+                        }
+                        contenedor.innerHTML = htmlCartas;
+                    }
+                }
+
+                log(`[Flop]: Cartas comunitarias repartidas.`);
+                iniciarTurno(4);
+            } catch (error) {
+                log(`[Error]: No se pudo repartir.`);
+            }
+        }
+
+        function avanzarFaseComunitaria() {
+            faseMano++;
+            contadorAccionesRonda = 0;
+
+            if (faseMano === 2) {
+                let cartaVal = cartasComunitariasGlobales[3];
+                let esRoja = cartaVal.includes('♥') || cartaVal.includes('♦');
+                let cardElem = document.getElementById(`com-3`);
+                cardElem.className = `card ${esRoja ? 'red' : ''}`;
+                cardElem.style.background = '#ffffff';
+                cardElem.innerText = cartaVal;
+                log(`[Turn]: 4ta carta comunitaria descubierta.`);
+                iniciarTurno(4);
+            } 
+            else if (faseMano === 3) {
+                let cartaVal = cartasComunitariasGlobales[4];
+                let esRoja = cartaVal.includes('♥') || cartaVal.includes('♦');
+                let cardElem = document.getElementById(`com-4`);
+                cardElem.className = `card ${esRoja ? 'red' : ''}`;
+                cardElem.style.background = '#ffffff';
+                cardElem.innerText = cartaVal;
+                log(`[River]: ¡5ta carta descubierta! Showdown final.`);
+                
+                setTimeout(() => {
+                    ejecutarShowdownFinalReal();
+                }, 1200);
+            }
+        }
+
+        function iniciarTurno(asientoNum) {
+            if (retirados[asientoNum] || allInJugadores[asientoNum]) {
+                siguienteTurnoAutomatico(asientoNum);
+                return;
+            }
+
+            actualizarTurnoVisual(asientoNum);
+            segundosRestantes = 25;
+            
+            for (let i = 1; i <= 6; i++) {
+                let timerElem = document.getElementById(`timer-ui-${i}`);
+                if (timerElem) timerElem.innerText = (i === asientoNum) ? `⏰ ${segundosRestantes}s` : "";
+            }
+
+            if (temporizadorTurno) clearInterval(temporizadorTurno);
+
+            temporizadorTurno = setInterval(() => {
+                segundosRestantes--;
+                let timerElem = document.getElementById(`timer-ui-${asientoNum}`);
+                if (timerElem) {
+                    timerElem.innerText = `⏰ ${segundosRestantes}s`;
+                }
+
+                if (segundosRestantes <= 0) {
+                    clearInterval(temporizadorTurno);
+                    if (timerElem) timerElem.innerText = "";
+                    
+                    log(`⏰ ¡Tiempo agotado para **${nombresAsientos[asientoNum]}**! Fold automático.`);
+                    retirados[asientoNum] = true;
+                    document.getElementById(`asiento-${asientoNum}`).classList.add('retirado');
+
+                    contadorAccionesRonda++;
+                    siguienteTurnoAutomatico(asientoNum);
+                }
+            }, 1000);
+
+            if (asientoNum !== 4) {
+                setTimeout(() => {
+                    if (turnoActual === asientoNum && !retirados[asientoNum] && !allInJugadores[asientoNum]) {
+                        clearInterval(temporizadorTurno);
+                        let timerElem = document.getElementById(`timer-ui-${asientoNum}`);
+                        if (timerElem) timerElem.innerText = "";
+                        ejecutarAccionBot(asientoNum);
+                    }
+                }, 2000);
+            }
+        }
+
+        function siguienteTurnoAutomatico(asientoActual) {
+            let activos = [];
+            for (let i = 1; i <= 6; i++) { if (!retirados[i]) activos.push(i); }
+
+            if (activos.length === 1) {
+                if (temporizadorTurno) clearInterval(temporizadorTurno);
+                for (let i = 1; i <= 6; i++) {
+                    let t = document.getElementById(`timer-ui-${i}`);
+                    if (t) t.innerText = "";
+                }
+                setTimeout(() => { verificarGanadorPorAbandono(activos[0]); }, 800);
+                return;
+            }
+
+            let pendientesAccion = activos.filter(id => !allInJugadores[id]);
+            if (pendientesAccion.length === 0) {
+                if (temporizadorTurno) clearInterval(temporizadorTurno);
+                for (let i = 1; i <= 6; i++) {
+                    let t = document.getElementById(`timer-ui-${i}`);
+                    if (t) t.innerText = "";
+                }
+                log(`💥 ¡Todos los jugadores activos están en ALL-IN! Avanzando cartas comunitarias...`);
+                setTimeout(() => { avanzarFaseComunitariaCompleta(); }, 1000);
+                return;
+            }
+
+            if (contadorAccionesRonda >= 6) {
+                if (temporizadorTurno) clearInterval(temporizadorTurno);
+                for (let i = 1; i <= 6; i++) {
+                    let t = document.getElementById(`timer-ui-${i}`);
+                    if (t) t.innerText = "";
+                }
+                avanzarFaseComunitaria();
+                return;
+            }
+
+            let siguiente = (asientoActual % 6) + 1;
+            iniciarTurno(siguiente);
+        }
+
+        function avanzarFaseComunitariaCompleta() {
+            if (faseMano === 1) {
+                faseMano = 3;
+                let cartaVal3 = cartasComunitariasGlobales[3];
+                let cartaVal4 = cartasComunitariasGlobales[4];
+                let elem3 = document.getElementById(`com-3`);
+                let elem4 = document.getElementById(`com-4`);
+                elem3.className = `card ${cartaVal3.includes('♥')||cartaVal3.includes('♦')?'red':''}`;
+                elem3.style.background = '#ffffff';
+                elem3.innerText = cartaVal3;
+                elem4.className = `card ${cartaVal4.includes('♥')||cartaVal4.includes('♦')?'red':''}`;
+                elem4.style.background = '#ffffff';
+                elem4.innerText = cartaVal4;
+                log(`[Showdown All-In]: Revelando Turn y River automáticamente.`);
+                setTimeout(() => { ejecutarShowdownFinalReal(); }, 1500);
+            } else if (faseMano === 2) {
+                faseMano = 3;
+                let cartaVal4 = cartasComunitariasGlobales[4];
+                let elem4 = document.getElementById(`com-4`);
+                elem4.className = `card ${cartaVal4.includes('♥')||cartaVal4.includes('♦')?'red':''}`;
+                elem4.style.background = '#ffffff';
+                elem4.innerText = cartaVal4;
+                log(`[Showdown All-In]: Revelando River automáticamente.`);
+                setTimeout(() => { ejecutarShowdownFinalReal(); }, 1500);
+            } else {
+                ejecutarShowdownFinalReal();
+            }
+        }
+
+        function ejecutarAccionBot(botId) {
+            const jugadasBot = ["igualar", "subir", "pasar"];
+            const eleccion = jugadasBot[Math.floor(Math.random() * jugadasBot.length)];
+            let monto = eleccion === "subir" ? 50 : (eleccion === "igualar" ? 50 : 0);
+
+            if (fichasBots[botId] >= monto) {
+                fichasBots[botId] -= monto;
+                boteActual += monto;
+                document.getElementById(`chips-s${botId}`).innerText = `[$] ${fichasBots[botId]}`;
+                document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
+                if (monto > 0) lanzarFichasAlBote(botId);
+
+                if (eleccion === "subir") log(`🤖 [${nombresAsientos[botId]}]: Subió la apuesta.`);
+                else if (eleccion === "igualar") log(`🤖 [${nombresAsientos[botId]}]: Igualó (Call).`);
+                else log(`🤖 [${nombresAsientos[botId]}]: Pasó (Check).`);
+            }
+
+            contadorAccionesRonda++;
+            siguienteTurnoAutomatico(botId);
+        }
+
+        function apostarJugador(accion) {
+            if (turnoActual !== 4) {
+                log(`⚠️ [Aviso]: Espera tu turno.`);
+                return;
+            }
+
+            clearInterval(temporizadorTurno);
+            let t = document.getElementById('timer-ui-4');
+            if (t) t.innerText = "";
+
+            if (accion === 'retirarse') {
+                retirados[4] = true;
+                document.getElementById('asiento-4').classList.add('retirado');
+                log(`[Tu Turno]: Te retiraste (Fold).`);
+            } else {
+                let montoApuesta = 0;
+                if (accion === 'igualar') montoApuesta = 50;
+                else if (accion === 'subir') montoApuesta = parseInt(document.getElementById('range-subir').value);
+                else if (accion === 'allin') {
+                    montoApuesta = fichasJugador;
+                    allInJugadores[4] = true;
+                    document.getElementById('asiento-4').classList.add('allin-estado');
+                }
+
+                if (fichasJugador >= montoApuesta) {
+                    fichasJugador -= montoApuesta;
+                    boteActual += montoApuesta;
+
+                    document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
+                    document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
+                    if (montoApuesta > 0) lanzarFichasAlBote(4);
+
+                    if (accion === 'allin') log(`🔥 [Tu Turno]: ¡¡ALL-IN con ${montoApuesta} fichas!!`);
+                    else if (accion === 'subir') log(`[Tu Turno]: Subiste con la escala: $${montoApuesta}.`);
+                    else log(`[Tu Turno]: Has ${accion}.`);
+                }
+            }
+
+            contadorAccionesRonda++;
+            siguienteTurnoAutomatico(4);
+        }
+
+        function ejecutarShowdownFinalReal() {
+            let activos = [];
+            for (let i = 1; i <= 6; i++) { if (!retirados[i]) activos.push(i); }
+
+            let mejorPuntaje = -1;
+            let ganadorId = activos[0];
+            let nombreMejorMano = "";
+
+            activos.forEach(id => {
+                let cartasMano = (id === 4) ? cartasJugadorPrivadas : cartasBotsPrivadas[id];
+                let resultado = evaluarManoPoker(cartasMano, cartasComunitariasGlobales);
+                
+                log(`🔎 [Evaluación ${nombresAsientos[id]}]: ${resultado.nombre}`);
+
+                if (resultado.score > mejorPuntaje) {
+                    mejorPuntaje = resultado.score;
+                    ganadorId = id;
+                    nombreMejorMano = resultado.nombre;
+                }
+            });
+
+            log(`🏆 ¡SHOWDOWN FINAL! Ganador evaluado por reglas oficiales.`);
+
+            for (let i = 1; i <= 6; i++) {
+                if (!retirados[i] && i !== ganadorId) {
+                    document.getElementById(`cartas-s${i}`).innerHTML = `<div class="card card-back" style="background:${colorDorsoActual}">🂠</div><div class="card card-back" style="background:${colorDorsoActual}">🂠</div>`;
+                }
+            }
+
+            let cartasGanador = (ganadorId === 4) ? cartasJugadorPrivadas : cartasBotsPrivadas[ganadorId];
+            let htmlCartasGanador = "";
+            cartasGanador.forEach(c => {
+                let esRoja = c.includes('♥') || c.includes('♦');
+                htmlCartasGanador += `<div class="card ${esRoja ? 'red' : ''}" style="background:#ffffff;">${c}</div>`;
+            });
+            document.getElementById(`cartas-s${ganadorId}`).innerHTML = htmlCartasGanador;
+
+            lanzarBengalasMajestuosas(ganadorId);
+
+            if (ganadorId === 4) {
+                fichasJugador += boteActual;
+                document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
+                log(`🎉 ¡VICTORIA! **¡Ganaste el bote de ${boteActual} USDT con ${nombreMejorMano}!** 🪙✨`);
+
+                if (modoActual === 'Campaña') {
+                    torneoVictoriasUsuario++;
+                    jackpotMonto += 250;
+
+                    if (mejorPuntaje >= 7000) {
+                        jackpotMonto += 2000;
+                        log(`💰🎰 ¡JACKPOT EXPLOSIVO REVENTADO! 💥 Sacaste una mano legendaria (${nombreMejorMano}). ¡Ganas un pozo extra de $2,000 USDT!`);
+                    }
+
+                    if (torneoVictoriasUsuario >= 2) {
+                        log(`👑🏆 ¡FELICIDADES VAQUERO! **¡Has ganado el Campeonato del Torneo del Oeste!**`);
+                        alert(`🤠 ¡CAMPEÓN DEL TORNEO! Has ganado la serie al mejor de 3. ¡Gloria y oro en el Salón!`);
+                        torneoPartidaActual = 1;
+                        torneoVictoriasUsuario = 0;
+                    } else {
+                        torneoPartidaActual++;
+                        log(`🎯 [Torneo]: Avanzando a la siguiente partida. Victorias tuyas: ${torneoVictoriasUsuario}/2`);
+                    }
+                    actualizarPanelTorneo();
+                }
+
+            } else {
+                fichasBots[ganadorId] += boteActual;
+                document.getElementById(`chips-s${ganadorId}`).innerText = `[$] ${fichasBots[ganadorId]}`;
+                log(`🏠 El ganador es **${nombresAsientos[ganadorId]}** con **${nombreMejorMano}**.`);
+                
+                if (modoActual === 'Campaña') {
+                    log(`⚠️ [Torneo]: Los bots ganaron esta ronda. ¡A reponerse en la siguiente mano!`);
+                }
+            }
+
+            boteActual = 0;
+            document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
+            faseMano = 0;
+            
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`asiento-${i}`).classList.remove('turno-activo');
+            }
+
+            log(`🔄 Próxima mano en 5 segundos (reparto automático)...`);
+            setTimeout(() => {
+                repartirCartasAPI();
+            }, 5000);
+        }
+
+        function verificarGanadorPorAbandono(ganadorId) {
+            if (ganadorId === 4) {
+                document.getElementById('modal-mostrar-cartas').style.display = 'block';
+            } else {
+                fichasBots[ganadorId] += boteActual;
+                document.getElementById(`chips-s${ganadorId}`).innerText = `[$] ${fichasBots[ganadorId]}`;
+                log(`🏆 Todos se retiraron. **${nombresAsientos[ganadorId]}** gana el bote de ${boteActual} USDT.`);
+                boteActual = 0;
+                document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
+                
+                log(`🔄 Próxima mano en 5 segundos (reparto automático)...`);
+                setTimeout(() => {
+                    repartirCartasAPI();
+                }, 5000);
+            }
+        }
+
+        function responderMostrarCartas(mostrar) {
+            document.getElementById('modal-mostrar-cartas').style.display = 'none';
+            fichasJugador += boteActual;
+            document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
+
+            if (mostrar) {
+                log(`🏆 ¡Ganaste el bote de ${boteActual} USDT por abandono! Mostraste tus cartas: **[${cartasJugadorPrivadas.join(', ')}]**. 🃏✨`);
+                lanzarBengalasMajestuosas(4);
+            } else {
+                log(`🏆 ¡Ganaste el bote de ${boteActual} USDT por abandono! (Guardaste tus cartas en secreto - Muck). 🂠`);
+            }
+
+            if (modoActual === 'Campaña') {
+                torneoVictoriasUsuario++;
+                if (torneoVictoriasUsuario >= 2) {
+                    log(`👑🏆 ¡CAMPEÓN DEL TORNEO POR ABANDONO DE LOS RIVALES!`);
+                    torneoPartidaActual = 1;
+                    torneoVictoriasUsuario = 0;
+                } else {
+                    torneoPartidaActual++;
+                }
+                actualizarPanelTorneo();
+            }
+
+            boteActual = 0;
+            document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`asiento-${i}`).classList.remove('turno-activo');
+            }
+            
+            log(`🔄 Próxima mano en 5 segundos (reparto automático)...`);
+            setTimeout(() => {
+                repartirCartasAPI();
+            }, 5000);
+        }
+
+        async function avanzarHistoriaAPI() {
+            try {
+                const response = await fetch('/api/historia/avanzar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuario_id: idUsuarioActual, jefe_id: "El Rápido", resultado: "victoria" })
+                });
+                const data = x => x.json();
+                log(`[Modo Historia]: Actualizado.`);
+            } catch (error) {
+                log(`[Error]: No se pudo registrar.`);
+            }
+        }
+
+        async function toggleMicrofono() {
+            const btnHablar = document.getElementById('btn-hablar');
+            const micStatus = document.getElementById('mic-status');
+
+            if (!micActivo) {
+                try {
+                    localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                    micActivo = true;
+                    btnHablar.classList.add('active');
+                    btnHablar.innerHTML = "🔇 Silenciar";
+                    micStatus.innerHTML = "🎙️ Transmitiendo...";
+                    micStatus.style.color = "#2ecc71";
+                    log(`[Voz]: Micrófono abierto.`);
+                } catch (err) {
+                    log(`[Error de Voz]: Sin acceso.`);
+                }
+            } else {
+                if (localStream) { localStream.getTracks().forEach(track => track.stop()); }
+                micActivo = false;
+                btnHablar.classList.remove('active');
+                btnHablar.innerHTML = "🎙️ Micrófono";
+                micStatus.innerHTML = "🎙️ Silenciado";
+                micStatus.style.color = "#bdc3c7";
+                log(`[Voz]: Silenciado.`);
+            }
+        }
+    </script>
+</body>
+</html>
