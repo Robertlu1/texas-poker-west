@@ -206,7 +206,7 @@
             animation: volarFichaRecarga 1.2s ease-in-out forwards;
         }
 
-        /* ESTRUCTURA DEL ASIENTO CON AVATAR GRANDE AL LADO */
+        /* ESTRUCTURA DEL ASIENTO CON TAMAÑO ESTÁNDAR */
         .seat {
             position: absolute;
             background: rgba(18, 26, 36, 0.95);
@@ -283,16 +283,16 @@
         }
         .btn-sentarse-mesa:hover { background: #2ecc71; }
 
-        .seat-1 { top: 2px; left: 20%; }
-        .seat-2 { top: 2px; right: 20%; }
+        .seat-1 { top: 2px; left: 20%; flex-direction: row; }
+        .seat-2 { top: 2px; right: 20%; flex-direction: row-reverse; }
         
-        /* ASIENTOS LATERALES GIRADOS MIRANDO HACIA EL CENTRO (DONCELLA) */
-        .seat-3 { top: 38%; right: -25px; transform: rotate(-90deg); transform-origin: center; }
+        /* ASIENTOS LATERALES CON TAMAÑO NORMAL Y CAJA ADENTRO / AVATAR AFUERA */
+        .seat-3 { top: 38%; right: -35px; flex-direction: row; }
         
-        .seat-4 { bottom: 2px; right: 20%; border-color: #2ecc71; background: rgba(15, 38, 25, 0.95); }
-        .seat-5 { bottom: 2px; left: 20%; }
+        .seat-4 { bottom: 2px; right: 20%; flex-direction: row-reverse; border-color: #2ecc71; background: rgba(15, 38, 25, 0.95); }
+        .seat-5 { bottom: 2px; left: 20%; flex-direction: row; }
         
-        .seat-6 { top: 38%; left: -25px; transform: rotate(90deg); transform-origin: center; }
+        .seat-6 { top: 38%; left: -35px; flex-direction: row-reverse; }
 
         @keyframes volarFicha {
             0% { transform: scale(1) translateY(0); opacity: 1; }
@@ -720,7 +720,7 @@
                     </div>
                 </div>
 
-                <!-- Asiento 3 (GIRADO MIRANDO AL CENTRO) -->
+                <!-- Asiento 3 (Tamaño normal, caja hacia adentro y avatar afuera) -->
                 <div class="seat seat-3 bot-seat" id="asiento-3">
                     <div class="avatar-box"><img src="avatar3.jpg" alt="Avatar"></div>
                     <div class="seat-info">
@@ -753,7 +753,7 @@
                     </div>
                 </div>
 
-                <!-- Asiento 6 (GIRADO MIRANDO AL CENTRO) -->
+                <!-- Asiento 6 (Tamaño normal, caja hacia adentro y avatar afuera) -->
                 <div class="seat seat-6 bot-seat" id="asiento-6">
                     <div class="avatar-box"><img src="avatar6.jpg" alt="Avatar"></div>
                     <div class="seat-info">
@@ -906,7 +906,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Asientos laterales rotados hacia la doncella.</div>
+        <div id="output-log">💬 [Saloon]: Asientos laterales alineados a tamaño normal.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
