@@ -91,7 +91,7 @@
         .btn-ampliar-top {
             position: absolute;
             top: 4px;
-            right: 10px;
+            right: 120px;
             background-color: #27ae60;
             color: white;
             border: 1px solid #2ecc71;
@@ -491,11 +491,10 @@
     <div id="pantalla-salon">
         <div class="saloon-container">
             <button class="btn-ampliar-top" onclick="togglePantallaCompleta()">🗖 Ampliar</button>
-    <div style="position: absolute; top: 4px; right: 10px; display: flex; gap: 6px; z-index: 99;">
-        <button onclick="alert('🛋️ Te has levantado');" style="background: #34495e; color: white; border: 1px solid #7f8c8d; padding: 3px 8px; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 4px;">🛋️ Levantarse</button>
-        <button onclick="location.reload();" style="background: #34495e; color: white; border: 1px solid #7f8c8d; padding: 3px 8px; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 4px;">🚪 Salir</button>
-        <button onclick="document.getElementById('pantalla-salon').style.display='none'; document.getElementById('pantalla-portada').style.display='flex';" style="background: #c0392b; color: white; border: 1px solid #e74c3c; padding: 3px 8px; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 4px;">🏠 Lobby</button>
-    </div>
+            <div style="position: absolute; top: 4px; right: 10px; display: flex; gap: 6px; z-index: 99;">
+                <button onclick="document.getElementById('asiento-4').style.display='none'; log('🛋️ Te has levantado de la mesa');" style="background: #34495e; color: white; border: 1px solid #7f8c8d; padding: 3px 8px; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 4px;">🛋️ Levantarse</button>
+                <button onclick="document.getElementById('pantalla-salon').style.display='none'; document.getElementById('pantalla-portada').style.display='flex';" style="background: #c0392b; color: white; border: 1px solid #e74c3c; padding: 3px 8px; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 4px;">🏠 Lobby</button>
+            </div>
 
             <h2>Texas Poker West: Casino Pro</h2>
             
@@ -642,7 +641,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Botón de confirmación de escala añadido.</div>
+        <div id="output-log">💬 [Saloon]: Botones y automatización listos.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -663,7 +662,7 @@
         let cartasComunitariasGlobales = [];
         let cartasJugadorPrivadas = [];
         let temporizadorTurno = null;
-        let segundosRestantes = 20;
+        let segundosRestantes = 25;
 
         let modoActual = 'Práctica';
         let torneoPartidaActual = 1;
@@ -805,7 +804,6 @@
             log(`[Saloon]: La crupier ahora es ${d.nombre}.`);
         }
 
-        // AQUÍ ESTÁ EL SALTO CORREGIDO Y BLINDADO QUE FUNCIONA AL INSTANTE
         function entrarAlSaloon() {
             const portada = document.getElementById('pantalla-portada');
             const salon = document.getElementById('pantalla-salon');
@@ -1053,7 +1051,7 @@
             }
 
             actualizarTurnoVisual(asientoNum);
-            segundosRestantes = 20;
+            segundosRestantes = 25;
             
             if (asientoNum === 4) {
                 document.getElementById('timer-ui').innerText = `(⏱️ ${segundosRestantes}s)`;
@@ -1291,7 +1289,10 @@
                 document.getElementById(`asiento-${i}`).classList.remove('turno-activo');
             }
 
-            log(`🔄 Pulsa **"Repartir"** para la siguiente mano...`);
+            log(`🔄 Próxima mano en 5 segundos (reparto automático)...`);
+            setTimeout(() => {
+                repartirCartasAPI();
+            }, 5000);
         }
 
         function verificarGanadorPorAbandono(ganadorId) {
@@ -1303,6 +1304,11 @@
                 log(`🏆 Todos se retiraron. **${nombresAsientos[ganadorId]}** gana el bote de ${boteActual} USDT.`);
                 boteActual = 0;
                 document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
+                
+                log(`🔄 Próxima mano en 5 segundos (reparto automático)...`);
+                setTimeout(() => {
+                    repartirCartasAPI();
+                }, 5000);
             }
         }
 
@@ -1335,7 +1341,11 @@
             for (let i = 1; i <= 6; i++) {
                 document.getElementById(`asiento-${i}`).classList.remove('turno-activo');
             }
-            log(`🔄 Pulsa **"Repartir"** para la siguiente mano...`);
+            
+            log(`🔄 Próxima mano en 5 segundos (reparto automático)...`);
+            setTimeout(() => {
+                repartirCartasAPI();
+            }, 5000);
         }
 
         async function avanzarHistoriaAPI() {
