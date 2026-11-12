@@ -206,21 +206,20 @@
             animation: volarFichaRecarga 1.2s ease-in-out forwards;
         }
 
-        /* ESTRUCTURA DEL ASIENTO CON CAJAS GRANDES Y MEDIDAS UNIFICADAS */
+        /* ESTRUCTURA DEL ASIENTO CON AVATAR GRANDE AL LADO */
         .seat {
             position: absolute;
             background: rgba(18, 26, 36, 0.95);
             border: 2px solid #4f5d73;
             border-radius: 10px;
-            padding: 6px 10px;
-            font-size: 11px;
-            width: 185px;
-            height: 72px;
+            padding: 4px 8px;
+            font-size: 10px;
+            width: 155px;
             color: #ffffff;
             box-shadow: 0 4px 12px rgba(0,0,0,0.8);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             text-align: left;
             z-index: 10;
         }
@@ -243,10 +242,10 @@
             box-shadow: 0 0 14px #8e44ad;
         }
 
-        /* AVATAR GRANDE PROPORCIONADO */
+        /* AVATAR GRANDE AL LADO DE LA CAJA */
         .avatar-box {
-            width: 54px;
-            height: 54px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             border: 2px solid #f1c40f;
             overflow: hidden;
@@ -260,22 +259,22 @@
             object-fit: cover;
         }
 
-        .seat-info { line-height: 1.3; overflow: hidden; width: 100%; }
-        .seat-name { font-weight: bold; color: #ffffff; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; justify-content: space-between; align-items: center; }
-        .seat-chips { color: #f1c40f; font-size: 11px; font-weight: bold; }
-        .seat-cards { display: flex; gap: 3px; margin-top: 3px; }
+        .seat-info { line-height: 1.2; overflow: hidden; width: 100%; }
+        .seat-name { font-weight: bold; color: #ffffff; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; justify-content: space-between; align-items: center; }
+        .seat-chips { color: #f1c40f; font-size: 10px; font-weight: bold; }
+        .seat-cards { display: flex; gap: 2px; margin-top: 2px; }
 
         .btn-sentarse-mesa {
             display: none;
             position: absolute;
-            bottom: -18px;
+            bottom: -16px;
             left: 50%;
             transform: translateX(-50%);
             background: #27ae60;
             color: white;
             border: 1px solid #2ecc71;
-            padding: 3px 10px;
-            font-size: 10px;
+            padding: 2px 8px;
+            font-size: 9px;
             font-weight: bold;
             cursor: pointer;
             border-radius: 10px;
@@ -286,14 +285,10 @@
 
         .seat-1 { top: 2px; left: 20%; }
         .seat-2 { top: 2px; right: 20%; }
-        
-        /* ASIENTOS LATERALES GRANDES Y ROTADOS HACIA EL CENTRO */
-        .seat-3 { top: 38%; right: -25px; transform: rotate(-90deg); transform-origin: center; width: 185px; height: 72px; }
-        
+        .seat-3 { top: 38%; right: -35px; }
         .seat-4 { bottom: 2px; right: 20%; border-color: #2ecc71; background: rgba(15, 38, 25, 0.95); }
         .seat-5 { bottom: 2px; left: 20%; }
-        
-        .seat-6 { top: 38%; left: -25px; transform: rotate(90deg); transform-origin: center; width: 185px; height: 72px; }
+        .seat-6 { top: 38%; left: -35px; }
 
         @keyframes volarFicha {
             0% { transform: scale(1) translateY(0); opacity: 1; }
@@ -721,7 +716,7 @@
                     </div>
                 </div>
 
-                <!-- Asiento 3 (Girado y agrandado) -->
+                <!-- Asiento 3 -->
                 <div class="seat seat-3 bot-seat" id="asiento-3">
                     <div class="avatar-box"><img src="avatar3.jpg" alt="Avatar"></div>
                     <div class="seat-info">
@@ -754,7 +749,7 @@
                     </div>
                 </div>
 
-                <!-- Asiento 6 (Girado y agrandado) -->
+                <!-- Asiento 6 -->
                 <div class="seat seat-6 bot-seat" id="asiento-6">
                     <div class="avatar-box"><img src="avatar6.jpg" alt="Avatar"></div>
                     <div class="seat-info">
@@ -907,7 +902,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Asientos grandes y botón Conectar optimizado.</div>
+        <div id="output-log">💬 [Saloon]: Avatares grandes al lado de la caja configurados.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1329,31 +1324,43 @@
         let localStream = null;
         let micActivo = false;
 
-        async function toggleMicrofono() {
-            const btnHablar = document.getElementById('btn-hablar');
-            const micStatus = document.getElementById('mic-status');
+        function log(mensaje) {
+            const logDiv = document.getElementById('output-log');
+            logDiv.innerHTML += `<br>${mensaje}`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
 
-            if (!micActivo) {
-                try {
-                    localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-                    micActivo = true;
-                    btnHablar.classList.add('active');
-                    btnHablar.innerHTML = "🔇 Silenciar";
-                    micStatus.innerHTML = "🎙️ Transmitiendo...";
-                    micStatus.style.color = "#2ecc71";
-                    log(`[Voz]: Micrófono abierto.`);
-                } catch (err) {
-                    log(`[Error de Voz]: Sin acceso.`);
+        function actualizarTurnoVisual(nuevoTurno) {
+            turnoActual = nuevoTurno;
+            for (let i = 1; i <= 6; i++) {
+                let asientoDiv = document.getElementById(`asiento-${i}`);
+                if (asientoDiv) {
+                    if (i === turnoActual) {
+                        asientoDiv.classList.add('turno-activo');
+                    } else {
+                        asientoDiv.classList.remove('turno-activo');
+                    }
                 }
-            } else {
-                if (localStream) { localStream.getTracks().forEach(track => track.stop()); }
-                micActivo = false;
-                btnHablar.classList.remove('active');
-                btnHablar.innerHTML = "🎙️ Micrófono";
-                micStatus.innerHTML = "🎙️ Silenciado";
-                micStatus.style.color = "#bdc3c7";
-                log(`[Voz]: Silenciado.`);
             }
+        }
+
+        function lanzarFichasAlBote(asientoId) {
+            const asiento = document.getElementById(`asiento-${asientoId}`);
+            const mesa = document.getElementById('mesa-poker');
+            
+            const ficha = document.createElement('div');
+            ficha.className = 'ficha-volando';
+            ficha.innerHTML = '<img src="ficha.png" style="width: 32px; height: 32px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));">';
+
+            const rectAsiento = asiento.getBoundingClientRect();
+            const rectMesa = mesa.getBoundingClientRect();
+
+            ficha.style.left = (rectAsiento.left - rectMesa.left + 50) + 'px';
+            ficha.style.top = (rectAsiento.top - rectMesa.top + 10) + 'px';
+
+            mesa.appendChild(ficha);
+
+            setTimeout(() => { ficha.remove(); }, 700);
         }
 
         async function registrarUsuarioAPI() {
@@ -1363,23 +1370,15 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ telegram_id: "999888", username: "Vaquero" })
                 });
-                
-                if (!response.ok) throw new Error("Servidor no disponible");
-                
                 const data = await response.json();
                 idUsuarioActual = data.usuario_id;
                 fichasJugador = data.fichas_gratis;
                 
                 document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
                 document.getElementById('range-subir').max = fichasJugador;
-                log(`[API Registro]: Conectado con éxito. Fichas: ${fichasJugador}`);
+                log(`[API Registro]: Conectado. Fichas: ${fichasJugador}`);
             } catch (error) {
-                // Modo local de emergencia garantizado para que el botón responda siempre
-                idUsuarioActual = 4;
-                fichasJugador = 1000;
-                document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
-                document.getElementById('range-subir').max = fichasJugador;
-                log(`🤠 [Modo Local]: ¡Conectado al Salón exitosamente! Fichas listas: 1,000`);
+                log(`[Error]: No se pudo conectar con el servidor.`);
             }
         }
 
