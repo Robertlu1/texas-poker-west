@@ -322,7 +322,7 @@
         .seat-1 { top: 2px; left: 16%; }
         .seat-2 { top: 2px; right: 16%; }
         
-        /* ASIENTOS LATERALES PERFECTAMENTE CENTRADOS Y DENTRO DEL PAÑO */
+        /* ASIENTOS LATERALES PERFECTAMENTE UBICADOS */
         .seat-3 { 
             top: 36%; 
             right: 18px; 
@@ -341,9 +341,10 @@
         
         .seat-5 { bottom: 2px; left: 16%; }
         
+        /* ASIENTO 6 SUBIDO MÁS ARRIBA Y ADENTRO */
         .seat-6 { 
-            top: 26%; 
-            left: 35px; 
+            top: 20%; 
+            left: 45px; 
             transform: rotate(90deg); 
             transform-origin: center; 
             width: 75px; 
@@ -1019,7 +1020,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Asiento izquierdo perfectamente centrado y stickers lanzados hacia ti (Tú).</div>
+        <div id="output-log">💬 [Saloon]: Asiento 6 ajustado y stickers saliendo desde ti hacia los rivales.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1151,10 +1152,10 @@
             btnLiberar.classList.remove('activo');
         }
 
-        // STICKERS DIRIGIDOS DESDE EL JUGADOR QUE PULSA HACIA EL ASIENTO 4 (TÚ)
-        function lanzarSticker(seatId, emoji) {
-            const asientoOrigen = document.getElementById(`asiento-${seatId}`);
-            const asientoDestino = document.getElementById(`asiento-4`); // Destino: Tú
+        // STICKERS: SALEN DESDE TI (ASIENTO 4) HASTA EL JUGADOR AL QUE LE DISTE CLIC
+        function lanzarSticker(targetSeatId, emoji) {
+            const asientoOrigen = document.getElementById(`asiento-4`); // Salen de ti (Tú)
+            const asientoDestino = document.getElementById(`asiento-${targetSeatId}`); // Hacia el jugador seleccionado
             const mesa = document.getElementById('mesa-poker');
             const sticker = document.createElement('div');
             
@@ -1187,7 +1188,7 @@
             }, 800);
 
             setTimeout(() => { sticker.remove(); }, 1300);
-            log(`💬 [Sticker]: ${nombresAsientos[seatId]} lanzó ${emoji} hacia ti.`);
+            log(`💬 [Sticker]: Le tiraste ${emoji} a ${nombresAsientos[targetSeatId]}`);
         }
 
         function evaluarManoPoker(cartasJugador, comunitarias) {
