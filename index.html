@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -159,13 +158,13 @@
             background: #ffffff;
             color: #000000;
             font-weight: bold;
-            width: 34px;
-            height: 46px;
+            width: 38px;
+            height: 50px;
             border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 15px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.6);
             border: 1px solid #bdc3c7;
             position: relative;
@@ -176,7 +175,7 @@
             background: #c0392b;
             color: #f1c40f;
             border: 1px solid #f1c40f;
-            font-size: 12px;
+            font-size: 13px;
         }
 
         @keyframes explosionFuegoOro {
@@ -207,7 +206,7 @@
             animation: volarFichaRecarga 1.2s ease-in-out forwards;
         }
 
-        /* ESTRUCTURA GENERAL DEL ASIENTO: CAJA A LA IZQUIERDA, AVATAR A LA DERECHA */
+        /* ESTRUCTURA GENERAL DEL ASIENTO (STIKER IZQ, CAJA CENTRO, AVATAR DER) */
         .seat {
             position: absolute;
             display: flex;
@@ -232,32 +231,67 @@
             box-shadow: 0 0 14px #8e44ad;
         }
 
-        /* CUADRO DE LA CAJA (CONTEXO INTERNO: NOMBRE, ID, RELOJ Y CARTAS) */
+        /* CAJA UNIFICADA Y PROPORCIONAL PARA TODOS LOS ASIENTOS */
         .seat-box {
             background: rgba(18, 26, 36, 0.95);
             border: 2px solid #4f5d73;
             border-radius: 8px;
-            padding: 4px 6px;
-            font-size: 10px;
-            width: 145px;
+            padding: 5px 8px;
+            width: 165px;
+            height: 75px;
             color: #ffffff;
             box-shadow: 0 4px 12px rgba(0,0,0,0.8);
             text-align: left;
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            justify-content: space-between;
         }
 
-        /* AVATAR GRANDE UBICADO A LA DERECHA DE LA CAJA */
+        .seat-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            font-weight: bold;
+            line-height: 1.1;
+        }
+        .seat-name { color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 95px; }
+        .seat-chips { color: #f1c40f; font-size: 10px; font-weight: bold; }
+
+        .seat-bottom-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .seat-cards { display: flex; gap: 3px; }
+
+        /* BOTONES DE STICKERS A LA IZQUIERDA */
+        .sticker-box {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .btn-sticker {
+            background: rgba(40, 55, 71, 0.9);
+            border: 1px solid #f1c40f;
+            border-radius: 4px;
+            font-size: 11px;
+            padding: 2px 4px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .btn-sticker:hover { transform: scale(1.15); background: rgba(212, 172, 13, 0.4); }
+
+        /* AVATAR GRANDE A LA DERECHA */
         .avatar-box {
-            width: 50px;
-            height: 50px;
+            width: 65px;
+            height: 65px;
             border-radius: 50%;
-            border: 2px solid #f1c40f;
+            border: 2.5px solid #f1c40f;
             overflow: hidden;
             flex-shrink: 0;
             background: #2c3e50;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.8);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.9);
         }
         .avatar-box img {
             width: 100%;
@@ -265,14 +299,10 @@
             object-fit: cover;
         }
 
-        .seat-name { font-weight: bold; color: #ffffff; font-size: 9px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; justify-content: space-between; align-items: center; }
-        .seat-chips { color: #f1c40f; font-size: 9px; font-weight: bold; }
-        .seat-cards { display: flex; gap: 2px; }
-
         .btn-sentarse-mesa {
             display: none;
             position: absolute;
-            bottom: -16px;
+            bottom: -18px;
             left: 50%;
             transform: translateX(-50%);
             background: #27ae60;
@@ -288,16 +318,16 @@
         }
         .btn-sentarse-mesa:hover { background: #2ecc71; }
 
-        .seat-1 { top: 2px; left: 18%; }
-        .seat-2 { top: 2px; right: 18%; }
+        .seat-1 { top: 2px; left: 16%; }
+        .seat-2 { top: 2px; right: 16%; }
         
-        /* ASIENTOS LATERALES ROTADOS HACIA EL CENTRO CON AVATAR A LA DERECHA */
+        /* ASIENTOS LATERALES ROTADOS HACIA EL CENTRO */
         .seat-3 { top: 38%; right: -25px; transform: rotate(-90deg); transform-origin: center; }
         
-        .seat-4 { bottom: 2px; right: 18%; }
+        .seat-4 { bottom: 2px; right: 16%; }
         .seat-4 .seat-box { border-color: #2ecc71; background: rgba(15, 38, 25, 0.95); }
         
-        .seat-5 { bottom: 2px; left: 18%; }
+        .seat-5 { bottom: 2px; left: 16%; }
         
         .seat-6 { top: 38%; left: -25px; transform: rotate(90deg); transform-origin: center; }
 
@@ -317,8 +347,8 @@
             color: #e74c3c;
             font-weight: bold;
             font-size: 10px;
-            background: rgba(0,0,0,0.5);
-            padding: 0 3px;
+            background: rgba(0,0,0,0.6);
+            padding: 1px 4px;
             border-radius: 3px;
             border: 1px solid #e74c3c;
         }
@@ -708,41 +738,77 @@
             <div class="poker-table" id="mesa-poker">
                 <!-- Asiento 1 -->
                 <div class="seat seat-1 bot-seat" id="asiento-1">
+                    <div class="sticker-box">
+                        <button class="btn-sticker" onclick="lanzarSticker(1, '🔥')">🔥</button>
+                        <button class="btn-sticker" onclick="lanzarSticker(1, '🍺')">🍺</button>
+                    </div>
                     <div class="seat-box">
-                        <div class="seat-name">El Gambusino <span id="timer-ui-1" class="timer-display"></span></div>
-                        <div class="seat-chips" id="chips-s1">[$] 1,000</div>
-                        <div class="seat-cards" id="cartas-s1"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
+                        <div class="seat-top-row">
+                            <span class="seat-name">El Gambusino</span>
+                            <span id="timer-ui-1" class="timer-display"></span>
+                            <span class="seat-chips" id="chips-s1">[$] 1k</span>
+                        </div>
+                        <div class="seat-bottom-row">
+                            <div class="seat-cards" id="cartas-s1"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
+                        </div>
                     </div>
                     <div class="avatar-box"><img src="avatar1.jpg" alt="Avatar"></div>
                 </div>
 
                 <!-- Asiento 2 -->
                 <div class="seat seat-2 bot-seat" id="asiento-2">
+                    <div class="sticker-box">
+                        <button class="btn-sticker" onclick="lanzarSticker(2, '🔥')">🔥</button>
+                        <button class="btn-sticker" onclick="lanzarSticker(2, '🍺')">🍺</button>
+                    </div>
                     <div class="seat-box">
-                        <div class="seat-name">Don Aurelio <span id="timer-ui-2" class="timer-display"></span></div>
-                        <div class="seat-chips" id="chips-s2">[$] 1,000</div>
-                        <div class="seat-cards" id="cartas-s2"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
+                        <div class="seat-top-row">
+                            <span class="seat-name">Don Aurelio</span>
+                            <span id="timer-ui-2" class="timer-display"></span>
+                            <span class="seat-chips" id="chips-s2">[$] 1k</span>
+                        </div>
+                        <div class="seat-bottom-row">
+                            <div class="seat-cards" id="cartas-s2"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
+                        </div>
                     </div>
                     <div class="avatar-box"><img src="avatar2.jpg" alt="Avatar"></div>
                 </div>
 
-                <!-- Asiento 3 (Lateral Rotado) -->
+                <!-- Asiento 3 -->
                 <div class="seat seat-3 bot-seat" id="asiento-3">
+                    <div class="sticker-box">
+                        <button class="btn-sticker" onclick="lanzarSticker(3, '🔥')">🔥</button>
+                        <button class="btn-sticker" onclick="lanzarSticker(3, '🍺')">🍺</button>
+                    </div>
                     <div class="seat-box">
-                        <div class="seat-name">Forajido Joe <span id="timer-ui-3" class="timer-display"></span></div>
-                        <div class="seat-chips" id="chips-s3">[$] 1,000</div>
-                        <div class="seat-cards" id="cartas-s3"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
+                        <div class="seat-top-row">
+                            <span class="seat-name">Forajido Joe</span>
+                            <span id="timer-ui-3" class="timer-display"></span>
+                            <span class="seat-chips" id="chips-s3">[$] 1k</span>
+                        </div>
+                        <div class="seat-bottom-row">
+                            <div class="seat-cards" id="cartas-s3"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
+                        </div>
                     </div>
                     <div class="avatar-box"><img src="avatar3.jpg" alt="Avatar"></div>
                 </div>
 
                 <!-- Asiento 4 (Tú) -->
                 <div class="seat seat-4" id="asiento-4">
-                    <div class="seat-box">
-                        <div class="seat-name"><span id="nombre-etiqueta-tu">Tú [ID: 4]</span> <span id="timer-ui-4" class="timer-display"></span></div>
-                        <div class="seat-chips" id="chips-s4">[$] 1,000</div>
-                        <div class="seat-cards" id="cartas-s4">
-                            <div class="card card-back">🂠</div><div class="card card-back">🂠</div>
+                    <div class="sticker-box">
+                        <button class="btn-sticker" onclick="lanzarSticker(4, '🔥')">🔥</button>
+                        <button class="btn-sticker" onclick="lanzarSticker(4, '🍺')">🍺</button>
+                    </div>
+                    <div class="seat-box" style="border-color: #2ecc71; background: rgba(15, 38, 25, 0.95);">
+                        <div class="seat-top-row">
+                            <span class="seat-name" id="nombre-etiqueta-tu">Tú [ID: 4]</span>
+                            <span id="timer-ui-4" class="timer-display"></span>
+                            <span class="seat-chips" id="chips-s4">[$] 1k</span>
+                        </div>
+                        <div class="seat-bottom-row">
+                            <div class="seat-cards" id="cartas-s4">
+                                <div class="card card-back">🂠</div><div class="card card-back">🂠</div>
+                            </div>
                         </div>
                     </div>
                     <div class="avatar-box"><img src="avatar4.jpg" alt="Avatar"></div>
@@ -751,20 +817,38 @@
 
                 <!-- Asiento 5 -->
                 <div class="seat seat-5 bot-seat" id="asiento-5">
+                    <div class="sticker-box">
+                        <button class="btn-sticker" onclick="lanzarSticker(5, '🔥')">🔥</button>
+                        <button class="btn-sticker" onclick="lanzarSticker(5, '🍺')">🍺</button>
+                    </div>
                     <div class="seat-box">
-                        <div class="seat-name">Sheriff Miller <span id="timer-ui-5" class="timer-display"></span></div>
-                        <div class="seat-chips" id="chips-s5">[$] 1,000</div>
-                        <div class="seat-cards" id="cartas-s5"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
+                        <div class="seat-top-row">
+                            <span class="seat-name">Sheriff Miller</span>
+                            <span id="timer-ui-5" class="timer-display"></span>
+                            <span class="seat-chips" id="chips-s5">[$] 1k</span>
+                        </div>
+                        <div class="seat-bottom-row">
+                            <div class="seat-cards" id="cartas-s5"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
+                        </div>
                     </div>
                     <div class="avatar-box"><img src="avatar5.jpg" alt="Avatar"></div>
                 </div>
 
-                <!-- Asiento 6 (Lateral Rotado) -->
+                <!-- Asiento 6 -->
                 <div class="seat seat-6 bot-seat" id="asiento-6">
+                    <div class="sticker-box">
+                        <button class="btn-sticker" onclick="lanzarSticker(6, '🔥')">🔥</button>
+                        <button class="btn-sticker" onclick="lanzarSticker(6, '🍺')">🍺</button>
+                    </div>
                     <div class="seat-box">
-                        <div class="seat-name">El Forastero <span id="timer-ui-6" class="timer-display"></span></div>
-                        <div class="seat-chips" id="chips-s6">[$] 1,000</div>
-                        <div class="seat-cards" id="cartas-s6"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
+                        <div class="seat-top-row">
+                            <span class="seat-name">El Forastero</span>
+                            <span id="timer-ui-6" class="timer-display"></span>
+                            <span class="seat-chips" id="chips-s6">[$] 1k</span>
+                        </div>
+                        <div class="seat-bottom-row">
+                            <div class="seat-cards" id="cartas-s6"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
+                        </div>
                     </div>
                     <div class="avatar-box"><img src="avatar6.jpg" alt="Avatar"></div>
                 </div>
@@ -912,7 +996,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Cajas y avatares configurados correctamente.</div>
+        <div id="output-log">💬 [Saloon]: Cajas simétricas, avatares grandes y botones de stickers activos.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1042,6 +1126,38 @@
             let btnLiberar = document.getElementById('btn-liberar-fichas-id');
             btnLiberar.setAttribute('disabled', 'true');
             btnLiberar.classList.remove('activo');
+        }
+
+        function lanzarSticker(seatId, emoji) {
+            const asiento = document.getElementById(`asiento-${seatId}`);
+            const mesa = document.getElementById('mesa-poker');
+            const sticker = document.createElement('div');
+            
+            sticker.style.position = 'absolute';
+            sticker.style.fontSize = '28px';
+            sticker.style.zIndex = '500';
+            sticker.style.pointerEvents = 'none';
+            sticker.innerText = emoji;
+
+            const rectAsiento = asiento.getBoundingClientRect();
+            const rectMesa = mesa.getBoundingClientRect();
+
+            sticker.style.left = (rectAsiento.left - rectMesa.left + 30) + 'px';
+            sticker.style.top = (rectAsiento.top - rectMesa.top - 20) + 'px';
+            
+            mesa.appendChild(sticker);
+
+            // Animación de vuelo hacia el centro de la mesa
+            sticker.style.transition = 'all 1s ease-in-out';
+            setTimeout(() => {
+                sticker.style.left = '50%';
+                sticker.style.top = '50%';
+                sticker.style.transform = 'scale(2)';
+                sticker.style.opacity = '0';
+            }, 50);
+
+            setTimeout(() => { sticker.remove(); }, 1050);
+            log(`💬 [Sticker]: ${nombresAsientos[seatId]} lanzó ${emoji}`);
         }
 
         function evaluarManoPoker(cartasJugador, comunitarias) {
@@ -1176,7 +1292,7 @@
             
             if (jugadorEnPausa) {
                 asientoDiv.classList.add('en-pausa');
-                nombreSpan.innerText = "Tú (En Pausa ☕) [ID: 4]";
+                nombreSpan.innerText = "Tú (En Pausa ☕)";
                 btnSentarse.style.display = 'block';
                 retirados[4] = true;
                 log(`☕ [Pausa]: Te has levantado de la mesa. Tu puesto sigue reservado.`);
@@ -1373,7 +1489,7 @@
             setTimeout(() => { ficha.remove(); }, 700);
         }
 
-        // CONECTAR BLINDADO (DOBLE CAPA: SERVIDOR / LOCAL)
+        // CONECTAR BLINDADO
         async function registrarUsuarioAPI() {
             try {
                 const response = await fetch('/api/usuario/registrar', {
@@ -1397,7 +1513,7 @@
             }
         }
 
-        // REPARTIR BLINDADO (DOBLE CAPA: SERVIDOR / LOCAL)
+        // REPARTIR BLINDADO CON SOPORTE LOCAL
         async function repartirCartasAPI() {
             if (jugadorEnPausa) {
                 log(`☕ [Pausa]: Estás en descanso. No participas en esta mano.`);
@@ -1474,7 +1590,6 @@
                 log(`[Flop]: Cartas comunitarias repartidas.`);
                 iniciarTurno(4);
             } catch (error) {
-                // RESPALDO LOCAL DE EMERGENCIA
                 boteActual = 200;
                 contadorAccionesRonda = 0;
                 faseMano = 1;
