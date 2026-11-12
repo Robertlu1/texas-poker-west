@@ -283,12 +283,13 @@
         }
         .btn-sentarse-mesa:hover { background: #2ecc71; }
 
-        .seat-1 { top: 2px; left: 20%; }
-        .seat-2 { top: 2px; right: 20%; }
-        .seat-3 { top: 38%; right: -35px; }
-        .seat-4 { bottom: 2px; right: 20%; border-color: #2ecc71; background: rgba(15, 38, 25, 0.95); }
-        .seat-5 { bottom: 2px; left: 20%; }
-        .seat-6 { top: 38%; left: -35px; }
+        /* POSICIONES ORIGINALES (GIRANDO EL ORDEN EN EL 3 Y 6 PARA QUE EL AVATAR QUEDE AFUERA Y LA CAJA ADENTRO) */
+        .seat-1 { top: 2px; left: 20%; flex-direction: row; }
+        .seat-2 { top: 2px; right: 20%; flex-direction: row-reverse; }
+        .seat-3 { top: 38%; right: -35px; flex-direction: row-reverse; } /* GIRADO: Caja a la izquierda, avatar a la derecha (afuera) */
+        .seat-4 { bottom: 2px; right: 20%; flex-direction: row-reverse; border-color: #2ecc71; background: rgba(15, 38, 25, 0.95); }
+        .seat-5 { bottom: 2px; left: 20%; flex-direction: row; }
+        .seat-6 { top: 38%; left: -35px; flex-direction: row; }         /* GIRADO: Caja a la derecha, avatar a la izquierda (afuera) */
 
         @keyframes volarFicha {
             0% { transform: scale(1) translateY(0); opacity: 1; }
@@ -716,8 +717,8 @@
                     </div>
                 </div>
 
-                <!-- Asiento 3 -->
-                <div class="seat seat-3 bot-seat" id="asiento-3">
+                <!-- Asiento 3 (Forajido Joe - Girádo para que el avatar quede afuera) -->
+                <div class="seat seat-3 bot-seat" id="asiento-3" style="flex-direction: row-reverse;">
                     <div class="avatar-box"><img src="avatar3.jpg" alt="Avatar"></div>
                     <div class="seat-info">
                         <div class="seat-name">Forajido Joe <span id="timer-ui-3" class="timer-display"></span></div>
@@ -749,8 +750,8 @@
                     </div>
                 </div>
 
-                <!-- Asiento 6 -->
-                <div class="seat seat-6 bot-seat" id="asiento-6">
+                <!-- Asiento 6 (El Forastero - Girádo para que el avatar quede afuera) -->
+                <div class="seat seat-6 bot-seat" id="asiento-6" style="flex-direction: row-reverse;">
                     <div class="avatar-box"><img src="avatar6.jpg" alt="Avatar"></div>
                     <div class="seat-info">
                         <div class="seat-name">El Forastero <span id="timer-ui-6" class="timer-display"></span></div>
@@ -902,7 +903,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Avatares grandes al lado de la caja configurados.</div>
+        <div id="output-log">💬 [Saloon]: Asientos laterales ajustados correctamente.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1324,43 +1325,31 @@
         let localStream = null;
         let micActivo = false;
 
-        function log(mensaje) {
-            const logDiv = document.getElementById('output-log');
-            logDiv.innerHTML += `<br>${mensaje}`;
-            logDiv.scrollTop = logDiv.scrollHeight;
-        }
+        async function toggleMicrofono() {
+            const btnHablar = document.getElementById('btn-hablar');
+            const micStatus = document.getElementById('mic-status');
 
-        function actualizarTurnoVisual(nuevoTurno) {
-            turnoActual = nuevoTurno;
-            for (let i = 1; i <= 6; i++) {
-                let asientoDiv = document.getElementById(`asiento-${i}`);
-                if (asientoDiv) {
-                    if (i === turnoActual) {
-                        asientoDiv.classList.add('turno-activo');
-                    } else {
-                        asientoDiv.classList.remove('turno-activo');
-                    }
+            if (!micActivo) {
+                try {
+                    localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                    micActivo = true;
+                    btnHablar.classList.add('active');
+                    btnHablar.innerHTML = "🔇 Silenciar";
+                    micStatus.innerHTML = "🎙️ Transmitiendo...";
+                    micStatus.style.color = "#2ecc71";
+                    log(`[Voz]: Micrófono abierto.`);
+                } catch (err) {
+                    log(`[Error de Voz]: Sin acceso al micrófono.`);
                 }
+            } else {
+                if (localStream) { localStream.getTracks().forEach(track => track.stop()); }
+                micActivo = false;
+                btnHablar.classList.remove('active');
+                btnHablar.innerHTML = "🎙️ Micrófono";
+                micStatus.innerHTML = "🎙️ Silenciado";
+                micStatus.style.color = "#bdc3c7";
+                log(`[Voz]: Silenciado.`);
             }
-        }
-
-        function lanzarFichasAlBote(asientoId) {
-            const asiento = document.getElementById(`asiento-${asientoId}`);
-            const mesa = document.getElementById('mesa-poker');
-            
-            const ficha = document.createElement('div');
-            ficha.className = 'ficha-volando';
-            ficha.innerHTML = '<img src="ficha.png" style="width: 32px; height: 32px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));">';
-
-            const rectAsiento = asiento.getBoundingClientRect();
-            const rectMesa = mesa.getBoundingClientRect();
-
-            ficha.style.left = (rectAsiento.left - rectMesa.left + 50) + 'px';
-            ficha.style.top = (rectAsiento.top - rectMesa.top + 10) + 'px';
-
-            mesa.appendChild(ficha);
-
-            setTimeout(() => { ficha.remove(); }, 700);
         }
 
         async function registrarUsuarioAPI() {
@@ -1810,47 +1799,6 @@
             setTimeout(() => {
                 repartirCartasAPI();
             }, 5000);
-        }
-
-        async function avanzarHistoriaAPI() {
-            try {
-                const response = await fetch('/api/historia/avanzar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ usuario_id: idUsuarioActual, jefe_id: "El Rápido", resultado: "victoria" })
-                });
-                const data = await response.json();
-                log(`[Modo Historia]: Actualizado.`);
-            } catch (error) {
-                log(`[Error]: No se pudo registrar.`);
-            }
-        }
-
-        async function toggleMicrofono() {
-            const btnHablar = document.getElementById('btn-hablar');
-            const micStatus = document.getElementById('mic-status');
-
-            if (!micActivo) {
-                try {
-                    localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-                    micActivo = true;
-                    btnHablar.classList.add('active');
-                    btnHablar.innerHTML = "🔇 Silenciar";
-                    micStatus.innerHTML = "🎙️ Transmitiendo...";
-                    micStatus.style.color = "#2ecc71";
-                    log(`[Voz]: Micrófono abierto.`);
-                } catch (err) {
-                    log(`[Error de Voz]: Sin acceso.`);
-                }
-            } else {
-                if (localStream) { localStream.getTracks().forEach(track => track.stop()); }
-                micActivo = false;
-                btnHablar.classList.remove('active');
-                btnHablar.innerHTML = "🎙️ Micrófono";
-                micStatus.innerHTML = "🎙️ Silenciado";
-                micStatus.style.color = "#bdc3c7";
-                log(`[Voz]: Silenciado.`);
-            }
         }
     </script>
 </body>
