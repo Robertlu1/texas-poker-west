@@ -286,13 +286,13 @@
         .seat-1 { top: 2px; left: 20%; }
         .seat-2 { top: 2px; right: 20%; }
         
-        /* ASIENTOS LATERALES CON MEDIDAS ORIGINALES Y ROTACIÓN PERFECTA HACIA LA DONCELLA */
-        .seat-3 { top: 38%; right: -35px; transform: rotate(-90deg); transform-origin: center; }
+        /* ASIENTOS LATERALES: TAMAÑO ORIGINAL, ROTADOS Y ESTIRADOS HACIA EL CENTRO */
+        .seat-3 { top: 38%; right: -12px; transform: rotate(-90deg); transform-origin: center; }
         
         .seat-4 { bottom: 2px; right: 20%; border-color: #2ecc71; background: rgba(15, 38, 25, 0.95); }
         .seat-5 { bottom: 2px; left: 20%; }
         
-        .seat-6 { top: 38%; left: -35px; transform: rotate(90deg); transform-origin: center; }
+        .seat-6 { top: 38%; left: -12px; transform: rotate(90deg); transform-origin: center; }
 
         @keyframes volarFicha {
             0% { transform: scale(1) translateY(0); opacity: 1; }
@@ -720,7 +720,7 @@
                     </div>
                 </div>
 
-                <!-- Asiento 3 (Rotado correctamente con tamaño original) -->
+                <!-- Asiento 3 (Rotado y estirado hacia el centro con tamaño original) -->
                 <div class="seat seat-3 bot-seat" id="asiento-3">
                     <div class="avatar-box"><img src="avatar3.jpg" alt="Avatar"></div>
                     <div class="seat-info">
@@ -753,7 +753,7 @@
                     </div>
                 </div>
 
-                <!-- Asiento 6 (Rotado correctamente con tamaño original) -->
+                <!-- Asiento 6 (Rotado y estirado hacia el centro con tamaño original) -->
                 <div class="seat seat-6 bot-seat" id="asiento-6">
                     <div class="avatar-box"><img src="avatar6.jpg" alt="Avatar"></div>
                     <div class="seat-info">
@@ -906,7 +906,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Avatares grandes al lado de la caja configurados.</div>
+        <div id="output-log">💬 [Saloon]: Asientos laterales rotados y perfectamente alineados.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1327,6 +1327,496 @@
 
         let localStream = null;
         let micActivo = false;
+
+        async function toggleMicrofono() {
+            const btnHablar = document.getElementById('btn-hablar');
+            const micStatus = document.getElementById('mic-status');
+
+            if (!micActivo) {
+                try {
+                    localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                    micActivo = true;
+                    btnHablar.classList.add('active');
+                    btnHablar.innerHTML = "🔇 Silenciar";
+                    micStatus.innerHTML = "🎙️ Transmitiendo...";
+                    micStatus.style.color = "#2ecc71";
+                    log(`[Voz]: Micrófono abierto.`);
+                } catch (err) {
+                    log(`[Error de Voz]: Sin acceso.`);
+                }
+            } else {
+                if (localStream) { localStream.getTracks().forEach(track => track.stop()); }
+                micActivo = false;
+                btnHablar.classList.remove('active');
+                btnHablar.innerHTML = "🎙️ Micrófono";
+                micStatus.innerHTML = "🎙️ Silenciado";
+                micStatus.style.color = "#bdc3c7";
+                log(`[Voz]: Silenciado.`);
+            }
+        }
+
+        async function registrarUsuarioAPI() {
+            try {
+                const response = await fetch('/api/usuario/registrar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ telegram_id: "999888", username: "Vaquero" })
+                });
+                const data = await response.json();
+                idUsuarioActual = data.usuario_id;
+                fichasJugador = data.fichas_gratis;
+                
+                document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
+                document.getElementById('range-subir').max = fichasJugador;
+                log(`[API Registro]: Conectado. Fichas: ${fichasJugador}`);
+            } catch (error) {
+                log(`[Error]: No se pudo conectar con el servidor.`);
+            }
+        }
+
+        async function repartirCartasAPI() {
+            if (jugadorEnPausa) {
+                log(`☕ [Pausa]: Estás en descanso. No participas en esta mano.`);
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/juego/repartir', { method: 'POST' });
+                const data = await response.json();
+                
+                boteActual = data.pot;
+                contadorAccionesRonda = 0;
+                faseMano = 1;
+                cartasComunitariasGlobales = data.comunitarias;
+                
+                document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
+                document.getElementById('mazo-info').innerText = `Cartas mazo: ${data.cartas_restantes_mazo}`;
+                
+                for(let i=1; i<=6; i++) {
+                    let asientoDiv = document.getElementById(`asiento-${i}`);
+                    if (i !== 4 || !jugadorEnPausa) {
+                        retirados[i] = false;
+                        asientoDiv.classList.remove('retirado');
+                    }
+                    asientoDiv.classList.remove('allin-estado');
+                }
+
+                if (jugadorEnPausa) {
+                    retirados[4] = true;
+                    document.getElementById('asiento-4').classList.add('retirado');
+                }
+
+                for (let c = 0; c < 5; c++) {
+                    let cardElem = document.getElementById(`com-${c}`);
+                    if (c < 3) {
+                        let cartaVal = cartasComunitariasGlobales[c];
+                        let esRoja = cartaVal.includes('♥') || cartaVal.includes('♦');
+                        cardElem.className = `card ${esRoja ? 'red' : ''}`;
+                        cardElem.style.background = '#ffffff';
+                        cardElem.innerText = cartaVal;
+                    } else {
+                        cardElem.className = `card card-back`;
+                        cardElem.style.background = colorDorsoActual;
+                        cardElem.innerText = '🂠';
+                    }
+                }
+
+                for (let i = 1; i <= 6; i++) {
+                    let cartas = data.cartas_jugadores[`jugador_${i}`];
+                    let contenedor = document.getElementById(`cartas-s${i}`);
+                    if (contenedor) {
+                        let htmlCartas = "";
+                        if (i === 4) {
+                            cartasJugadorPrivadas = cartas;
+                            if (jugadorEnPausa) {
+                                htmlCartas = `<div class="card card-back" style="background:${colorDorsoActual}">☕</div><div class="card card-back" style="background:${colorDorsoActual}">☕</div>`;
+                            } else {
+                                cartas.forEach(c => {
+                                    let esRoja = c.includes('♥') || c.includes('♦');
+                                    htmlCartas += `<div class="card ${esRoja ? 'red' : ''}" style="background:#ffffff;">${c}</div>`;
+                                });
+                            }
+                        } else {
+                            cartasBotsPrivadas[i] = cartas;
+                            cartas.forEach(() => {
+                                htmlCartas += `<div class="card card-back" style="background:${colorDorsoActual}">🂠</div>`;
+                            });
+                        }
+                        contenedor.innerHTML = htmlCartas;
+                    }
+                }
+
+                log(`[Flop]: Cartas comunitarias repartidas.`);
+                iniciarTurno(4);
+            } catch (error) {
+                log(`[Error]: No se pudo repartir.`);
+            }
+        }
+
+        function avanzarFaseComunitaria() {
+            faseMano++;
+            contadorAccionesRonda = 0;
+
+            if (faseMano === 2) {
+                let cartaVal = cartasComunitariasGlobales[3];
+                let esRoja = cartaVal.includes('♥') || cartaVal.includes('♦');
+                let cardElem = document.getElementById(`com-3`);
+                cardElem.className = `card ${esRoja ? 'red' : ''}`;
+                cardElem.style.background = '#ffffff';
+                cardElem.innerText = cartaVal;
+                log(`[Turn]: 4ta carta comunitaria descubierta.`);
+                iniciarTurno(4);
+            } 
+            else if (faseMano === 3) {
+                let cartaVal = cartasComunitariasGlobales[4];
+                let esRoja = cartaVal.includes('♥') || cartaVal.includes('♦');
+                let cardElem = document.getElementById(`com-4`);
+                cardElem.className = `card ${esRoja ? 'red' : ''}`;
+                cardElem.style.background = '#ffffff';
+                cardElem.innerText = cartaVal;
+                log(`[River]: ¡5ta carta descubierta! Showdown final.`);
+                
+                setTimeout(() => {
+                    ejecutarShowdownFinalReal();
+                }, 1200);
+            }
+        }
+
+        function iniciarTurno(asientoNum) {
+            if (retirados[asientoNum] || allInJugadores[asientoNum]) {
+                siguienteTurnoAutomatico(asientoNum);
+                return;
+            }
+
+            actualizarTurnoVisual(asientoNum);
+            segundosRestantes = 25;
+            
+            for (let i = 1; i <= 6; i++) {
+                let timerElem = document.getElementById(`timer-ui-${i}`);
+                if (timerElem) timerElem.innerText = (i === asientoNum) ? `⏰ ${segundosRestantes}s` : "";
+            }
+
+            if (temporizadorTurno) clearInterval(temporizadorTurno);
+
+            temporizadorTurno = setInterval(() => {
+                segundosRestantes--;
+                let timerElem = document.getElementById(`timer-ui-${asientoNum}`);
+                if (timerElem) {
+                    timerElem.innerText = `⏰ ${segundosRestantes}s`;
+                }
+
+                if (segundosRestantes <= 0) {
+                    clearInterval(temporizadorTurno);
+                    if (timerElem) timerElem.innerText = "";
+                    
+                    log(`⏰ ¡Tiempo agotado para **${nombresAsientos[asientoNum]}**! Fold automático.`);
+                    retirados[asientoNum] = true;
+                    document.getElementById(`asiento-${asientoNum}`).classList.add('retirado');
+
+                    contadorAccionesRonda++;
+                    siguienteTurnoAutomatico(asientoNum);
+                }
+            }, 1000);
+
+            if (asientoNum !== 4) {
+                setTimeout(() => {
+                    if (turnoActual === asientoNum && !retirados[asientoNum] && !allInJugadores[asientoNum]) {
+                        clearInterval(temporizadorTurno);
+                        let timerElem = document.getElementById(`timer-ui-${asientoNum}`);
+                        if (timerElem) timerElem.innerText = "";
+                        ejecutarAccionBot(asientoNum);
+                    }
+                }, 2000);
+            }
+        }
+
+        function siguienteTurnoAutomatico(asientoActual) {
+            let activos = [];
+            for (let i = 1; i <= 6; i++) { if (!retirados[i]) activos.push(i); }
+
+            if (activos.length === 1) {
+                if (temporizadorTurno) clearInterval(temporizadorTurno);
+                for (let i = 1; i <= 6; i++) {
+                    let t = document.getElementById(`timer-ui-${i}`);
+                    if (t) t.innerText = "";
+                }
+                setTimeout(() => { verificarGanadorPorAbandono(activos[0]); }, 800);
+                return;
+            }
+
+            let pendientesAccion = activos.filter(id => !allInJugadores[id]);
+            if (pendientesAccion.length === 0) {
+                if (temporizadorTurno) clearInterval(temporizadorTurno);
+                for (let i = 1; i <= 6; i++) {
+                    let t = document.getElementById(`timer-ui-${i}`);
+                    if (t) t.innerText = "";
+                }
+                log(`💥 ¡Todos los jugadores activos están en ALL-IN! Avanzando cartas comunitarias...`);
+                setTimeout(() => { avanzarFaseComunitariaCompleta(); }, 1000);
+                return;
+            }
+
+            if (contadorAccionesRonda >= 6) {
+                if (temporizadorTurno) clearInterval(temporizadorTurno);
+                for (let i = 1; i <= 6; i++) {
+                    let t = document.getElementById(`timer-ui-${i}`);
+                    if (t) t.innerText = "";
+                }
+                avanzarFaseComunitaria();
+                return;
+            }
+
+            let siguiente = (asientoActual % 6) + 1;
+            iniciarTurno(siguiente);
+        }
+
+        function avanzarFaseComunitariaCompleta() {
+            if (faseMano === 1) {
+                faseMano = 3;
+                let cartaVal3 = cartasComunitariasGlobales[3];
+                let cartaVal4 = cartasComunitariasGlobales[4];
+                let elem3 = document.getElementById(`com-3`);
+                let elem4 = document.getElementById(`com-4`);
+                elem3.className = `card ${cartaVal3.includes('♥')||cartaVal3.includes('♦')?'red':''}`;
+                elem3.style.background = '#ffffff';
+                elem3.innerText = cartaVal3;
+                elem4.className = `card ${cartaVal4.includes('♥')||cartaVal4.includes('♦')?'red':''}`;
+                elem4.style.background = '#ffffff';
+                elem4.innerText = cartaVal4;
+                log(`[Showdown All-In]: Revelando Turn y River automáticamente.`);
+                setTimeout(() => { ejecutarShowdownFinalReal(); }, 1500);
+            } else if (faseMano === 2) {
+                faseMano = 3;
+                let cartaVal4 = cartasComunitariasGlobales[4];
+                let elem4 = document.getElementById(`com-4`);
+                elem4.className = `card ${cartaVal4.includes('♥')||cartaVal4.includes('♦')?'red':''}`;
+                elem4.style.background = '#ffffff';
+                elem4.innerText = cartaVal4;
+                log(`[Showdown All-In]: Revelando River automáticamente.`);
+                setTimeout(() => { ejecutarShowdownFinalReal(); }, 1500);
+            } else {
+                ejecutarShowdownFinalReal();
+            }
+        }
+
+        function ejecutarAccionBot(botId) {
+            const jugadasBot = ["igualar", "subir", "pasar"];
+            const eleccion = jugadasBot[Math.floor(Math.random() * jugadasBot.length)];
+            let monto = eleccion === "subir" ? 50 : (eleccion === "igualar" ? 50 : 0);
+
+            if (fichasBots[botId] >= monto) {
+                fichasBots[botId] -= monto;
+                boteActual += monto;
+                document.getElementById(`chips-s${botId}`).innerText = `[$] ${fichasBots[botId]}`;
+                document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
+                if (monto > 0) lanzarFichasAlBote(botId);
+
+                if (eleccion === "subir") log(`🤖 [${nombresAsientos[botId]}]: Subió la apuesta.`);
+                else if (eleccion === "igualar") log(`🤖 [${nombresAsientos[botId]}]: Igualó (Call).`);
+                else log(`🤖 [${nombresAsientos[botId]}]: Pasó (Check).`);
+            }
+
+            contadorAccionesRonda++;
+            siguienteTurnoAutomatico(botId);
+        }
+
+        function apostarJugador(accion) {
+            if (turnoActual !== 4) {
+                log(`⚠️ [Aviso]: Espera tu turno.`);
+                return;
+            }
+
+            clearInterval(temporizadorTurno);
+            let t = document.getElementById('timer-ui-4');
+            if (t) t.innerText = "";
+
+            if (accion === 'retirarse') {
+                retirados[4] = true;
+                document.getElementById('asiento-4').classList.add('retirado');
+                log(`[Tu Turno]: Te retiraste (Fold).`);
+            } else {
+                let montoApuesta = 0;
+                if (accion === 'igualar') montoApuesta = 50;
+                else if (accion === 'subir') montoApuesta = parseInt(document.getElementById('range-subir').value);
+                else if (accion === 'allin') {
+                    montoApuesta = fichasJugador;
+                    allInJugadores[4] = true;
+                    document.getElementById('asiento-4').classList.add('allin-estado');
+                }
+
+                if (fichasJugador >= montoApuesta) {
+                    fichasJugador -= montoApuesta;
+                    boteActual += montoApuesta;
+
+                    document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
+                    document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
+                    if (montoApuesta > 0) lanzarFichasAlBote(4);
+
+                    if (accion === 'allin') log(`🔥 [Tu Turno]: ¡¡ALL-IN con ${montoApuesta} fichas!!`);
+                    else if (accion === 'subir') log(`[Tu Turno]: Subiste con la escala: $${montoApuesta}.`);
+                    else log(`[Tu Turno]: Has ${accion}.`);
+                }
+            }
+
+            contadorAccionesRonda++;
+            siguienteTurnoAutomatico(4);
+        }
+
+        function ejecutarShowdownFinalReal() {
+            let activos = [];
+            for (let i = 1; i <= 6; i++) { if (!retirados[i]) activos.push(i); }
+
+            let mejorPuntaje = -1;
+            let ganadorId = activos[0];
+            let nombreMejorMano = "";
+
+            activos.forEach(id => {
+                let cartasMano = (id === 4) ? cartasJugadorPrivadas : cartasBotsPrivadas[id];
+                let resultado = evaluarManoPoker(cartasMano, cartasComunitariasGlobales);
+                
+                log(`🔎 [Evaluación ${nombresAsientos[id]}]: ${resultado.nombre}`);
+
+                if (resultado.score > mejorPuntaje) {
+                    mejorPuntaje = resultado.score;
+                    ganadorId = id;
+                    nombreMejorMano = resultado.nombre;
+                }
+            });
+
+            log(`🏆 ¡SHOWDOWN FINAL! Ganador evaluado por reglas oficiales.`);
+
+            for (let i = 1; i <= 6; i++) {
+                if (!retirados[i] && i !== ganadorId) {
+                    document.getElementById(`cartas-s${i}`).innerHTML = `<div class="card card-back" style="background:${colorDorsoActual}">🂠</div><div class="card card-back" style="background:${colorDorsoActual}">🂠</div>`;
+                }
+            }
+
+            let cartasGanador = (ganadorId === 4) ? cartasJugadorPrivadas : cartasBotsPrivadas[ganadorId];
+            let htmlCartasGanador = "";
+            cartasGanador.forEach(c => {
+                let esRoja = c.includes('♥') || c.includes('♦');
+                htmlCartasGanador += `<div class="card ${esRoja ? 'red' : ''}" style="background:#ffffff;">${c}</div>`;
+            });
+            document.getElementById(`cartas-s${ganadorId}`).innerHTML = htmlCartasGanador;
+
+            lanzarBengalasMajestuosas(ganadorId);
+
+            if (ganadorId === 4) {
+                fichasJugador += boteActual;
+                document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
+                log(`🎉 ¡VICTORIA! **¡Ganaste el bote de ${boteActual} USDT con ${nombreMejorMano}!** 🪙✨`);
+
+                if (modoActual === 'Campaña') {
+                    torneoVictoriasUsuario++;
+                    jackpotMonto += 250;
+
+                    if (mejorPuntaje >= 7000) {
+                        jackpotMonto += 2000;
+                        log(`💰🎰 ¡JACKPOT EXPLOSIVO REVENTADO! 💥 Sacaste una mano legendaria (${nombreMejorMano}). ¡Ganas un pozo extra de $2,000 USDT!`);
+                    }
+
+                    if (torneoVictoriasUsuario >= 2) {
+                        log(`👑🏆 ¡FELICIDADES VAQUERO! **¡Has ganado el Campeonato del Torneo del Oeste!**`);
+                        alert(`🤠 ¡CAMPEÓN DEL TORNEO! Has ganado la serie al mejor de 3. ¡Gloria y oro en el Salón!`);
+                        torneoPartidaActual = 1;
+                        torneoVictoriasUsuario = 0;
+                    } else {
+                        torneoPartidaActual++;
+                        log(`🎯 [Torneo]: Avanzando a la siguiente partida. Victorias tuyas: ${torneoVictoriasUsuario}/2`);
+                    }
+                    actualizarPanelTorneo();
+                }
+
+            } else {
+                fichasBots[ganadorId] += boteActual;
+                document.getElementById(`chips-s${ganadorId}`).innerText = `[$] ${fichasBots[ganadorId]}`;
+                log(`🏠 El ganador es **${nombresAsientos[ganadorId]}** con **${nombreMejorMano}**.`);
+                
+                if (modoActual === 'Campaña') {
+                    log(`⚠️ [Torneo]: Los bots ganaron esta ronda. ¡A reponerse en la siguiente mano!`);
+                }
+            }
+
+            boteActual = 0;
+            document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
+            faseMano = 0;
+            
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`asiento-${i}`).classList.remove('turno-activo');
+            }
+
+            log(`🔄 Próxima mano en 5 segundos (reparto automático)...`);
+            setTimeout(() => {
+                repartirCartasAPI();
+            }, 5000);
+        }
+
+        function verificarGanadorPorAbandono(ganadorId) {
+            if (ganadorId === 4) {
+                document.getElementById('modal-mostrar-cartas').style.display = 'block';
+            } else {
+                fichasBots[ganadorId] += boteActual;
+                document.getElementById(`chips-s${ganadorId}`).innerText = `[$] ${fichasBots[ganadorId]}`;
+                log(`🏆 Todos se retiraron. **${nombresAsientos[ganadorId]}** gana el bote de ${boteActual} USDT.`);
+                boteActual = 0;
+                document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
+                
+                log(`🔄 Próxima mano en 5 segundos (reparto automático)...`);
+                setTimeout(() => {
+                    repartirCartasAPI();
+                }, 5000);
+            }
+        }
+
+        function responderMostrarCartas(mostrar) {
+            document.getElementById('modal-mostrar-cartas').style.display = 'none';
+            fichasJugador += boteActual;
+            document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
+
+            if (mostrar) {
+                log(`🏆 ¡Ganaste el bote de ${boteActual} USDT por abandono! Mostraste tus cartas: **[${cartasJugadorPrivadas.join(', ')}]**. 🃏✨`);
+                lanzarBengalasMajestuosas(4);
+            } else {
+                log(`🏆 ¡Ganaste el bote de ${boteActual} USDT por abandono! (Guardaste tus cartas en secreto - Muck). 🂠`);
+            }
+
+            if (modoActual === 'Campaña') {
+                torneoVictoriasUsuario++;
+                if (torneoVictoriasUsuario >= 2) {
+                    log(`👑🏆 ¡CAMPEÓN DEL TORNEO POR ABANDONO DE LOS RIVALES!`);
+                    torneoPartidaActual = 1;
+                    torneoVictoriasUsuario = 0;
+                } else {
+                    torneoPartidaActual++;
+                }
+                actualizarPanelTorneo();
+            }
+
+            boteActual = 0;
+            document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`asiento-${i}`).classList.remove('turno-activo');
+            }
+            
+            log(`🔄 Próxima mano en 5 segundos (reparto automático)...`);
+            setTimeout(() => {
+                repartirCartasAPI();
+            }, 5000);
+        }
+
+        async function avanzarHistoriaAPI() {
+            try {
+                const response = await fetch('/api/historia/avanzar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuario_id: idUsuarioActual, jefe_id: "El Rápido", resultado: "victoria" })
+                });
+                const data = await response.json();
+                log(`[Modo Historia]: Actualizado.`);
+            } catch (error) {
+                log(`[Error]: No se pudo registrar.`);
+            }
+        }
 
         async function toggleMicrofono() {
             const btnHablar = document.getElementById('btn-hablar');
