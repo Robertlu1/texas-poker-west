@@ -322,9 +322,9 @@
         .seat-1 { top: 2px; left: 16%; }
         .seat-2 { top: 2px; right: 16%; }
         
-        /* ASIENTOS LATERALES BIEN CENTRADOS DENTRO DEL PAÑO */
+        /* ASIENTOS LATERALES PERFECTAMENTE CENTRADOS Y DENTRO DEL PAÑO */
         .seat-3 { 
-            top: 32%; 
+            top: 36%; 
             right: 18px; 
             transform: rotate(-90deg); 
             transform-origin: center; 
@@ -342,8 +342,8 @@
         .seat-5 { bottom: 2px; left: 16%; }
         
         .seat-6 { 
-            top: 32%; 
-            left: 18px; 
+            top: 26%; 
+            left: 35px; 
             transform: rotate(90deg); 
             transform-origin: center; 
             width: 75px; 
@@ -857,7 +857,7 @@
                     <div class="avatar-box"><img src="avatar5.jpg" alt="Avatar"></div>
                 </div>
 
-                <!-- Asiento 6 (Centrado más arriba en el costado izquierdo) -->
+                <!-- Asiento 6 (Subido y centrado perfectamente) -->
                 <div class="seat seat-6 bot-seat" id="asiento-6">
                     <div class="sticker-box">
                         <button class="btn-sticker" onclick="lanzarSticker(6, '🔥')">🔥</button>
@@ -1019,7 +1019,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Asientos laterales centrados en el paño y stickers dirigidos hacia la mesa.</div>
+        <div id="output-log">💬 [Saloon]: Asiento izquierdo perfectamente centrado y stickers lanzados hacia ti (Tú).</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1151,9 +1151,10 @@
             btnLiberar.classList.remove('activo');
         }
 
-        // STICKERS DIRIGIDOS DESDE EL JUGADOR HACIA EL CENTRO DE LA MESA (RIVALES)
+        // STICKERS DIRIGIDOS DESDE EL JUGADOR QUE PULSA HACIA EL ASIENTO 4 (TÚ)
         function lanzarSticker(seatId, emoji) {
-            const asiento = document.getElementById(`asiento-${seatId}`);
+            const asientoOrigen = document.getElementById(`asiento-${seatId}`);
+            const asientoDestino = document.getElementById(`asiento-4`); // Destino: Tú
             const mesa = document.getElementById('mesa-poker');
             const sticker = document.createElement('div');
             
@@ -1163,30 +1164,30 @@
             sticker.style.pointerEvents = 'none';
             sticker.innerText = emoji;
 
-            const rectAsiento = asiento.getBoundingClientRect();
+            const rectOrigen = asientoOrigen.getBoundingClientRect();
+            const rectDestino = asientoDestino.getBoundingClientRect();
             const rectMesa = mesa.getBoundingClientRect();
 
-            sticker.style.left = (rectAsiento.left - rectMesa.left + 50) + 'px';
-            sticker.style.top = (rectAsiento.top - rectMesa.top + 20) + 'px';
+            sticker.style.left = (rectOrigen.left - rectMesa.left + 30) + 'px';
+            sticker.style.top = (rectOrigen.top - rectMesa.top + 15) + 'px';
             
             mesa.appendChild(sticker);
 
-            // Animación lanzándose hacia el centro de la mesa
             sticker.style.transition = 'all 0.8s cubic-bezier(0.1, 0.9, 0.2, 1)';
             setTimeout(() => {
-                sticker.style.left = '48%';
-                sticker.style.top = '48%';
-                sticker.style.transform = 'scale(2.5) rotate(15deg)';
+                sticker.style.left = (rectDestino.left - rectMesa.left + 30) + 'px';
+                sticker.style.top = (rectDestino.top - rectMesa.top + 15) + 'px';
+                sticker.style.transform = 'scale(2.2) rotate(360deg)';
                 sticker.style.opacity = '1';
             }, 50);
 
             setTimeout(() => {
-                sticker.style.transform = 'scale(3) rotate(-15deg)';
+                sticker.style.transform = 'scale(2.5) rotate(0deg)';
                 sticker.style.opacity = '0';
             }, 800);
 
             setTimeout(() => { sticker.remove(); }, 1300);
-            log(`💬 [Sticker]: ${nombresAsientos[seatId]} lanzó ${emoji} hacia la mesa.`);
+            log(`💬 [Sticker]: ${nombresAsientos[seatId]} lanzó ${emoji} hacia ti.`);
         }
 
         function evaluarManoPoker(cartasJugador, comunitarias) {
