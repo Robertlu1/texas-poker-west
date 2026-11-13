@@ -121,7 +121,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.8);
         }
         .music-panel-top input[type=range] {
-            width: 70px;
+            width: 50px;
             cursor: pointer;
         }
         .btn-musica-ctrl {
@@ -135,6 +135,7 @@
             border-radius: 4px;
         }
         .btn-musica-ctrl:hover { background: #f1c40f; }
+        .btn-musica-ctrl.active-shuffle { background: #27ae60; color: #fff; border-color: #2ecc71; }
 
         /* PAÑO DE PÓKER PERSONALIZABLE */
         .poker-table {
@@ -374,19 +375,20 @@
         .btn-sentarse-mesa {
             display: none;
             position: absolute;
-            bottom: -18px;
+            bottom: -22px;
             left: 50%;
             transform: translateX(-50%);
             background: #27ae60;
             color: white;
             border: 1px solid #2ecc71;
-            padding: 2px 8px;
+            padding: 3px 10px;
             font-size: 9px;
             font-weight: bold;
             cursor: pointer;
             border-radius: 10px;
             z-index: 20;
             box-shadow: 0 2px 5px rgba(0,0,0,0.8);
+            white-space: nowrap;
         }
         .btn-sentarse-mesa:hover { background: #2ecc71; }
 
@@ -823,8 +825,8 @@
 </head>
 <body>
 
-    <!-- REPRODUCTOR DE MÚSICA LOCAL (LISTA 1 A 7) -->
-    <audio id="audio-fondo" loop>
+    <!-- REPRODUCTOR DE MÚSICA LOCAL (LISTA 1 A 7 CON BUCLE ALEATORIO) -->
+    <audio id="audio-fondo" onended="reproducirSiguienteMusicaAutompetica()" loop>
         <source src="musica_saloon1.mp3" type="audio/mp3">
         Tu navegador no soporta audio ambiental.
     </audio>
@@ -838,12 +840,13 @@
     <!-- PANTALLA 2: SALÓN PRINCIPAL -->
     <div id="pantalla-salon">
         <div class="saloon-container">
-            <!-- PASARELA DE MÚSICA SUPERIOR IZQUIERDA (LISTA 1 A 7) -->
+            <!-- PASARELA DE MÚSICA CON BUCLE Y ALEATORIO -->
             <div class="music-panel-top">
                 <span id="label-pista-actual">🎵 Pista 1/7:</span>
                 <button class="btn-musica-ctrl" onclick="toggleReproduccionMusica()" id="btn-play-pause">▶️ Play</button>
                 <input type="range" id="volumen-musica" min="0" max="1" step="0.05" value="0.3" oninput="cambiarVolumenMusica(this.value)">
                 <button class="btn-musica-ctrl" onclick="siguientePistaMusica()">⏭️ Cambiar</button>
+                <button class="btn-musica-ctrl" onclick="toggleAleatorioMusica()" id="btn-shuffle">🔀 Aleatorio</button>
             </div>
 
             <button class="btn-ampliar-top" onclick="togglePantallaCompleta()">🗖 Ampliar</button>
@@ -936,6 +939,7 @@
                     </div>
                     <div class="avatar-box"><img src="avatar4.jpg" alt="Avatar"></div>
                     <button id="btn-sentarse-asiento" class="btn-sentarse-mesa" onclick="togglePausaJugador()">🟢 Sentarse</button>
+                    <button id="btn-retornar-mesa" class="btn-sentarse-mesa" style="display:none; bottom: -44px; background: #e67e22; border-color: #f1c40f;" onclick="forzarRetornoMesa()">🤠 Retornar a Mesa</button>
                 </div>
 
                 <!-- Asiento 5 -->
@@ -1051,7 +1055,7 @@
         <button class="btn-oeste" onclick="forzarInicioBotsTorneo()" style="background: #27ae60; padding: 8px 20px; font-size: 13px; width: 100%;">⚡ Iniciar Partida con Bots Ahora</button>
     </div>
 
-    <!-- MODAL GIGANTE DE ESPERA MULTIJUGADOR (5 MINUTOS / SALIDA AL LOBBY) -->
+    <!-- MODAL GIGANTE DE ESPERA MULTIJUGADOR -->
     <div id="modal-multijugador-espera">
         <h3 style="color: #3498db; font-size: 1.6em; margin-top: 0;">🌐 Sala Multijugador 🤝</h3>
         <p style="font-size: 13px; color: #ccc;">Buscando vaqueros conectados en red...</p>
@@ -1156,7 +1160,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Reproductor local configurado con lista de 7 pistas (musica_saloon1.mp3 a musica_saloon7.mp3).</div>
+        <div id="output-log">💬 [Saloon]: Retardo de 10s de la crupier y modo aleatorio de música integrados.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1199,7 +1203,7 @@
 
         let codigoSeguridadActual = "";
 
-        // LISTA LOCAL DE 7 PISTAS (musica_saloon1.mp3 a musica_saloon7.mp3)
+        // LISTA DE PISTAS LOCALES (musica_saloon1.mp3 a musica_saloon7.mp3)
         const playlistMusica = [
             "musica_saloon1.mp3",
             "musica_saloon2.mp3",
@@ -1210,6 +1214,7 @@
             "musica_saloon7.mp3"
         ];
         let indicePistaActual = 0;
+        let modoAleatorioMusica = false;
 
         function cambiarVolumenMusica(valor) {
             let audio = document.getElementById('audio-fondo');
@@ -1240,14 +1245,34 @@
             let audio = document.getElementById('audio-fondo');
             if (audio) {
                 audio.pause();
-                indicePistaActual = (indicePistaActual + 1) % playlistMusica.length;
+                if (modoAleatorioMusica) {
+                    indicePistaActual = Math.floor(Math.random() * playlistMusica.length);
+                } else {
+                    indicePistaActual = (indicePistaActual + 1) % playlistMusica.length;
+                }
                 audio.src = playlistMusica[indicePistaActual];
                 audio.load();
                 audio.play().then(() => {
                     document.getElementById('btn-play-pause').innerText = "⏸️ Pausa";
                     document.getElementById('label-pista-actual').innerText = `🎵 Pista ${indicePistaActual + 1}/7:`;
-                    log(`🎵 [Música]: Cambiado a Pista ${indicePistaActual + 1} (${playlistMusica[indicePistaActual]}).`);
-                }).catch(e => log(`⚠️ [Música]: Asegúrate de tener el archivo ${playlistMusica[indicePistaActual]} en la carpeta.`));
+                    log(`🎵 [Música]: Pista ${indicePistaActual + 1} (${playlistMusica[indicePistaActual]}).`);
+                }).catch(e => log(`⚠️ [Música]: Coloca el archivo ${playlistMusica[indicePistaActual]} en la carpeta.`));
+            }
+        }
+
+        function reproducirSiguienteMusicaAutompetica() {
+            siguientePistaMusica();
+        }
+
+        function toggleAleatorioMusica() {
+            modoAleatorioMusica = !modoAleatorioMusica;
+            let btnShuffle = document.getElementById('btn-shuffle');
+            if (modoAleatorioMusica) {
+                btnShuffle.classList.add('active-shuffle');
+                log(`🔀 [Música]: Modo Aleatorio ACTIVADO.`);
+            } else {
+                btnShuffle.classList.remove('active-shuffle');
+                log(`🔀 [Música]: Modo Aleatorio DESACTIVADO (Secuencial).`);
             }
         }
 
@@ -1332,22 +1357,14 @@
                 document.getElementById('chips-s4').innerText = `[$] ${fichasJugador.toLocaleString()}`;
                 document.getElementById('range-subir').max = fichasJugador;
                 
-                if (jugadorEspectador || fichasJugador > 0) {
-                    jugadorEspectador = false;
-                    if (temporizadorSinFichas) clearInterval(temporizadorSinFichas);
-                    let asientoDiv = document.getElementById('asiento-4');
-                    let nombreSpan = document.getElementById('nombre-etiqueta-tu');
-                    asientoDiv.classList.remove('espectador', 'sin-fichas', 'retirado');
-                    nombreSpan.innerText = "Tú [ID: 4]";
-                    document.getElementById('timer-ui-4').innerText = "25s";
-                    log(`🤠 [Recarga Exitosa]: ¡Has vuelto a la mesa con ${cantidad.toLocaleString()} fichas!`);
-                }
+                // ACTIVAR BOTÓN DE RETORNO RÁPIDO PARA ENTRAR A LA MESA EN LA SIGUIENTE MANO
+                document.getElementById('btn-retornar-mesa').style.display = 'block';
+                log(`🪙 [Tienda]: Fichas acreditadas. Haz clic en '🤠 Retornar a Mesa' para entrar de inmediato.`);
             }
 
             lanzarMonedaDoradaRecarga();
             document.getElementById('resultado-admin-liberacion').innerText = `✅ ¡Fichas acreditadas al ID ${idCliente}!`;
-            log(`🪙✨ [Tienda]: Acreditadas ${cantidad.toLocaleString()} fichas al ID ${idCliente}.`);
-            alert(`✅ ¡Recarga Exitosa!`);
+            alert(`✅ ¡Recarga Exitosa! Haz clic en el botón 'Retornar a Mesa' debajo de tu caja para unirte de inmediato.`);
 
             codigoSeguridadActual = "";
             document.getElementById('admin-codigo-ingresado').value = "";
@@ -1355,6 +1372,26 @@
             let btnLiberar = document.getElementById('btn-liberar-fichas-id');
             btnLiberar.setAttribute('disabled', 'true');
             btnLiberar.classList.remove('activo');
+        }
+
+        function forzarRetornoMesa() {
+            jugadorEspectador = false;
+            jugadorEnPausa = false;
+            if (temporizadorSinFichas) clearInterval(temporizadorSinFichas);
+            
+            let asientoDiv = document.getElementById('asiento-4');
+            let nombreSpan = document.getElementById('nombre-etiqueta-tu');
+            let btnSentarse = document.getElementById('btn-sentarse-asiento');
+            let btnRetornar = document.getElementById('btn-retornar-mesa');
+            
+            asientoDiv.classList.remove('espectador', 'sin-fichas', 'retirado', 'en-pausa');
+            nombreSpan.innerText = "Tú [ID: 4]";
+            btnSentarse.style.display = 'none';
+            btnRetornar.style.display = 'none';
+            retirados[4] = false;
+
+            log(`🤠 [Mesa]: ¡Te has reincorporado exitosamente a la partida!`);
+            repartirCartasAPI();
         }
 
         function lanzarSticker(targetSeatId, emoji) {
@@ -1545,6 +1582,7 @@
             document.getElementById('asiento-4').classList.remove('en-pausa', 'retirado', 'allin-estado', 'sin-fichas', 'espectador');
             document.getElementById('nombre-etiqueta-tu').innerText = "Tú [ID: 4]";
             document.getElementById('btn-sentarse-asiento').style.display = 'none';
+            document.getElementById('btn-retornar-mesa').style.display = 'none';
             
             for(let c=0; c<5; c++) {
                 let cardElem = document.getElementById(`com-${c}`);
@@ -2186,7 +2224,12 @@
             boteActual = 0;
             document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
             faseMano = 0;
-            setTimeout(() => { repartirCartasAPI(); }, 5000);
+            
+            // LA CRUPIER ESPERA EXACTAMENTE 10 SEGUNDOS ANTES DE REPARTIR LA SIGUIENTE MANO
+            setTimeout(() => { 
+                log(`💃 [Crupier]: ¡10 segundos cumplidos! Repartiendo nueva mano...`);
+                repartirCartasAPI(); 
+            }, 10000);
         }
 
         function verificarGanadorPorAbandono(ganadorId) {
@@ -2197,7 +2240,7 @@
                 log(`🏆 ${nombresAsientos[ganadorId]} gana por abandono.`);
                 boteActual = 0;
                 document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
-                setTimeout(() => { repartirCartasAPI(); }, 5000);
+                setTimeout(() => { repartirCartasAPI(); }, 10000);
             }
         }
 
@@ -2208,7 +2251,7 @@
             log(`🏆 ¡Ganaste por abandono!`);
             boteActual = 0;
             document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
-            setTimeout(() => { repartirCartasAPI(); }, 5000);
+            setTimeout(() => { repartirCartasAPI(); }, 10000);
         }
 
         async function toggleMicrofono() {
