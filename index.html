@@ -255,6 +255,7 @@
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
+        /* FRANJA ROJA / BARRA DE TIEMPO ANIMADA */
         .timer-bar-container {
             position: absolute;
             bottom: 0;
@@ -381,9 +382,9 @@
         
         .seat-5 { bottom: 2px; left: 16%; }
         
-        /* ASIENTO 6 (IZQUIERDA) - BIEN ARRIBA */
+        /* ASIENTO 6 (IZQUIERDA) - SUBIDO UN POQUITO MÁS (top: 9%) */
         .seat-6 { 
-            top: 12%; 
+            top: 9%; 
             left: 35px; 
             transform: rotate(90deg); 
             transform-origin: center; 
@@ -1075,7 +1076,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Reloj de 5 minutos visible en pantalla y esquinas simétricas.</div>
+        <div id="output-log">💬 [Saloon]: Flujo de mesa continuo sin bloqueos y esquina izquierda ajustada en 9%.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1620,7 +1621,7 @@
             if (fichasJugador <= 0) {
                 if (!jugadorEspectador) {
                     jugadorEspectador = true;
-                    segundosEspectador = 300; // 5 minutos exactos (300 segundos)
+                    segundosEspectador = 300; // 5 minutos de gracia
                     let asientoDiv = document.getElementById('asiento-4');
                     let nombreSpan = document.getElementById('nombre-etiqueta-tu');
                     let timerUi4 = document.getElementById('timer-ui-4');
@@ -1657,6 +1658,9 @@
                 } else {
                     log(`👁️ [Espectador]: Estás viendo la partida desde afuera. Recarga en la tienda para volver a jugar.`);
                 }
+                // Permitimos que la mesa siga corriendo para los demás bots sin interrumpir
+                iniciarTurno(primerTurnoRotativo);
+                primerTurnoRotativo = (primerTurnoRotativo % 6) + 1;
                 return;
             }
 
@@ -1842,7 +1846,7 @@
         function iniciarTurno(asientoNum) {
             let fichasActuales = (asientoNum === 4) ? fichasJugador : fichasBots[asientoNum];
 
-            if (retirados[asientoNum] || allInJugadores[asientoNum] || fichasActuales <= 0 || (asientoNum === 4 && jugadorEspectador)) {
+            if (retirados[asientoNum] || allInJugadores[asientoNum] || fichasActuales <= 0 || (asientoNum === 4 && (jugadorEspectador || fichasJugador <= 0))) {
                 siguienteTurnoAutomatico(asientoNum);
                 return;
             }
@@ -1918,7 +1922,7 @@
             let activos = [];
             for (let i = 1; i <= 6; i++) {
                 let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i];
-                if (!retirados[i] && fichasAsiento > 0 && !(i === 4 && jugadorEspectador)) activos.push(i);
+                if (!retirados[i] && fichasAsiento > 0 && !(i === 4 && (jugadorEspectador || fichasJugador <= 0))) activos.push(i);
             }
 
             if (activos.length === 1) {
@@ -2059,7 +2063,7 @@
             let activos = [];
             for (let i = 1; i <= 6; i++) {
                 let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i];
-                if (!retirados[i] && fichasAsiento > 0 && !(i === 4 && jugadorEspectador)) activos.push(i);
+                if (!retirados[i] && fichasAsiento > 0 && !(i === 4 && (jugadorEspectador || fichasJugador <= 0))) activos.push(i);
             }
 
             let mejorPuntaje = -1;
