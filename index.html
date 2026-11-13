@@ -1199,11 +1199,10 @@
 
         let codigoSeguridadActual = "";
 
-        // LISTA DE PISTAS AMBIENTALES DE SALÓN
+        // LISTA DE PISTAS CLÁSICAS ESTABLECIDAS
         const playlistMusica = [
             "https://actions.google.com/sounds/v1/ambiences/saloon_interior.ogg",
-            "https://actions.google.com/sounds/v1/weather/wind_gust_heavy.ogg",
-            "https://actions.google.com/sounds/v1/ambiences/daytime_forest_bonfire.ogg"
+            "https://actions.google.com/sounds/v1/weather/wind_gust_heavy.ogg"
         ];
         let indicePistaActual = 0;
 
@@ -1241,8 +1240,8 @@
                 audio.load();
                 audio.play().then(() => {
                     document.getElementById('btn-play-pause').innerText = "⏸️ Pausa";
-                    log(`🎵 [Música]: Ambiente cambiado a #${indicePistaActual + 1}.`);
-                }).catch(e => log(`⚠️ [Música]: No se pudo cargar la pista.`));
+                    log(`🎵 [Música]: Pista cambiada #${indicePistaActual + 1}.`);
+                }).catch(e => log(`⚠️ [Música]: Error al cambiar pista.`));
             }
         }
 
