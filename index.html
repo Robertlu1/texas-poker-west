@@ -255,7 +255,6 @@
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* FRANJA ROJA / BARRA DE TIEMPO ANIMADA */
         .timer-bar-container {
             position: absolute;
             bottom: 0;
@@ -290,7 +289,7 @@
         }
         .seat-cards { display: flex; gap: 3px; }
 
-        /* RELOJ DIGITAL JUNTO A LAS CARTAS */
+        /* RELOJ DIGITAL DESTACADO */
         .timer-display {
             color: #f1c40f;
             font-weight: bold;
@@ -302,7 +301,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 45px;
+            min-width: 50px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
@@ -363,7 +362,7 @@
         .seat-1 { top: 2px; left: 16%; }
         .seat-2 { top: 2px; right: 16%; }
         
-        /* ASIENTO 3 (DERECHA) - CORREGIDO: BIEN ABAJO */
+        /* ASIENTO 3 (DERECHA) - BIEN ABAJO */
         .seat-3 { 
             top: 48%; 
             right: 18px; 
@@ -382,9 +381,9 @@
         
         .seat-5 { bottom: 2px; left: 16%; }
         
-        /* ASIENTO 6 (IZQUIERDA) - CORREGIDO: BIEN ARRIBA */
+        /* ASIENTO 6 (IZQUIERDA) - BIEN ARRIBA */
         .seat-6 { 
-            top: 15%; 
+            top: 12%; 
             left: 35px; 
             transform: rotate(90deg); 
             transform-origin: center; 
@@ -1076,7 +1075,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Esquinas corregidas y 5 minutos de gracia por saldo en 0.</div>
+        <div id="output-log">💬 [Saloon]: Reloj de 5 minutos visible en pantalla y esquinas simétricas.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1093,7 +1092,7 @@
         let jugadorEnPausa = false;
         let jugadorEspectador = false;
         let temporizadorSinFichas = null;
-        let segundosEspectador = 300; // 5 minutos de gracia (300 segundos)
+        let segundosEspectador = 300; // 5 minutos exactos (300 segundos)
         let boteActual = 200;
         let turnoActual = 1;
         let primerTurnoRotativo = 1;
@@ -1195,12 +1194,14 @@
                 document.getElementById('chips-s4').innerText = `[$] ${fichasJugador.toLocaleString()}`;
                 document.getElementById('range-subir').max = fichasJugador;
                 
-                if (jugadorEspectador) {
+                if (jugadorEspectador || fichasJugador > 0) {
                     jugadorEspectador = false;
                     if (temporizadorSinFichas) clearInterval(temporizadorSinFichas);
                     let asientoDiv = document.getElementById('asiento-4');
+                    let nombreSpan = document.getElementById('nombre-etiqueta-tu');
                     asientoDiv.classList.remove('espectador', 'sin-fichas', 'retirado');
-                    document.getElementById('nombre-etiqueta-tu').innerText = "Tú [ID: 4]";
+                    nombreSpan.innerText = "Tú [ID: 4]";
+                    document.getElementById('timer-ui-4').innerText = "25s";
                     log(`🤠 [Recarga Exitosa]: ¡Has vuelto a la mesa con ${cantidad.toLocaleString()} fichas! Listo para la próxima mano.`);
                 }
             }
@@ -1619,11 +1620,14 @@
             if (fichasJugador <= 0) {
                 if (!jugadorEspectador) {
                     jugadorEspectador = true;
-                    segundosEspectador = 300; // 5 minutos de gracia
+                    segundosEspectador = 300; // 5 minutos exactos (300 segundos)
                     let asientoDiv = document.getElementById('asiento-4');
                     let nombreSpan = document.getElementById('nombre-etiqueta-tu');
+                    let timerUi4 = document.getElementById('timer-ui-4');
+                    
                     asientoDiv.classList.add('sin-fichas', 'en-pausa');
-                    nombreSpan.innerText = "Tú (Sin Fichas ⏳ 5:00)";
+                    nombreSpan.innerText = "Tú (Sin Fichas ⏳)";
+                    
                     log(`⚠️ [Sin Fichas]: Te has quedado sin saldo. Tienes 5 minutos para recargar en la Tienda u pasarás a modo espectador.`);
                     
                     if (temporizadorSinFichas) clearInterval(temporizadorSinFichas);
@@ -1631,19 +1635,21 @@
                         segundosEspectador--;
                         if (fichasJugador > 0) {
                             clearInterval(temporizadorSinFichas);
+                            if (timerUi4) timerUi4.innerText = "25s";
                             return;
                         }
                         let mins = Math.floor(segundosEspectador / 60);
                         let secs = segundosEspectador % 60;
                         let tiempoTxt = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
 
-                        if (segundosEspectador > 0) {
-                            nombreSpan.innerText = `Tú (Sin Fichas ⏳ ${tiempoTxt})`;
-                        } else {
+                        if (timerUi4) timerUi4.innerText = `⏳ ${tiempoTxt}`;
+
+                        if (segundosEspectador <= 0) {
                             clearInterval(temporizadorSinFichas);
                             jugadorEspectador = true;
                             asientoDiv.classList.add('espectador');
                             nombreSpan.innerText = "Tú [Espectador 👁️]";
+                            if (timerUi4) timerUi4.innerText = "--";
                             log(`👁️ [Modo Espectador]: Tiempo agotado sin recarga. Has sido expulsado de la mesa y ahora ves la partida como espectador.`);
                             alert(`👁️ Tiempo de recarga agotado (5 min). Ahora estás como espectador viendo la partida.`);
                         }
@@ -1651,8 +1657,6 @@
                 } else {
                     log(`👁️ [Espectador]: Estás viendo la partida desde afuera. Recarga en la tienda para volver a jugar.`);
                 }
-                // IMPORTANTE: NO hacemos return con error que detenga la mesa; permitimos que los demás sigan jugando
-                // Simplemente saltamos el reparto para ti y avanzamos el turno si te tocaba a ti.
                 return;
             }
 
@@ -1848,7 +1852,9 @@
             
             for (let i = 1; i <= 6; i++) {
                 let timerElem = document.getElementById(`timer-ui-${i}`);
-                if (timerElem) timerElem.innerText = (i === asientoNum) ? `⏳ ${segundosRestantes}s` : "--";
+                if (timerElem && !(i === 4 && fichasJugador <= 0)) {
+                    timerElem.innerText = (i === asientoNum) ? `⏳ ${segundosRestantes}s` : "--";
+                }
                 
                 let bar = document.getElementById(`bar-${i}`);
                 if (bar) {
@@ -1870,13 +1876,13 @@
             temporizadorTurno = setInterval(() => {
                 segundosRestantes--;
                 let timerElem = document.getElementById(`timer-ui-${asientoNum}`);
-                if (timerElem) {
+                if (timerElem && !(asientoNum === 4 && fichasJugador <= 0)) {
                     timerElem.innerText = `⏳ ${segundosRestantes}s`;
                 }
 
                 if (segundosRestantes <= 0) {
                     clearInterval(temporizadorTurno);
-                    if (timerElem) timerElem.innerText = "--";
+                    if (timerElem && !(asientoNum === 4 && fichasJugador <= 0)) timerElem.innerText = "--";
                     
                     let activeBar = document.getElementById(`bar-${asientoNum}`);
                     if (activeBar) activeBar.style.width = '0%';
@@ -1919,7 +1925,7 @@
                 if (temporizadorTurno) clearInterval(temporizadorTurno);
                 for (let i = 1; i <= 6; i++) {
                     let t = document.getElementById(`timer-ui-${i}`);
-                    if (t) t.innerText = "--";
+                    if (t && !(i === 4 && fichasJugador <= 0)) t.innerText = "--";
                 }
                 setTimeout(() => { verificarGanadorPorAbandono(activos[0]); }, 800);
                 return;
@@ -1930,7 +1936,7 @@
                 if (temporizadorTurno) clearInterval(temporizadorTurno);
                 for (let i = 1; i <= 6; i++) {
                     let t = document.getElementById(`timer-ui-${i}`);
-                    if (t) t.innerText = "--";
+                    if (t && !(i === 4 && fichasJugador <= 0)) t.innerText = "--";
                 }
                 log(`💥 ¡Todos los jugadores activos están en ALL-IN! Avanzando cartas comunitarias...`);
                 setTimeout(() => { avanzarFaseComunitariaCompleta(); }, 1000);
@@ -1941,7 +1947,7 @@
                 if (temporizadorTurno) clearInterval(temporizadorTurno);
                 for (let i = 1; i <= 6; i++) {
                     let t = document.getElementById(`timer-ui-${i}`);
-                    if (t) t.innerText = "--";
+                    if (t && !(i === 4 && fichasJugador <= 0)) t.innerText = "--";
                 }
                 avanzarFaseComunitaria();
                 return;
