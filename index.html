@@ -1156,7 +1156,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Código optimizado con devolución de turno inmediata tras recarga.</div>
+        <div id="output-log">💬 [Saloon]: Retraso de 5s de la crupier y reincorporación sincronizada configurados.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1332,7 +1332,7 @@
                 document.getElementById('chips-s4').innerText = `[$] ${fichasJugador.toLocaleString()}`;
                 document.getElementById('range-subir').max = fichasJugador;
                 
-                // RESTAURAR ESTADO DE JUEGO Y DEVOLVER EL TURNO DE INMEDIATO
+                // RESTAURAR ESTADO DE JUEGO
                 jugadorEspectador = false;
                 jugadorEnPausa = false;
                 if (temporizadorSinFichas) clearInterval(temporizadorSinFichas);
@@ -1344,15 +1344,18 @@
                 document.getElementById('btn-sentarse-asiento').style.display = 'none';
                 retirados[4] = false;
 
-                log(`🤠 [Recarga Exitosa]: ¡Fichas acreditadas (${cantidad.toLocaleString()})! Retornando de inmediato a la mesa.`);
+                log(`🤠 [Recarga Exitosa]: ¡Fichas acreditadas (${cantidad.toLocaleString()})! La crupier prepara la mesa...`);
                 
-                // FORZAR EL TURNO AL JUGADOR (ASIENTO 4) CON CAJA Y FRANJA ROJA ACTIVAS
-                iniciarTurno(4);
+                // APLICAR RETRASO DE 5 SEGUNDOS DE LA CRUPIER ANTES DE REINICIAR LA MANO O EL TURNO
+                setTimeout(() => {
+                    log(`💃 [Crupier]: ¡Nueva mano en marcha tras la recarga!`);
+                    repartirCartasAPI();
+                }, 5000);
             }
 
             lanzarMonedaDoradaRecarga();
             document.getElementById('resultado-admin-liberacion').innerText = `✅ ¡Fichas acreditadas al ID ${idCliente}!`;
-            alert(`✅ ¡Recarga Exitosa y turno devuelto a la mesa con éxito!`);
+            alert(`✅ ¡Recarga Exitosa! La crupier iniciará la siguiente mano en 5 segundos.`);
 
             codigoSeguridadActual = "";
             document.getElementById('admin-codigo-ingresado').value = "";
