@@ -823,9 +823,10 @@
 </head>
 <body>
 
-    <!-- REPRODUCTOR DE MÚSICA AMBIENTAL (GUITARRA COUNTRY / WESTERN CLÁSICA) -->
+    <!-- REPRODUCTOR DE MÚSICA AMBIENTAL (AUDIO CLÁSICO WESTERN) -->
     <audio id="audio-fondo" loop>
-        <source src="https://ia801502.us.archive.org/19/items/TheGoodTheBadAndTheUglyMainTheme/EnnioMorriconeTheGoodTheBadAndTheUglyMainTheme.mp3" type="audio/mp3">
+        <source src="https://actions.google.com/sounds/v1/ambiences/saloon_interior.ogg" type="audio/ogg">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
         Tu navegador no soporta audio ambiental.
     </audio>
 
@@ -1156,7 +1157,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Música country western clásica y pasarela activa.</div>
+        <div id="output-log">💬 [Saloon]: Música de salón clásica activada en pasarela superior.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1199,10 +1200,10 @@
 
         let codigoSeguridadActual = "";
 
-        // PISTAS DE MÚSICA COUNTRY / WESTERN CLÁSICA
+        // PISTAS DE MÚSICA AMBIENTAL CLÁSICA DE SALÓN
         const playlistMusica = [
-            "https://ia801502.us.archive.org/19/items/TheGoodTheBadAndTheUglyMainTheme/EnnioMorriconeTheGoodTheBadAndTheUglyMainTheme.mp3",
-            "https://ia800908.us.archive.org/24/items/A Fistful Of Dollars Ennio Morricone/01 - Ennio Morricone - A Fistful Of Dollars.mp3"
+            "https://actions.google.com/sounds/v1/ambiences/saloon_interior.ogg",
+            "https://actions.google.com/sounds/v1/weather/wind_gust_heavy.ogg"
         ];
         let indicePistaActual = 0;
 
@@ -1221,7 +1222,7 @@
                 if (audio.paused) {
                     audio.play().then(() => {
                         btn.innerText = "⏸️ Pausa";
-                        log(`🎵 [Música]: Reproduciendo.`);
+                        log(`🎵 [Música]: Sonando.`);
                     }).catch(e => alert("Haz clic en la página para permitir audio."));
                 } else {
                     audio.pause();
@@ -1237,7 +1238,7 @@
                 indicePistaActual = (indicePistaActual + 1) % playlistMusica.length;
                 audio.src = playlistMusica[indicePistaActual];
                 audio.play().catch(e => console.log("Error al reproducir pista"));
-                log(`🎵 [Música]: Cambiado a melodía western #${indicePistaActual + 1}.`);
+                log(`🎵 [Música]: Ambiente de salón cambiado #${indicePistaActual + 1}.`);
             }
         }
 
