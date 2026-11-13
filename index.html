@@ -289,7 +289,6 @@
         }
         .seat-cards { display: flex; gap: 3px; }
 
-        /* RELOJ DIGITAL DESTACADO */
         .timer-display {
             color: #f1c40f;
             font-weight: bold;
@@ -381,7 +380,7 @@
         
         .seat-5 { bottom: 2px; left: 16%; }
         
-        /* ASIENTO 6 (IZQUIERDA) - SUBIDO EXACTO A 9% */
+        /* ASIENTO 6 (IZQUIERDA) - SUBIDO A 9% */
         .seat-6 { 
             top: 9%; 
             left: 35px; 
@@ -524,6 +523,24 @@
         }
         .btn-mic.active { background-color: #27ae60; border-color: #2ecc71; }
         #mic-status { font-size: 10px; color: #bdc3c7; margin-left: 5px; }
+
+        /* MODAL GIGANTE DE ESPERA DE TORNEO (15 MINUTOS) */
+        #modal-torneo-espera {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(12, 18, 25, 0.98);
+            border: 3px solid #f39c12;
+            padding: 35px;
+            border-radius: 16px;
+            z-index: 500000;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(0,0,0,0.95);
+            width: 460px;
+            max-width: 95vw;
+        }
 
         /* PANEL INFERIOR DERECHO: PERSONALIZADOR Y TIENDA ORO */
         .customizer-panel {
@@ -979,6 +996,15 @@
         </div>
     </div>
 
+    <!-- MODAL GIGANTE DE ESPERA DE TORNEO (15 MINUTOS) -->
+    <div id="modal-torneo-espera">
+        <h3 style="color: #f39c12; font-size: 1.6em; margin-top: 0;">🤠 Sala de Espera - Torneo 🌵</h3>
+        <p style="font-size: 13px; color: #ccc;">Esperando rivales humanos en el salón...</p>
+        <div id="reloj-torneo-gigante" style="font-size: 3em; color: #e74c3c; font-weight: bold; margin: 15px 0; text-shadow: 0 0 10px rgba(231,76,60,0.5);">15:00</div>
+        <p style="font-size: 11px; color: #aaa; margin-bottom: 20px;">Si no ingresan humanos, los 5 forajidos (Bots) entrarán a la mesa al finalizar el tiempo.</p>
+        <button class="btn-oeste" onclick="forzarInicioBotsTorneo()" style="background: #27ae60; padding: 8px 20px; font-size: 13px; width: 100%;">⚡ Iniciar Partida con Bots Ahora</button>
+    </div>
+
     <!-- PANEL INFERIOR DERECHO: PERSONALIZADOR Y TIENDA ORO -->
     <div class="customizer-panel">
         <div class="customizer-row">
@@ -1075,7 +1101,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Mesa impecable, mazo reseteado y esquinas centradas al milímetro.</div>
+        <div id="output-log">💬 [Saloon]: Sala de espera de torneo con reloj de 15 minutos integrada.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1093,6 +1119,10 @@
         let jugadorEspectador = false;
         let temporizadorSinFichas = null;
         let segundosEspectador = 300; // 5 minutos exactos (300 segundos)
+        
+        let temporizadorEsperaTorneo = null;
+        let segundosEsperaTorneo = 900; // 15 minutos (900 segundos)
+
         let boteActual = 200;
         let turnoActual = 1;
         let primerTurnoRotativo = 1;
@@ -1407,9 +1437,11 @@
         function regresarAlLobby() {
             if (temporizadorTurno) clearInterval(temporizadorTurno);
             if (temporizadorSinFichas) clearInterval(temporizadorSinFichas);
+            if (temporizadorEsperaTorneo) clearInterval(temporizadorEsperaTorneo);
             
             document.getElementById('pantalla-salon').style.display = 'none';
             document.getElementById('pantalla-portada').style.display = 'flex';
+            document.getElementById('modal-torneo-espera').style.display = 'none';
             
             fichasJugador = 1000;
             boteActual = 200;
@@ -1454,8 +1486,10 @@
         function actualizarVisibilidadBots() {
             let bots = document.querySelectorAll('.bot-seat');
             bots.forEach(b => {
-                if (modoActual === 'Práctica') {
+                if (modoActual === 'Práctica' || (modoActual === 'Campaña' && document.getElementById('modal-torneo-espera').style.display === 'none')) {
                     b.style.display = 'flex';
+                } else if (modoActual === 'Campaña') {
+                    b.style.display = 'none'; // Ocultos en sala de espera torneo
                 } else {
                     b.style.display = 'none';
                 }
@@ -1521,23 +1555,66 @@
             document.getElementById('btn-campana').classList.remove('selected');
             document.getElementById('btn-multijugador').classList.remove('selected');
             
+            let modalEspera = document.getElementById('modal-torneo-espera');
+            if (modalEspera) modalEspera.style.display = 'none';
+            if (temporizadorEsperaTorneo) clearInterval(temporizadorEsperaTorneo);
+
             if (modo === 'Práctica') {
                 document.getElementById('btn-practica').classList.add('selected');
                 document.getElementById('torneo-panel').style.display = 'none';
                 log(`[Modo]: Mesa de Práctica libre con bots.`);
+                actualizarVisibilidadBots();
             } else if (modo === 'Campaña') {
                 document.getElementById('btn-campana').classList.add('selected');
                 document.getElementById('torneo-panel').style.display = 'flex';
                 torneoPartidaActual = 1;
                 torneoVictoriasUsuario = 0;
                 actualizarPanelTorneo();
-                log(`🤠 [Torneo Campaña]: Esperando rivales humanos para iniciar serie...`);
+                
+                // ACTIVAR SALA DE ESPERA CON RELOJ DE 15 MINUTOS
+                if (modalEspera) modalEspera.style.display = 'block';
+                segundosEsperaTorneo = 900; // 15 minutos exactos
+                let relojGigante = document.getElementById('reloj-torneo-gigante');
+                
+                // Ocultar bots inicialmente en la sala de espera de torneo
+                let bots = document.querySelectorAll('.bot-seat');
+                bots.forEach(b => { b.style.display = 'none'; });
+
+                temporizadorEsperaTorneo = setInterval(() => {
+                    segundosEsperaTorneo--;
+                    let mins = Math.floor(segundosEsperaTorneo / 60);
+                    let secs = segundosEsperaTorneo % 60;
+                    let tiempoTxt = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                    if (relojGigante) relojGigante.innerText = tiempoTxt;
+
+                    if (segundosEsperaTorneo <= 0) {
+                        clearInterval(temporizadorEsperaTorneo);
+                        forzarInicioBotsTorneo();
+                    }
+                }, 1000);
+
+                log(`🤠 [Torneo Campaña]: Sala de espera abierta. Esperando jugadores (15 min)...`);
             } else if (modo === 'Multijugador') {
                 document.getElementById('btn-multijugador').classList.add('selected');
                 document.getElementById('torneo-panel').style.display = 'none';
                 log(`🌐 [Multijugador]: Buscando jugadores en red local / online...`);
+                actualizarVisibilidadBots();
             }
-            actualizarVisibilidadBots();
+        }
+
+        function forzarInicioBotsTorneo() {
+            if (temporizadorEsperaTorneo) clearInterval(temporizadorEsperaTorneo);
+            let modalEspera = document.getElementById('modal-torneo-espera');
+            if (modalEspera) modalEspera.style.display = 'none';
+
+            log(`🤠 [Torneo]: Entran los 5 forajidos (Bots) a disputar la serie de Campaña.`);
+            
+            // Mostrar los bots en la mesa
+            let bots = document.querySelectorAll('.bot-seat');
+            bots.forEach(b => { b.style.display = 'flex'; });
+
+            // Iniciar la primera partida
+            repartirCartasAPI();
         }
 
         function actualizarPanelTorneo() {
@@ -1616,7 +1693,7 @@
             }
         }
 
-        // BARAJO Y REPARTO LOCAL / API CORREGIDO PARA QUE LA MESA NUNCA SE PARE Y REINICIE BARAJEO
+        // BARAJO Y REPARTO LOCAL / API CORREGIDO PARA QUE LA NUNCA SE PARE Y REINICIE BARAJEO
         async function repartirCartasAPI() {
             if (fichasJugador <= 0) {
                 if (!jugadorEspectador) {
@@ -1659,7 +1736,6 @@
                     log(`👁️ [Espectador]: Estás viendo la partida desde afuera. Recarga en la tienda para volver a jugar.`);
                 }
                 
-                // LA MESA CONTINÚA: Si estás sin fichas, saltamos tu turno y ejecutamos el reparto para los bots
                 iniciarSiguienteManoBots();
                 return;
             }
@@ -1753,7 +1829,7 @@
                         mazoLocal.push(v + p);
                     });
                 });
-                // Barajar mazo (Fisher-Yates)
+                
                 for (let i = mazoLocal.length - 1; i > 0; i--) {
                     let j = Math.floor(Math.random() * (i + 1));
                     [mazoLocal[i], mazoLocal[j]] = [mazoLocal[j], mazoLocal[i]];
@@ -1823,7 +1899,6 @@
         }
 
         function iniciarSiguienteManoBots() {
-            // Permite que la mesa avance con los bots aunque tú estés sin fichas
             boteActual = 200;
             contadorAccionesRonda = 0;
             faseMano = 1;
