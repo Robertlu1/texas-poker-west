@@ -360,9 +360,9 @@
         .seat-1 { top: 2px; left: 16%; }
         .seat-2 { top: 2px; right: 16%; }
         
-        /* ASIENTO 3 (DERECHA) - CENTRADO Y BAJADO */
+        /* ASIENTO 3 (DERECHA) - BAJADO EXACTO AL CENTRO DEL PAÑO */
         .seat-3 { 
-            top: 42%; 
+            top: 36%; 
             right: 18px; 
             transform: rotate(-90deg); 
             transform-origin: center; 
@@ -379,9 +379,9 @@
         
         .seat-5 { bottom: 2px; left: 16%; }
         
-        /* ASIENTO 6 (IZQUIERDA) - CENTRADO Y SUBIDO */
+        /* ASIENTO 6 (IZQUIERDA) - SUBIDO EXACTO AL CENTRO DEL PAÑO */
         .seat-6 { 
-            top: 22%; 
+            top: 36%; 
             left: 35px; 
             transform: rotate(90deg); 
             transform-origin: center; 
@@ -1073,7 +1073,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Validación de saldo en 0 y franja de tiempo roja restaurada.</div>
+        <div id="output-log">💬 [Saloon]: Esquinas reubicadas exactamente en el centro de los laterales.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1189,7 +1189,6 @@
                 document.getElementById('chips-s4').innerText = `[$] ${fichasJugador.toLocaleString()}`;
                 document.getElementById('range-subir').max = fichasJugador;
                 
-                // Si recargó y estaba sin fichas, se le quita la pausa/retirado
                 retirados[4] = false;
                 document.getElementById('asiento-4').classList.remove('retirado', 'sin-fichas');
             }
@@ -1598,7 +1597,6 @@
         }
 
         async function repartirCartasAPI() {
-            // VERIFICACIÓN DE SALDO: Si el jugador no tiene fichas (<= 0), queda pausado y no participa
             if (fichasJugador <= 0) {
                 log(`⚠️ [Sin Fichas]: Estás sin saldo (0 USDT). Tu asiento queda en pausa hasta que recargues oro en la tienda.`);
                 alert(`⚠️ ¡Te has quedado sin fichas! Recarga en la Tienda de Fichas Oro para volver a la acción.`);
