@@ -341,7 +341,6 @@
         
         .seat-5 { bottom: 2px; left: 16%; }
         
-        /* ASIENTO 6 SUBIDO MÁS ARRIBA Y ADENTRO */
         .seat-6 { 
             top: 20%; 
             left: 45px; 
@@ -554,10 +553,12 @@
             padding: 20px;
             border-radius: 12px;
             z-index: 300000;
-            width: 450px;
+            width: 480px;
             max-width: 95vw;
             box-shadow: 0 0 40px rgba(0,0,0,0.9);
             text-align: left;
+            max-height: 90vh;
+            overflow-y: auto;
         }
         #modal-tienda-oro h3 { color: #f1c40f; margin-top: 0; text-align: center; }
         .tienda-seccion {
@@ -858,7 +859,7 @@
                     <div class="avatar-box"><img src="avatar5.jpg" alt="Avatar"></div>
                 </div>
 
-                <!-- Asiento 6 (Subido y centrado perfectamente) -->
+                <!-- Asiento 6 (Subido un poco más arriba dentro del paño) -->
                 <div class="seat seat-6 bot-seat" id="asiento-6">
                     <div class="sticker-box">
                         <button class="btn-sticker" onclick="lanzarSticker(6, '🔥')">🔥</button>
@@ -970,11 +971,28 @@
         
         <!-- VISTA PARA EL JUGADOR / COMPRADOR -->
         <div class="tienda-seccion">
-            <h4>💳 Realiza tu Pago</h4>
-            <p style="margin: 2px 0;"><b>Banesco Panamá (Cta. Corriente):</b> 1234-5678-9000-1111</p>
-            <p style="margin: 2px 0;"><b>Titular:</b> Luis Carrasquel</p>
-            <p style="margin: 2px 0; color: #f1c40f;"><b>Zelle / Binance Pay:</b> pago@texaspokerwest.com</p>
-            <p style="font-size: 10px; color: #aaa; margin-top: 4px;">Realiza tu pago y envíame el comprobante (capture) con tu ID por WhatsApp:</p>
+            <h4>💳 Métodos de Pago Disponibles</h4>
+            
+            <p style="margin: 4px 0; color: #2ecc71; font-weight: bold;">🇻🇪 Pago Móvil (Moneda Nacional):</p>
+            <p style="margin: 2px 0;"><b>Mercantil:</b> 10.044.076 | 0424-9266340</p>
+            <p style="margin: 2px 0;"><b>Fondo Común:</b> 10.044.076 | 0424-9266340</p>
+            <p style="margin: 2px 0;"><b>Venezolano de Crédito:</b> 10.044.076 | 0424-9266340</p>
+            <p style="font-size: 10px; color: #f1c40f; margin-top: 3px;"><b>Nota importante:</b> Colocar en el concepto: <b style="color: #fff;">PAGO NADA MAS</b></p>
+            
+            <hr style="border-color: #2c3e50; margin: 8px 0;">
+
+            <p style="margin: 4px 0; color: #2ecc71; font-weight: bold;">🌍 Pagos en USD:</p>
+            <p style="margin: 3px 0;"><b>Airtm:</b> <a href="https://airtm.me/robertlu" target="_blank" style="color: #2ecc71;">airtm.me/robertlu</a></p>
+            <p style="margin: 3px 0;"><b>Zinli:</b> omega161716@gmail.com</p>
+            <p style="margin: 3px 0;"><b>PayPal:</b> confenacapv.oficial@gmail.com</p>
+            
+            <hr style="border-color: #2c3e50; margin: 8px 0;">
+
+            <p style="margin: 4px 0; color: #2ecc71; font-weight: bold;">🪙 Criptomonedas (Red BEP20):</p>
+            <p style="margin: 2px 0; color: #f1c40f;"><b>USDT / USDC:</b></p>
+            <p style="font-size: 9px; color: #aaa; word-break: break-all; background: #000; padding: 4px; border-radius: 3px; user-select: all;">0x46cd21e74126076f224beda7ed3b2c93ced4022d</p>
+            
+            <p style="font-size: 10px; color: #aaa; margin-top: 6px;">Realiza tu pago y envíame el comprobante (capture) con tu ID por WhatsApp:</p>
             <a href="https://wa.me/584249266340?text=Hola%20Luis,%20realice%20el%20pago%20para%20recargar%20fichas%20oro.%20Mi%20ID%20es:%20[Tu%20ID]%20y%20aqui%20esta%20mi%20comprobante:" target="_blank" class="btn-whatsapp">💬 Enviar Capture por WhatsApp</a>
         </div>
 
@@ -1020,7 +1038,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Asiento 6 ajustado y stickers saliendo desde ti hacia los rivales.</div>
+        <div id="output-log">💬 [Saloon]: Asiento 6 subido y stickers saliendo de ti hacia el rival seleccionado.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1152,10 +1170,10 @@
             btnLiberar.classList.remove('activo');
         }
 
-        // STICKERS: SALEN DESDE TI (ASIENTO 4) HASTA EL JUGADOR AL QUE LE DISTE CLIC
+        // STICKERS: SALEN DESDE TU CAJA (ASIENTO 4) HASTA EL RIVAL AL QUE LE DISTE CLIC
         function lanzarSticker(targetSeatId, emoji) {
             const asientoOrigen = document.getElementById(`asiento-4`); // Salen de ti (Tú)
-            const asientoDestino = document.getElementById(`asiento-${targetSeatId}`); // Hacia el jugador seleccionado
+            const asientoDestino = document.getElementById(`asiento-${targetSeatId}`); // Hacia el rival seleccionado
             const mesa = document.getElementById('mesa-poker');
             const sticker = document.createElement('div');
             
