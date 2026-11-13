@@ -380,7 +380,7 @@
         
         .seat-5 { bottom: 2px; left: 16%; }
         
-        /* ASIENTO 6 (IZQUIERDA) - SUBIDO A 9% */
+        /* ASIENTO 6 (IZQUIERDA) - SUBIDO EXACTO A 9% */
         .seat-6 { 
             top: 9%; 
             left: 35px; 
@@ -524,8 +524,8 @@
         .btn-mic.active { background-color: #27ae60; border-color: #2ecc71; }
         #mic-status { font-size: 10px; color: #bdc3c7; margin-left: 5px; }
 
-        /* MODAL GIGANTE DE ESPERA DE TORNEO (15 MINUTOS) */
-        #modal-torneo-espera {
+        /* MODALES GIGANTES DE ESPERA */
+        #modal-torneo-espera, #modal-multijugador-espera {
             display: none;
             position: fixed;
             top: 50%;
@@ -542,7 +542,7 @@
             max-width: 95vw;
         }
 
-        /* PANEL INFERIOR DERECHO: PERSONALIZADOR Y TIENDA ORO */
+        /* PANEL INFERIOR DERECHO: PERSONALIZADOR, MÚSICA Y TIENDA ORO */
         .customizer-panel {
             position: fixed;
             bottom: 12px;
@@ -565,7 +565,7 @@
             justify-content: space-between;
             gap: 8px;
         }
-        .customizer-row select {
+        .customizer-row select, .customizer-row input[type=range] {
             background: #111a24;
             color: #f1c40f;
             border: 1px solid #4f5d73;
@@ -791,6 +791,12 @@
 </head>
 <body>
 
+    <!-- REPRODUCTOR DE MÚSICA AMBIENTAL WESTERN (FONDO) -->
+    <audio id="audio-fondo" loop>
+        <source src="https://actions.google.com/sounds/v1/ambiences/saloon_interior.ogg" type="audio/ogg">
+        Tu navegador no soporta audio ambiental.
+    </audio>
+
     <!-- PANTALLA 1: PORTADA -->
     <div id="pantalla-portada">
         <div id="portada-titulo">Texas Poker West</div>
@@ -996,7 +1002,7 @@
         </div>
     </div>
 
-    <!-- MODAL GIGANTE DE ESPERA DE TORNEO (15 MINUTOS) -->
+    <!-- MODAL GIGANTE DE ESPERA DE TORNEO -->
     <div id="modal-torneo-espera">
         <h3 style="color: #f39c12; font-size: 1.6em; margin-top: 0;">🤠 Sala de Espera - Torneo 🌵</h3>
         <p style="font-size: 13px; color: #ccc;">Esperando rivales humanos en el salón...</p>
@@ -1005,7 +1011,16 @@
         <button class="btn-oeste" onclick="forzarInicioBotsTorneo()" style="background: #27ae60; padding: 8px 20px; font-size: 13px; width: 100%;">⚡ Iniciar Partida con Bots Ahora</button>
     </div>
 
-    <!-- PANEL INFERIOR DERECHO: PERSONALIZADOR Y TIENDA ORO -->
+    <!-- MODAL GIGANTE DE ESPERA MULTIJUGADOR (RETORNO AL LOBBY SI NO HAY HUMANOS) -->
+    <div id="modal-multijugador-espera">
+        <h3 style="color: #3498db; font-size: 1.6em; margin-top: 0;">🌐 Sala Multijugador 🤝</h3>
+        <p style="font-size: 13px; color: #ccc;">Buscando vaqueros conectados en red...</p>
+        <div id="reloj-multijugador-gigante" style="font-size: 3em; color: #3498db; font-weight: bold; margin: 15px 0; text-shadow: 0 0 10px rgba(52,152,219,0.5);">05:00</div>
+        <p style="font-size: 11px; color: #aaa; margin-bottom: 20px;">Si el tiempo finaliza y no se conectan jugadores humanos, regresarás automáticamente al Lobby.</p>
+        <button class="btn-oeste" onclick="regresarAlLobby()" style="background: #c0392b; padding: 8px 20px; font-size: 13px; width: 100%;">🏠 Salir al Lobby Ahora</button>
+    </div>
+
+    <!-- PANEL INFERIOR DERECHO: PERSONALIZADOR, MÚSICA Y TIENDA ORO -->
     <div class="customizer-panel">
         <div class="customizer-row">
             <span>🎨 Paño:</span>
@@ -1024,6 +1039,10 @@
                 <option value="#8e44ad">Morado Realeza</option>
                 <option value="#d4ac0d">Doro del Oeste</option>
             </select>
+        </div>
+        <div class="customizer-row" title="Control de Volumen Música Salón">
+            <span>🎵 Música:</span>
+            <input type="range" id="volumen-musica" min="0" max="1" step="0.05" value="0.3" oninput="cambiarVolumenMusica(this.value)">
         </div>
         <button class="btn-tienda-oro" onclick="abrirTiendaOro()">🛒 Tienda Fichas Oro</button>
     </div>
@@ -1101,7 +1120,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Sala de espera de torneo con reloj de 15 minutos integrada.</div>
+        <div id="output-log">💬 [Saloon]: Código completo cargado con música de salón y salas de espera activas.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1118,10 +1137,13 @@
         let jugadorEnPausa = false;
         let jugadorEspectador = false;
         let temporizadorSinFichas = null;
-        let segundosEspectador = 300; // 5 minutos exactos (300 segundos)
+        let segundosEspectador = 300;
         
         let temporizadorEsperaTorneo = null;
-        let segundosEsperaTorneo = 900; // 15 minutos (900 segundos)
+        let segundosEsperaTorneo = 900;
+
+        let temporizadorEsperaMultijugador = null;
+        let segundosEsperaMultijugador = 300;
 
         let boteActual = 200;
         let turnoActual = 1;
@@ -1151,6 +1173,14 @@
         };
 
         const valoresCartas = { "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10": 10, "J": 11, "Q": 12, "K": 13, "A": 14 };
+
+        function cambiarVolumenMusica(valor) {
+            let audio = document.getElementById('audio-fondo');
+            if (audio) {
+                audio.volume = parseFloat(valor);
+                log(`🎵 [Música]: Volumen ajustado a ${Math.round(valor * 100)}%`);
+            }
+        }
 
         function cambiarColorPano(colorHex) {
             let mesa = document.getElementById('mesa-poker');
@@ -1438,10 +1468,12 @@
             if (temporizadorTurno) clearInterval(temporizadorTurno);
             if (temporizadorSinFichas) clearInterval(temporizadorSinFichas);
             if (temporizadorEsperaTorneo) clearInterval(temporizadorEsperaTorneo);
+            if (temporizadorEsperaMultijugador) clearInterval(temporizadorEsperaMultijugador);
             
             document.getElementById('pantalla-salon').style.display = 'none';
             document.getElementById('pantalla-portada').style.display = 'flex';
             document.getElementById('modal-torneo-espera').style.display = 'none';
+            document.getElementById('modal-multijugador-espera').style.display = 'none';
             
             fichasJugador = 1000;
             boteActual = 200;
@@ -1479,6 +1511,9 @@
             if (portada) portada.style.display = 'none';
             if (salon) salon.style.display = 'flex';
             
+            let audio = document.getElementById('audio-fondo');
+            if (audio) audio.play().catch(e => console.log("Audio autoplay bloqueado por navegador"));
+
             actualizarVisibilidadBots();
             cambiarColorDorso(colorDorsoActual);
         }
@@ -1486,10 +1521,8 @@
         function actualizarVisibilidadBots() {
             let bots = document.querySelectorAll('.bot-seat');
             bots.forEach(b => {
-                if (modoActual === 'Práctica' || (modoActual === 'Campaña' && document.getElementById('modal-torneo-espera').style.display === 'none')) {
+                if (modoActual === 'Práctica') {
                     b.style.display = 'flex';
-                } else if (modoActual === 'Campaña') {
-                    b.style.display = 'none'; // Ocultos en sala de espera torneo
                 } else {
                     b.style.display = 'none';
                 }
@@ -1555,9 +1588,12 @@
             document.getElementById('btn-campana').classList.remove('selected');
             document.getElementById('btn-multijugador').classList.remove('selected');
             
-            let modalEspera = document.getElementById('modal-torneo-espera');
-            if (modalEspera) modalEspera.style.display = 'none';
+            let modalTorneo = document.getElementById('modal-torneo-espera');
+            let modalMulti = document.getElementById('modal-multijugador-espera');
+            if (modalTorneo) modalTorneo.style.display = 'none';
+            if (modalMulti) modalMulti.style.display = 'none';
             if (temporizadorEsperaTorneo) clearInterval(temporizadorEsperaTorneo);
+            if (temporizadorEsperaMultijugador) clearInterval(temporizadorEsperaMultijugador);
 
             if (modo === 'Práctica') {
                 document.getElementById('btn-practica').classList.add('selected');
@@ -1571,12 +1607,10 @@
                 torneoVictoriasUsuario = 0;
                 actualizarPanelTorneo();
                 
-                // ACTIVAR SALA DE ESPERA CON RELOJ DE 15 MINUTOS
-                if (modalEspera) modalEspera.style.display = 'block';
-                segundosEsperaTorneo = 900; // 15 minutos exactos
+                if (modalTorneo) modalTorneo.style.display = 'block';
+                segundosEsperaTorneo = 900;
                 let relojGigante = document.getElementById('reloj-torneo-gigante');
                 
-                // Ocultar bots inicialmente en la sala de espera de torneo
                 let bots = document.querySelectorAll('.bot-seat');
                 bots.forEach(b => { b.style.display = 'none'; });
 
@@ -1593,12 +1627,33 @@
                     }
                 }, 1000);
 
-                log(`🤠 [Torneo Campaña]: Sala de espera abierta. Esperando jugadores (15 min)...`);
+                log(`🤠 [Torneo Campaña]: Sala de espera abierta. Esperando jugadores humanos (15 min)...`);
             } else if (modo === 'Multijugador') {
                 document.getElementById('btn-multijugador').classList.add('selected');
                 document.getElementById('torneo-panel').style.display = 'none';
-                log(`🌐 [Multijugador]: Buscando jugadores en red local / online...`);
-                actualizarVisibilidadBots();
+                
+                if (modalMulti) modalMulti.style.display = 'block';
+                segundosEsperaMultijugador = 300; // 5 minutos
+                let relojMulti = document.getElementById('reloj-multijugador-gigante');
+
+                let bots = document.querySelectorAll('.bot-seat');
+                bots.forEach(b => { b.style.display = 'none'; });
+
+                temporizadorEsperaMultijugador = setInterval(() => {
+                    segundosEsperaMultijugador--;
+                    let mins = Math.floor(segundosEsperaMultijugador / 60);
+                    let secs = segundosEsperaMultijugador % 60;
+                    let tiempoTxt = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                    if (relojMulti) relojMulti.innerText = tiempoTxt;
+
+                    if (segundosEsperaMultijugador <= 0) {
+                        clearInterval(temporizadorEsperaMultijugador);
+                        alert(`🌐 Tiempo de espera agotado sin jugadores humanos. Regresando al Lobby.`);
+                        regresarAlLobby();
+                    }
+                }, 1000);
+
+                log(`🌐 [Multijugador]: Sala abierta. Esperando humanos (5 min o salida al lobby)...`);
             }
         }
 
@@ -1609,11 +1664,9 @@
 
             log(`🤠 [Torneo]: Entran los 5 forajidos (Bots) a disputar la serie de Campaña.`);
             
-            // Mostrar los bots en la mesa
             let bots = document.querySelectorAll('.bot-seat');
             bots.forEach(b => { b.style.display = 'flex'; });
 
-            // Iniciar la primera partida
             repartirCartasAPI();
         }
 
@@ -1693,12 +1746,11 @@
             }
         }
 
-        // BARAJO Y REPARTO LOCAL / API CORREGIDO PARA QUE LA NUNCA SE PARE Y REINICIE BARAJEO
         async function repartirCartasAPI() {
             if (fichasJugador <= 0) {
                 if (!jugadorEspectador) {
                     jugadorEspectador = true;
-                    segundosEspectador = 300; // 5 minutos de gracia
+                    segundosEspectador = 300;
                     let asientoDiv = document.getElementById('asiento-4');
                     let nombreSpan = document.getElementById('nombre-etiqueta-tu');
                     let timerUi4 = document.getElementById('timer-ui-4');
@@ -1816,7 +1868,6 @@
                 primerTurnoRotativo = (primerTurnoRotativo % 6) + 1;
 
             } catch (error) {
-                // MODO LOCAL: BARAJO Y REINICIO DE MAZO LIMPIO
                 boteActual = 200;
                 contadorAccionesRonda = 0;
                 faseMano = 1;
