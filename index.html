@@ -1156,7 +1156,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Sistema de recarga con reingreso en la mano siguiente configurado.</div>
+        <div id="output-log">💬 [Saloon]: Recarga sincronizada con el ciclo natural de la crupier.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1332,7 +1332,7 @@
                 document.getElementById('chips-s4').innerText = `[$] ${fichasJugador.toLocaleString()}`;
                 document.getElementById('range-subir').max = fichasJugador;
                 
-                // RESTAURAR ESTADO DE JUEGO PARA LA SIGUIENTE MANO
+                // RESTAURAR ESTADO DE JUEGO PARA LA SIGUIENTE MANO EXACTAMENTE IGUAL A LEVANTARSE Y REGRESAR
                 jugadorEspectador = false;
                 jugadorEnPausa = false;
                 if (temporizadorSinFichas) clearInterval(temporizadorSinFichas);
@@ -1344,12 +1344,12 @@
                 document.getElementById('btn-sentarse-asiento').style.display = 'none';
                 retirados[4] = false;
 
-                log(`🤠 [Recarga Exitosa]: ¡Fichas acreditadas (${cantidad.toLocaleString()})! Te reincorporas en la siguiente mano.`);
+                log(`🤠 [Recarga Exitosa]: ¡Fichas acreditadas (${cantidad.toLocaleString()})! Te reincorporas oficialmente para la próxima mano.`);
             }
 
             lanzarMonedaDoradaRecarga();
             document.getElementById('resultado-admin-liberacion').innerText = `✅ ¡Fichas acreditadas al ID ${idCliente}!`;
-            alert(`✅ ¡Recarga Exitosa! Te reincorporarás a la mesa en la próxima mano.`);
+            alert(`✅ ¡Recarga Exitosa! Te reincorporarás en la siguiente mano al igual que al regresar de la pausa.`);
 
             codigoSeguridadActual = "";
             document.getElementById('admin-codigo-ingresado').value = "";
@@ -2189,9 +2189,9 @@
             document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
             faseMano = 0;
             
-            // LA CRUPIER ESPERA 5 SEGUNDOS EXACTOS ANTES DE REPARTIR LA SIGUIENTE MANO
+            // LA CRUPIER ESPERA 5 SEGUNDOS EXACTOS Y REPARAN LA SIGUIENTE MANO LIMPIA
             setTimeout(() => { 
-                log(`💃 [Crupier]: Repartiendo nueva mano...`);
+                log(`💃 [Crupier]: ¡La mesa está lista para la siguiente mano!`);
                 repartirCartasAPI(); 
             }, 5000);
         }
