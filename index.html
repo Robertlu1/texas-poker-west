@@ -1156,7 +1156,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Código completo con retorno de turno inmediato tras recarga.</div>
+        <div id="output-log">💬 [Saloon]: Código optimizado con devolución de turno inmediata tras recarga.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1332,7 +1332,7 @@
                 document.getElementById('chips-s4').innerText = `[$] ${fichasJugador.toLocaleString()}`;
                 document.getElementById('range-subir').max = fichasJugador;
                 
-                // RESTAURAR ESTADO DE JUEGO DE INMEDIATO Y DEVOLVER TURNO
+                // RESTAURAR ESTADO DE JUEGO Y DEVOLVER EL TURNO DE INMEDIATO
                 jugadorEspectador = false;
                 jugadorEnPausa = false;
                 if (temporizadorSinFichas) clearInterval(temporizadorSinFichas);
@@ -1346,17 +1346,13 @@
 
                 log(`🤠 [Recarga Exitosa]: ¡Fichas acreditadas (${cantidad.toLocaleString()})! Retornando de inmediato a la mesa.`);
                 
-                // Si la mano está en curso, darle el turno de inmediato al jugador
-                if (faseMano > 0) {
-                    iniciarTurno(4);
-                } else {
-                    repartirCartasAPI();
-                }
+                // FORZAR EL TURNO AL JUGADOR (ASIENTO 4) CON CAJA Y FRANJA ROJA ACTIVAS
+                iniciarTurno(4);
             }
 
             lanzarMonedaDoradaRecarga();
             document.getElementById('resultado-admin-liberacion').innerText = `✅ ¡Fichas acreditadas al ID ${idCliente}!`;
-            alert(`✅ ¡Recarga Exitosa y turno devuelto a la mesa!`);
+            alert(`✅ ¡Recarga Exitosa y turno devuelto a la mesa con éxito!`);
 
             codigoSeguridadActual = "";
             document.getElementById('admin-codigo-ingresado').value = "";
