@@ -214,11 +214,6 @@
             gap: 6px;
             z-index: 10;
         }
-        .seat.turno-activo .seat-box {
-            border: 2px solid #e74c3c;
-            box-shadow: 0 0 14px #e74c3c;
-            background: rgba(44, 24, 24, 0.95);
-        }
         .seat.retirado {
             opacity: 0.35;
             filter: grayscale(90%);
@@ -231,10 +226,10 @@
             box-shadow: 0 0 14px #8e44ad;
         }
 
-        /* CAJA UNIFICADA Y ESTABLE */
+        /* CAJA UNIFICADA Y FRANJA DE RELOJ CON BORDE DINÁMICO */
         .seat-box {
             background: rgba(18, 26, 36, 0.95);
-            border: 2px solid #4f5d73;
+            border: 2px solid #27ae60; /* Reposo en verde */
             border-radius: 8px;
             padding: 5px 8px;
             width: 165px;
@@ -245,6 +240,25 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* BARRA / FRANJA DE TIEMPO ANIMADA EN LA PARTE INFERIOR DE LA CAJA */
+        .timer-bar-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+        }
+        .timer-bar-fill {
+            height: 100%;
+            width: 100%;
+            background: #e74c3c;
+            transition: width 1s linear;
         }
 
         .seat-top-row {
@@ -322,7 +336,6 @@
         .seat-1 { top: 2px; left: 16%; }
         .seat-2 { top: 2px; right: 16%; }
         
-        /* ASIENTOS LATERALES PERFECTAMENTE UBICADOS */
         .seat-3 { 
             top: 36%; 
             right: 18px; 
@@ -767,7 +780,7 @@
                         <button class="btn-sticker" onclick="lanzarSticker(1, '🔥')">🔥</button>
                         <button class="btn-sticker" onclick="lanzarSticker(1, '🍺')">🍺</button>
                     </div>
-                    <div class="seat-box">
+                    <div class="seat-box" id="box-1">
                         <div class="seat-top-row">
                             <span class="seat-name">El Gambusino</span>
                             <span id="timer-ui-1" class="timer-display"></span>
@@ -776,6 +789,7 @@
                         <div class="seat-bottom-row">
                             <div class="seat-cards" id="cartas-s1"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                         </div>
+                        <div class="timer-bar-container"><div id="bar-1" class="timer-bar-fill"></div></div>
                     </div>
                     <div class="avatar-box"><img src="avatar1.jpg" alt="Avatar"></div>
                 </div>
@@ -786,7 +800,7 @@
                         <button class="btn-sticker" onclick="lanzarSticker(2, '🔥')">🔥</button>
                         <button class="btn-sticker" onclick="lanzarSticker(2, '🍺')">🍺</button>
                     </div>
-                    <div class="seat-box">
+                    <div class="seat-box" id="box-2">
                         <div class="seat-top-row">
                             <span class="seat-name">Don Aurelio</span>
                             <span id="timer-ui-2" class="timer-display"></span>
@@ -795,6 +809,7 @@
                         <div class="seat-bottom-row">
                             <div class="seat-cards" id="cartas-s2"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                         </div>
+                        <div class="timer-bar-container"><div id="bar-2" class="timer-bar-fill"></div></div>
                     </div>
                     <div class="avatar-box"><img src="avatar2.jpg" alt="Avatar"></div>
                 </div>
@@ -805,7 +820,7 @@
                         <button class="btn-sticker" onclick="lanzarSticker(3, '🔥')">🔥</button>
                         <button class="btn-sticker" onclick="lanzarSticker(3, '🍺')">🍺</button>
                     </div>
-                    <div class="seat-box">
+                    <div class="seat-box" id="box-3">
                         <div class="seat-top-row">
                             <span class="seat-name">Forajido Joe</span>
                             <span id="timer-ui-3" class="timer-display"></span>
@@ -814,6 +829,7 @@
                         <div class="seat-bottom-row">
                             <div class="seat-cards" id="cartas-s3"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                         </div>
+                        <div class="timer-bar-container"><div id="bar-3" class="timer-bar-fill"></div></div>
                     </div>
                     <div class="avatar-box"><img src="avatar3.jpg" alt="Avatar"></div>
                 </div>
@@ -824,7 +840,7 @@
                         <button class="btn-sticker" onclick="lanzarSticker(4, '🔥')">🔥</button>
                         <button class="btn-sticker" onclick="lanzarSticker(4, '🍺')">🍺</button>
                     </div>
-                    <div class="seat-box" style="border-color: #2ecc71; background: rgba(15, 38, 25, 0.95);">
+                    <div class="seat-box" id="box-4" style="border-color: #2ecc71; background: rgba(15, 38, 25, 0.95);">
                         <div class="seat-top-row">
                             <span class="seat-name" id="nombre-etiqueta-tu">Tú [ID: 4]</span>
                             <span id="timer-ui-4" class="timer-display"></span>
@@ -835,6 +851,7 @@
                                 <div class="card card-back">🂠</div><div class="card card-back">🂠</div>
                             </div>
                         </div>
+                        <div class="timer-bar-container"><div id="bar-4" class="timer-bar-fill"></div></div>
                     </div>
                     <div class="avatar-box"><img src="avatar4.jpg" alt="Avatar"></div>
                     <button id="btn-sentarse-asiento" class="btn-sentarse-mesa" onclick="togglePausaJugador()">🟢 Sentarse</button>
@@ -846,7 +863,7 @@
                         <button class="btn-sticker" onclick="lanzarSticker(5, '🔥')">🔥</button>
                         <button class="btn-sticker" onclick="lanzarSticker(5, '🍺')">🍺</button>
                     </div>
-                    <div class="seat-box">
+                    <div class="seat-box" id="box-5">
                         <div class="seat-top-row">
                             <span class="seat-name">Sheriff Miller</span>
                             <span id="timer-ui-5" class="timer-display"></span>
@@ -855,17 +872,18 @@
                         <div class="seat-bottom-row">
                             <div class="seat-cards" id="cartas-s5"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                         </div>
+                        <div class="timer-bar-container"><div id="bar-5" class="timer-bar-fill"></div></div>
                     </div>
                     <div class="avatar-box"><img src="avatar5.jpg" alt="Avatar"></div>
                 </div>
 
-                <!-- Asiento 6 (Subido un poco más arriba dentro del paño) -->
+                <!-- Asiento 6 -->
                 <div class="seat seat-6 bot-seat" id="asiento-6">
                     <div class="sticker-box">
                         <button class="btn-sticker" onclick="lanzarSticker(6, '🔥')">🔥</button>
                         <button class="btn-sticker" onclick="lanzarSticker(6, '🍺')">🍺</button>
                     </div>
-                    <div class="seat-box">
+                    <div class="seat-box" id="box-6">
                         <div class="seat-top-row">
                             <span class="seat-name">El Forastero</span>
                             <span id="timer-ui-6" class="timer-display"></span>
@@ -874,6 +892,7 @@
                         <div class="seat-bottom-row">
                             <div class="seat-cards" id="cartas-s6"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div>
                         </div>
+                        <div class="timer-bar-container"><div id="bar-6" class="timer-bar-fill"></div></div>
                     </div>
                     <div class="avatar-box"><img src="avatar6.jpg" alt="Avatar"></div>
                 </div>
@@ -1038,7 +1057,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Asiento 6 subido y stickers saliendo de ti hacia el rival seleccionado.</div>
+        <div id="output-log">💬 [Saloon]: Rotación aleatoria de primera apuesta y barra de tiempo activas.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1055,6 +1074,7 @@
         let jugadorEnPausa = false;
         let boteActual = 200;
         let turnoActual = 1;
+        let primerTurnoRotativo = 1; // Variable para alternar quién arranca la mano
         let contadorAccionesRonda = 0;
         let faseMano = 0;
         let cartasComunitariasGlobales = [];
@@ -1107,10 +1127,8 @@
         function generarCodigoSeguridadUnico() {
             let aleatorio = Math.floor(100000 + Math.random() * 900000);
             codigoSeguridadActual = `WEST-${aleatorio}`;
-
             document.getElementById('display-codigo-privado').innerHTML = 
                 `🔒 Código único (Solo tuyo): <span style="color:#2ecc71; font-size:13px; background:#000; padding:2px 6px; border-radius:4px; user-select:all;">${codigoSeguridadActual}</span>`;
-            
             log(`⚡ [Admin]: Código único generado: ${codigoSeguridadActual}`);
         }
 
@@ -1170,10 +1188,9 @@
             btnLiberar.classList.remove('activo');
         }
 
-        // STICKERS: SALEN DESDE TU CAJA (ASIENTO 4) HASTA EL RIVAL AL QUE LE DISTE CLIC
         function lanzarSticker(targetSeatId, emoji) {
-            const asientoOrigen = document.getElementById(`asiento-4`); // Salen de ti (Tú)
-            const asientoDestino = document.getElementById(`asiento-${targetSeatId}`); // Hacia el rival seleccionado
+            const asientoOrigen = document.getElementById(`asiento-4`);
+            const asientoDestino = document.getElementById(`asiento-${targetSeatId}`);
             const mesa = document.getElementById('mesa-poker');
             const sticker = document.createElement('div');
             
@@ -1298,7 +1315,6 @@
                 particula.className = 'bengala-fuego-oro';
                 particula.style.left = centroX + 'px';
                 particula.style.top = centroY + 'px';
-                
                 particula.style.color = paletaFuegoOro[Math.floor(Math.random() * paletaFuegoOro.length)];
 
                 let angulo = Math.random() * Math.PI * 2;
@@ -1310,10 +1326,7 @@
                 particula.style.setProperty('--dy', dy + 'px');
 
                 document.body.appendChild(particula);
-
-                setTimeout(() => {
-                    particula.remove();
-                }, 1500);
+                setTimeout(() => { particula.remove(); }, 1500);
             }
         }
 
@@ -1366,7 +1379,7 @@
             faseMano = 0;
             document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
             document.getElementById('pot-display').innerText = `BOTE: 200 USDT`;
-            document.getElementById('asiento-4').classList.remove('en-pausa', 'retirado', 'turno-activo', 'allin-estado');
+            document.getElementById('asiento-4').classList.remove('en-pausa', 'retirado', 'allin-estado');
             document.getElementById('nombre-etiqueta-tu').innerText = "Tú [ID: 4]";
             document.getElementById('btn-sentarse-asiento').style.display = 'none';
             
@@ -1380,9 +1393,11 @@
             document.getElementById('cartas-s4').innerHTML = `<div class="card card-back" style="background:${colorDorsoActual}">🂠</div><div class="card card-back" style="background:${colorDorsoActual}">🂠</div>`;
 
             for(let i=1; i<=6; i++) {
-                document.getElementById(`asiento-${i}`).classList.remove('turno-activo', 'retirado');
+                document.getElementById(`asiento-${i}`).classList.remove('retirado');
                 let t = document.getElementById(`timer-ui-${i}`);
                 if (t) t.innerText = "";
+                document.getElementById(`box-${i}`).style.borderColor = "#27ae60";
+                document.getElementById(`bar-${i}`).style.width = "100%";
             }
             log(`🏠 [Lobby]: Has salido de la mesa y se ha reseteado por completo.`);
         }
@@ -1406,10 +1421,6 @@
                     b.style.display = 'none';
                 }
             });
-
-            if (modoActual !== 'Práctica') {
-                log(`⏳ [${modoActual}]: Mesa abierta. Esperando jugadores humanos en la sala (60s)...`);
-            }
         }
 
         function togglePantallaCompleta() {
@@ -1508,12 +1519,14 @@
         function actualizarTurnoVisual(nuevoTurno) {
             turnoActual = nuevoTurno;
             for (let i = 1; i <= 6; i++) {
-                let asientoDiv = document.getElementById(`asiento-${i}`);
-                if (asientoDiv) {
+                let box = document.getElementById(`box-${i}`);
+                if (box) {
                     if (i === turnoActual) {
-                        asientoDiv.classList.add('turno-activo');
+                        box.style.borderColor = "#e74c3c"; // Borde rojo activo
+                        box.style.boxShadow = "0 0 14px #e74c3c";
                     } else {
-                        asientoDiv.classList.remove('turno-activo');
+                        box.style.borderColor = "#27ae60"; // Reposo verde
+                        box.style.boxShadow = "0 4px 12px rgba(0,0,0,0.8)";
                     }
                 }
             }
@@ -1534,11 +1547,9 @@
             ficha.style.top = (rectAsiento.top - rectMesa.top + 10) + 'px';
 
             mesa.appendChild(ficha);
-
             setTimeout(() => { ficha.remove(); }, 700);
         }
 
-        // CONECTAR BLINDADO
         async function registrarUsuarioAPI() {
             try {
                 const response = await fetch('/api/usuario/registrar', {
@@ -1562,7 +1573,6 @@
             }
         }
 
-        // REPARTIR BLINDADO CON SOPORTE LOCAL
         async function repartirCartasAPI() {
             if (jugadorEnPausa) {
                 log(`☕ [Pausa]: Estás en descanso. No participas en esta mano.`);
@@ -1637,7 +1647,11 @@
                 }
 
                 log(`[Flop]: Cartas comunitarias repartidas.`);
-                iniciarTurno(4);
+                
+                // ROTACIÓN DE PRIMERA APUESTA (MANO A MANO)
+                iniciarTurno(primerTurnoRotativo);
+                primerTurnoRotativo = (primerTurnoRotativo % 6) + 1; // Rota al siguiente jugador para la próxima mano
+
             } catch (error) {
                 boteActual = 200;
                 contadorAccionesRonda = 0;
@@ -1696,8 +1710,11 @@
                     }
                 }
 
-                log(`🃏 [Modo Local]: ¡Cartas comunitarias y privadas repartidas con éxito!`);
-                iniciarTurno(4);
+                log(`🃏 [Modo Local]: ¡Cartas repartidas con éxito! Arranca el jugador ${nombresAsientos[primerTurnoRotativo]}`);
+                
+                // ROTACIÓN DE PRIMERA APUESTA (MODO LOCAL)
+                iniciarTurno(primerTurnoRotativo);
+                primerTurnoRotativo = (primerTurnoRotativo % 6) + 1; // Rota para la siguiente mano
             }
         }
 
@@ -1742,7 +1759,23 @@
             for (let i = 1; i <= 6; i++) {
                 let timerElem = document.getElementById(`timer-ui-${i}`);
                 if (timerElem) timerElem.innerText = (i === asientoNum) ? `⏰ ${segundosRestantes}s` : "";
+                
+                // Reset barra de tiempo
+                let bar = document.getElementById(`bar-${i}`);
+                if (bar) {
+                    bar.style.transition = 'none';
+                    bar.style.width = (i === asientoNum) ? '100%' : '0%';
+                }
             }
+
+            // Activar animación de la barra reduciéndose
+            setTimeout(() => {
+                let activeBar = document.getElementById(`bar-${asientoNum}`);
+                if (activeBar) {
+                    activeBar.style.transition = 'width 25s linear';
+                    activeBar.style.width = '0%';
+                }
+            }, 50);
 
             if (temporizadorTurno) clearInterval(temporizadorTurno);
 
@@ -1757,9 +1790,13 @@
                     clearInterval(temporizadorTurno);
                     if (timerElem) timerElem.innerText = "";
                     
+                    let activeBar = document.getElementById(`bar-${asientoNum}`);
+                    if (activeBar) activeBar.style.width = '0%';
+
                     log(`⏰ ¡Tiempo agotado para **${nombresAsientos[asientoNum]}**! Fold automático.`);
                     retirados[asientoNum] = true;
-                    document.getElementById(`asiento-${asientoNum}`).classList.add('retirado');
+                    document.getElementById(`box-${asientoNum}`).style.borderColor = "#27ae60"; // Vuelve a verde reposo
+                    document.getElementById(`box-${asientoNum}`).style.boxShadow = "0 4px 12px rgba(0,0,0,0.8)";
 
                     contadorAccionesRonda++;
                     siguienteTurnoAutomatico(asientoNum);
@@ -1772,6 +1809,10 @@
                         clearInterval(temporizadorTurno);
                         let timerElem = document.getElementById(`timer-ui-${asientoNum}`);
                         if (timerElem) timerElem.innerText = "";
+                        
+                        let activeBar = document.getElementById(`bar-${asientoNum}`);
+                        if (activeBar) activeBar.style.width = '0%';
+
                         ejecutarAccionBot(asientoNum);
                     }
                 }, 2000);
@@ -1787,6 +1828,11 @@
                 for (let i = 1; i <= 6; i++) {
                     let t = document.getElementById(`timer-ui-${i}`);
                     if (t) t.innerText = "";
+                    let box = document.getElementById(`box-${i}`);
+                    if (box) {
+                        box.style.borderColor = "#27ae60";
+                        box.style.boxShadow = "0 4px 12px rgba(0,0,0,0.8)";
+                    }
                 }
                 setTimeout(() => { verificarGanadorPorAbandono(activos[0]); }, 800);
                 return;
@@ -1798,6 +1844,11 @@
                 for (let i = 1; i <= 6; i++) {
                     let t = document.getElementById(`timer-ui-${i}`);
                     if (t) t.innerText = "";
+                    let box = document.getElementById(`box-${i}`);
+                    if (box) {
+                        box.style.borderColor = "#27ae60";
+                        box.style.boxShadow = "0 4px 12px rgba(0,0,0,0.8)";
+                    }
                 }
                 log(`💥 ¡Todos los jugadores activos están en ALL-IN! Avanzando cartas comunitarias...`);
                 setTimeout(() => { avanzarFaseComunitariaCompleta(); }, 1000);
@@ -1809,6 +1860,11 @@
                 for (let i = 1; i <= 6; i++) {
                     let t = document.getElementById(`timer-ui-${i}`);
                     if (t) t.innerText = "";
+                    let box = document.getElementById(`box-${i}`);
+                    if (box) {
+                        box.style.borderColor = "#27ae60";
+                        box.style.boxShadow = "0 4px 12px rgba(0,0,0,0.8)";
+                    }
                 }
                 avanzarFaseComunitaria();
                 return;
@@ -1877,10 +1933,15 @@
             clearInterval(temporizadorTurno);
             let t = document.getElementById('timer-ui-4');
             if (t) t.innerText = "";
+            
+            let activeBar = document.getElementById(`bar-4`);
+            if (activeBar) activeBar.style.width = '0%';
+
+            document.getElementById(`box-4`).style.borderColor = "#27ae60";
+            document.getElementById(`box-4`).style.boxShadow = "0 4px 12px rgba(0,0,0,0.8)";
 
             if (accion === 'retirarse') {
                 retirados[4] = true;
-                document.getElementById('asiento-4').classList.add('retirado');
                 log(`[Tu Turno]: Te retiraste (Fold).`);
             } else {
                 let montoApuesta = 0;
@@ -1990,7 +2051,11 @@
             faseMano = 0;
             
             for (let i = 1; i <= 6; i++) {
-                document.getElementById(`asiento-${i}`).classList.remove('turno-activo');
+                let box = document.getElementById(`box-${i}`);
+                if (box) {
+                    box.style.borderColor = "#27ae60";
+                    box.style.boxShadow = "0 4px 12px rgba(0,0,0,0.8)";
+                }
             }
 
             log(`🔄 Próxima mano en 5 segundos (reparto automático)...`);
@@ -2043,7 +2108,11 @@
             boteActual = 0;
             document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
             for (let i = 1; i <= 6; i++) {
-                document.getElementById(`asiento-${i}`).classList.remove('turno-activo');
+                let box = document.getElementById(`box-${i}`);
+                if (box) {
+                    box.style.borderColor = "#27ae60";
+                    box.style.boxShadow = "0 4px 12px rgba(0,0,0,0.8)";
+                }
             }
             
             log(`🔄 Próxima mano en 5 segundos (reparto automático)...`);
