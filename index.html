@@ -629,7 +629,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(12, 18, 25, 0.98);
-            border: 3px solid #f39c12;
+            border: 3px solid #f1c40f;
             padding: 20px;
             border-radius: 12px;
             z-index: 300000;
@@ -823,9 +823,9 @@
 </head>
 <body>
 
-    <!-- REPRODUCTOR DE MÚSICA AMBIENTAL (AUDIO ORIGINAL DEL SALÓN) -->
+    <!-- REPRODUCTOR DE MÚSICA LOCAL (LISTA 1 A 7) -->
     <audio id="audio-fondo" loop>
-        <source src="https://actions.google.com/sounds/v1/ambiences/saloon_interior.ogg" type="audio/ogg">
+        <source src="musica_saloon1.mp3" type="audio/mp3">
         Tu navegador no soporta audio ambiental.
     </audio>
 
@@ -840,7 +840,7 @@
         <div class="saloon-container">
             <!-- PASARELA DE MÚSICA SUPERIOR IZQUIERDA -->
             <div class="music-panel-top">
-                <span>🎵 Salón:</span>
+                <span id="label-pista-actual">🎵 Pista 1/7:</span>
                 <button class="btn-musica-ctrl" onclick="toggleReproduccionMusica()" id="btn-play-pause">▶️ Play</button>
                 <input type="range" id="volumen-musica" min="0" max="1" step="0.05" value="0.3" oninput="cambiarVolumenMusica(this.value)">
                 <button class="btn-musica-ctrl" onclick="siguientePistaMusica()">⏭️ Cambiar</button>
@@ -1156,7 +1156,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Música de salón clásica restaurada con éxito.</div>
+        <div id="output-log">💬 [Saloon]: Código completo con retorno de turno inmediato tras recarga.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1199,10 +1199,15 @@
 
         let codigoSeguridadActual = "";
 
-        // LISTA DE PISTAS DE SALÓN ORIGINALES
+        // LISTA DE PISTAS LOCALES (musica_saloon1.mp3 a musica_saloon7.mp3)
         const playlistMusica = [
-            "https://actions.google.com/sounds/v1/ambiences/saloon_interior.ogg",
-            "https://actions.google.com/sounds/v1/weather/wind_gust_heavy.ogg"
+            "musica_saloon1.mp3",
+            "musica_saloon2.mp3",
+            "musica_saloon3.mp3",
+            "musica_saloon4.mp3",
+            "musica_saloon5.mp3",
+            "musica_saloon6.mp3",
+            "musica_saloon7.mp3"
         ];
         let indicePistaActual = 0;
 
@@ -1221,7 +1226,7 @@
                 if (audio.paused) {
                     audio.play().then(() => {
                         btn.innerText = "⏸️ Pausa";
-                        log(`🎵 [Música]: Reproduciendo música de salón.`);
+                        log(`🎵 [Música]: Reproduciendo.`);
                     }).catch(e => alert("Haz clic en la página para permitir audio."));
                 } else {
                     audio.pause();
@@ -1240,8 +1245,9 @@
                 audio.load();
                 audio.play().then(() => {
                     document.getElementById('btn-play-pause').innerText = "⏸️ Pausa";
-                    log(`🎵 [Música]: Pista cambiada a #${indicePistaActual + 1}.`);
-                }).catch(e => log(`⚠️ [Música]: No se pudo cambiar la pista.`));
+                    document.getElementById('label-pista-actual').innerText = `🎵 Pista ${indicePistaActual + 1}/7:`;
+                    log(`🎵 [Música]: Pista ${indicePistaActual + 1} (${playlistMusica[indicePistaActual]}).`);
+                }).catch(e => log(`⚠️ [Música]: Coloca el archivo ${playlistMusica[indicePistaActual]} en la carpeta.`));
             }
         }
 
@@ -1326,22 +1332,31 @@
                 document.getElementById('chips-s4').innerText = `[$] ${fichasJugador.toLocaleString()}`;
                 document.getElementById('range-subir').max = fichasJugador;
                 
-                if (jugadorEspectador || fichasJugador > 0) {
-                    jugadorEspectador = false;
-                    if (temporizadorSinFichas) clearInterval(temporizadorSinFichas);
-                    let asientoDiv = document.getElementById('asiento-4');
-                    let nombreSpan = document.getElementById('nombre-etiqueta-tu');
-                    asientoDiv.classList.remove('espectador', 'sin-fichas', 'retirado');
-                    nombreSpan.innerText = "Tú [ID: 4]";
-                    document.getElementById('timer-ui-4').innerText = "25s";
-                    log(`🤠 [Recarga Exitosa]: ¡Has vuelto a la mesa con ${cantidad.toLocaleString()} fichas!`);
+                // RESTAURAR ESTADO DE JUEGO DE INMEDIATO Y DEVOLVER TURNO
+                jugadorEspectador = false;
+                jugadorEnPausa = false;
+                if (temporizadorSinFichas) clearInterval(temporizadorSinFichas);
+                
+                let asientoDiv = document.getElementById('asiento-4');
+                let nombreSpan = document.getElementById('nombre-etiqueta-tu');
+                asientoDiv.classList.remove('espectador', 'sin-fichas', 'retirado', 'en-pausa');
+                nombreSpan.innerText = "Tú [ID: 4]";
+                document.getElementById('btn-sentarse-asiento').style.display = 'none';
+                retirados[4] = false;
+
+                log(`🤠 [Recarga Exitosa]: ¡Fichas acreditadas (${cantidad.toLocaleString()})! Retornando de inmediato a la mesa.`);
+                
+                // Si la mano está en curso, darle el turno de inmediato al jugador
+                if (faseMano > 0) {
+                    iniciarTurno(4);
+                } else {
+                    repartirCartasAPI();
                 }
             }
 
             lanzarMonedaDoradaRecarga();
             document.getElementById('resultado-admin-liberacion').innerText = `✅ ¡Fichas acreditadas al ID ${idCliente}!`;
-            log(`🪙✨ [Tienda]: Acreditadas ${cantidad.toLocaleString()} fichas al ID ${idCliente}.`);
-            alert(`✅ ¡Recarga Exitosa!`);
+            alert(`✅ ¡Recarga Exitosa y turno devuelto a la mesa!`);
 
             codigoSeguridadActual = "";
             document.getElementById('admin-codigo-ingresado').value = "";
@@ -2012,7 +2027,6 @@
             temporizadorTurno = setInterval(() => {
                 segundosRestantes--;
                 let timerElem = document.getElementById(`timer-ui-${asientoNum}`);
-                let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[asientoNum]; // Nota: i no aplica aquí, usamos asientoNum
                 let fichasActAsiento = (asientoNum === 4) ? fichasJugador : fichasBots[asientoNum];
                 if (timerElem && fichasActAsiento > 0) { timerElem.innerText = `⏳ ${segundosRestantes}s`; }
 
