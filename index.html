@@ -823,9 +823,9 @@
 </head>
 <body>
 
-    <!-- REPRODUCTOR DE MÚSICA AMBIENTAL (AUDIO CLÁSICO WESTERN) -->
+    <!-- REPRODUCTOR DE MÚSICA AMBIENTAL (GUITARRA COUNTRY PURA) -->
     <audio id="audio-fondo" loop>
-        <source src="https://actions.google.com/sounds/v1/ambiences/saloon_interior.ogg" type="audio/ogg">
+        <source src="https://ia801502.us.archive.org/19/items/TheGoodTheBadAndTheUglyMainTheme/EnnioMorriconeTheGoodTheBadAndTheUglyMainTheme.mp3" type="audio/mp3">
         Tu navegador no soporta audio ambiental.
     </audio>
 
@@ -1156,7 +1156,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Música ambiental del oeste y pasarela restablecidas.</div>
+        <div id="output-log">💬 [Saloon]: Música de guitarra country clásica cargada.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1199,10 +1199,10 @@
 
         let codigoSeguridadActual = "";
 
-        // LISTA DE PISTAS CLÁSICAS ESTABLECIDAS
+        // LISTA DE PISTAS DE GUITARRA COUNTRY CLÁSICA (ARCHIVE.ORG)
         const playlistMusica = [
-            "https://actions.google.com/sounds/v1/ambiences/saloon_interior.ogg",
-            "https://actions.google.com/sounds/v1/weather/wind_gust_heavy.ogg"
+            "https://ia801502.us.archive.org/19/items/TheGoodTheBadAndTheUglyMainTheme/EnnioMorriconeTheGoodTheBadAndTheUglyMainTheme.mp3",
+            "https://ia800908.us.archive.org/24/items/A Fistful Of Dollars Ennio Morricone/01 - Ennio Morricone - A Fistful Of Dollars.mp3"
         ];
         let indicePistaActual = 0;
 
@@ -1221,7 +1221,7 @@
                 if (audio.paused) {
                     audio.play().then(() => {
                         btn.innerText = "⏸️ Pausa";
-                        log(`🎵 [Música]: Sonando.`);
+                        log(`🎵 [Música]: Sonando guitarra country.`);
                     }).catch(e => alert("Haz clic en la página para permitir audio."));
                 } else {
                     audio.pause();
@@ -1240,8 +1240,8 @@
                 audio.load();
                 audio.play().then(() => {
                     document.getElementById('btn-play-pause').innerText = "⏸️ Pausa";
-                    log(`🎵 [Música]: Pista cambiada #${indicePistaActual + 1}.`);
-                }).catch(e => log(`⚠️ [Música]: Error al cambiar pista.`));
+                    log(`🎵 [Música]: Pista country cambiada #${indicePistaActual + 1}.`);
+                }).catch(e => log(`⚠️ [Música]: No se pudo cambiar la pista.`));
             }
         }
 
