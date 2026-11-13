@@ -1160,7 +1160,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Código completo y blindado con retorno de turno inmediato y retardo de crupier de 10s.</div>
+        <div id="output-log">💬 [Saloon]: Código con rastreo de apuestas para devolución de "vuelto" en caso de sobre-apuesta.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1194,6 +1194,9 @@
         let cartasJugadorPrivadas = [];
         let temporizadorTurno = null;
         let segundosRestantes = 25;
+
+        // Rastreo de apuestas para calcular excesos ("vueltos")
+        let apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
 
         let modoActual = 'Práctica';
         let torneoPartidaActual = 1;
@@ -1357,7 +1360,6 @@
                 document.getElementById('chips-s4').innerText = `[$] ${fichasJugador.toLocaleString()}`;
                 document.getElementById('range-subir').max = fichasJugador;
                 
-                // MOSTRAR BOTÓN DE RETORNO RÁPIDO BAJO EL ASIENTO 4
                 document.getElementById('btn-retornar-mesa').style.display = 'block';
                 log(`🪙 [Tienda]: Fichas acreditadas. Haz clic en '🤠 Retornar a Mesa' para activar tu turno.`);
             }
@@ -1584,6 +1586,8 @@
             jugadorEnPausa = false;
             jugadorEspectador = false;
             faseMano = 0;
+            apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+
             document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
             document.getElementById('pot-display').innerText = `BOTE: 200 USDT`;
             document.getElementById('asiento-4').classList.remove('en-pausa', 'retirado', 'allin-estado', 'sin-fichas', 'espectador');
@@ -1824,6 +1828,8 @@
         }
 
         async function repartirCartasAPI() {
+            apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+            
             if (fichasJugador <= 0) {
                 if (!jugadorEspectador) {
                     jugadorEspectador = true;
@@ -1974,6 +1980,7 @@
         }
 
         function iniciarSiguienteManoBots() {
+            apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
             boteActual = 200;
             contadorAccionesRonda = 0;
             faseMano = 1;
@@ -2146,7 +2153,10 @@
                 boteActual += monto;
                 document.getElementById(`chips-s${botId}`).innerText = `[$] ${fichasBots[botId]}`;
                 document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
-                if (monto > 0) lanzarFichasAlBote(botId);
+                if (monto > 0) {
+                    lanzarFichasAlBote(botId);
+                    apuestasMano[botId] += monto;
+                }
                 log(`🤖 [${nombresAsientos[botId]}]: ${eleccion}.`);
             }
             contadorAccionesRonda++;
@@ -2174,7 +2184,10 @@
                     boteActual += montoApuesta;
                     document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
                     document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
-                    if (montoApuesta > 0) lanzarFichasAlBote(4);
+                    if (montoApuesta > 0) {
+                        lanzarFichasAlBote(4);
+                        apuestasMano[4] += montoApuesta;
+                    }
                     log(`[Tú]: ${accion} $${montoApuesta}`);
                 }
             }
@@ -2182,7 +2195,35 @@
             siguienteTurnoAutomatico(4);
         }
 
+        // Función para devolver la apuesta excedente antes del bote
+        function devolverExcesoApuesta() {
+            let apuestasArray = Object.entries(apuestasMano).map(([id, amount]) => ({ id: parseInt(id), amount: amount }));
+            apuestasArray.sort((a, b) => b.amount - a.amount);
+
+            let maxBet = apuestasArray[0];
+            let secondMax = apuestasArray[1];
+
+            if (maxBet.amount > 0 && maxBet.amount > secondMax.amount) {
+                let exceso = maxBet.amount - secondMax.amount;
+                if (maxBet.id === 4) {
+                    fichasJugador += exceso;
+                    document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
+                    log(`💸 [Mesa]: Se te devolvió tu vuelto de $${exceso} (apuesta no igualada).`);
+                } else {
+                    fichasBots[maxBet.id] += exceso;
+                    document.getElementById(`chips-s${maxBet.id}`).innerText = `[$] ${fichasBots[maxBet.id]}`;
+                }
+                boteActual -= exceso;
+                if (boteActual < 0) boteActual = 0;
+                document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
+                apuestasMano[maxBet.id] = secondMax.amount;
+            }
+        }
+
         function ejecutarShowdownFinalReal() {
+            // Devolver vueltos antes del showdown final
+            devolverExcesoApuesta();
+
             let activos = [];
             for (let i = 1; i <= 6; i++) {
                 let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i];
@@ -2240,6 +2281,9 @@
         }
 
         function verificarGanadorPorAbandono(ganadorId) {
+            // Devolver vueltos antes de dar el bote por abandono
+            devolverExcesoApuesta();
+
             if (ganadorId === 4) { document.getElementById('modal-mostrar-cartas').style.display = 'block'; }
             else {
                 fichasBots[ganadorId] += boteActual;
