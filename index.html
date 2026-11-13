@@ -823,10 +823,9 @@
 </head>
 <body>
 
-    <!-- REPRODUCTOR DE MÚSICA AMBIENTAL WESTERN (ENLACE MP3 DIRECTO) -->
+    <!-- REPRODUCTOR DE MÚSICA AMBIENTAL (GUITARRA COUNTRY / WESTERN CLÁSICA) -->
     <audio id="audio-fondo" loop>
-        <source src="https://upload.wikimedia.org/wikipedia/commons/b/bc/Ennio_Morricone_-_The_Good_the_Bad_and_the_Ugly_%28Main_Theme%29.ogg" type="audio/ogg">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+        <source src="https://ia801502.us.archive.org/19/items/TheGoodTheBadAndTheUglyMainTheme/EnnioMorriconeTheGoodTheBadAndTheUglyMainTheme.mp3" type="audio/mp3">
         Tu navegador no soporta audio ambiental.
     </audio>
 
@@ -1157,7 +1156,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Pasarela de música superior izquierda activa.</div>
+        <div id="output-log">💬 [Saloon]: Música country western clásica y pasarela activa.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1200,11 +1199,10 @@
 
         let codigoSeguridadActual = "";
 
-        // LISTA DE PISTAS DE MÚSICA COMPATIBLES
+        // PISTAS DE MÚSICA COUNTRY / WESTERN CLÁSICA
         const playlistMusica = [
-            "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-            "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-            "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+            "https://ia801502.us.archive.org/19/items/TheGoodTheBadAndTheUglyMainTheme/EnnioMorriconeTheGoodTheBadAndTheUglyMainTheme.mp3",
+            "https://ia800908.us.archive.org/24/items/A Fistful Of Dollars Ennio Morricone/01 - Ennio Morricone - A Fistful Of Dollars.mp3"
         ];
         let indicePistaActual = 0;
 
@@ -1239,7 +1237,7 @@
                 indicePistaActual = (indicePistaActual + 1) % playlistMusica.length;
                 audio.src = playlistMusica[indicePistaActual];
                 audio.play().catch(e => console.log("Error al reproducir pista"));
-                log(`🎵 [Música]: Pista #${indicePistaActual + 1} sonando.`);
+                log(`🎵 [Música]: Cambiado a melodía western #${indicePistaActual + 1}.`);
             }
         }
 
@@ -1879,7 +1877,7 @@
                     let asientoDiv = document.getElementById(`asiento-${i}`);
                     let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i];
                     if (fichasAsiento <= 0) { retirados[i] = true; asientoDiv.classList.add('sin-fichas', 'retirado'); }
-                    else { retirados[i] = false; asientoDiv.classList.remove('retirado', 'sin-fichas', 'espectador'); }
+                    else { retirados[i] = false; asientoDiv.classList.remove('retirado', 'allin-estado', 'sin-fichas', 'espectador'); }
                 }
 
                 for (let c = 0; c < 5; c++) {
