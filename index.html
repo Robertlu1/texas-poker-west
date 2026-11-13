@@ -629,7 +629,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(12, 18, 25, 0.98);
-            border: 3px solid #f1c40f;
+            border: 3px solid #f39c12;
             padding: 20px;
             border-radius: 12px;
             z-index: 300000;
@@ -823,9 +823,9 @@
 </head>
 <body>
 
-    <!-- REPRODUCTOR DE MÚSICA AMBIENTAL (GUITARRA COUNTRY PURA) -->
+    <!-- REPRODUCTOR DE MÚSICA AMBIENTAL (AUDIO ORIGINAL DEL SALÓN) -->
     <audio id="audio-fondo" loop>
-        <source src="https://ia801502.us.archive.org/19/items/TheGoodTheBadAndTheUglyMainTheme/EnnioMorriconeTheGoodTheBadAndTheUglyMainTheme.mp3" type="audio/mp3">
+        <source src="https://actions.google.com/sounds/v1/ambiences/saloon_interior.ogg" type="audio/ogg">
         Tu navegador no soporta audio ambiental.
     </audio>
 
@@ -1156,7 +1156,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Música de guitarra country clásica cargada.</div>
+        <div id="output-log">💬 [Saloon]: Música de salón clásica restaurada con éxito.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1199,10 +1199,10 @@
 
         let codigoSeguridadActual = "";
 
-        // LISTA DE PISTAS DE GUITARRA COUNTRY CLÁSICA (ARCHIVE.ORG)
+        // LISTA DE PISTAS DE SALÓN ORIGINALES
         const playlistMusica = [
-            "https://ia801502.us.archive.org/19/items/TheGoodTheBadAndTheUglyMainTheme/EnnioMorriconeTheGoodTheBadAndTheUglyMainTheme.mp3",
-            "https://ia800908.us.archive.org/24/items/A Fistful Of Dollars Ennio Morricone/01 - Ennio Morricone - A Fistful Of Dollars.mp3"
+            "https://actions.google.com/sounds/v1/ambiences/saloon_interior.ogg",
+            "https://actions.google.com/sounds/v1/weather/wind_gust_heavy.ogg"
         ];
         let indicePistaActual = 0;
 
@@ -1221,7 +1221,7 @@
                 if (audio.paused) {
                     audio.play().then(() => {
                         btn.innerText = "⏸️ Pausa";
-                        log(`🎵 [Música]: Sonando guitarra country.`);
+                        log(`🎵 [Música]: Reproduciendo música de salón.`);
                     }).catch(e => alert("Haz clic en la página para permitir audio."));
                 } else {
                     audio.pause();
@@ -1240,7 +1240,7 @@
                 audio.load();
                 audio.play().then(() => {
                     document.getElementById('btn-play-pause').innerText = "⏸️ Pausa";
-                    log(`🎵 [Música]: Pista country cambiada #${indicePistaActual + 1}.`);
+                    log(`🎵 [Música]: Pista cambiada a #${indicePistaActual + 1}.`);
                 }).catch(e => log(`⚠️ [Música]: No se pudo cambiar la pista.`));
             }
         }
@@ -2012,12 +2012,13 @@
             temporizadorTurno = setInterval(() => {
                 segundosRestantes--;
                 let timerElem = document.getElementById(`timer-ui-${asientoNum}`);
-                let fichasAsiento = (asientoNum === 4) ? fichasJugador : fichasBots[asientoNum];
-                if (timerElem && fichasAsiento > 0) { timerElem.innerText = `⏳ ${segundosRestantes}s`; }
+                let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[asientoNum]; // Nota: i no aplica aquí, usamos asientoNum
+                let fichasActAsiento = (asientoNum === 4) ? fichasJugador : fichasBots[asientoNum];
+                if (timerElem && fichasActAsiento > 0) { timerElem.innerText = `⏳ ${segundosRestantes}s`; }
 
                 if (segundosRestantes <= 0) {
                     clearInterval(temporizadorTurno);
-                    if (timerElem && fichasAsiento > 0) timerElem.innerText = "--";
+                    if (timerElem && fichasActAsiento > 0) timerElem.innerText = "--";
                     retirados[asientoNum] = true;
                     document.getElementById(`asiento-${asientoNum}`).classList.add('retirado');
                     contadorAccionesRonda++;
