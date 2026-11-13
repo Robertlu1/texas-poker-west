@@ -226,12 +226,12 @@
             box-shadow: 0 0 14px #8e44ad;
         }
 
-        /* CAJA UNIFICADA Y FRANJA DE RELOJ CON BORDE DINÁMICO */
+        /* CAJA UNIFICADA Y ESTABLE CON BARRITA INTERNA */
         .seat-box {
             background: rgba(18, 26, 36, 0.95);
-            border: 2px solid #27ae60; /* Reposo en verde */
+            border: 2px solid #27ae60;
             border-radius: 8px;
-            padding: 5px 8px;
+            padding: 4px 6px;
             width: 165px;
             height: 75px;
             color: #ffffff;
@@ -245,7 +245,6 @@
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* BARRA / FRANJA DE TIEMPO ANIMADA EN LA PARTE INFERIOR DE LA CAJA */
         .timer-bar-container {
             position: absolute;
             bottom: 0;
@@ -269,13 +268,14 @@
             font-weight: bold;
             line-height: 1.1;
         }
-        .seat-name { color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 95px; }
+        .seat-name { color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px; }
         .seat-chips { color: #f1c40f; font-size: 10px; font-weight: bold; }
 
         .seat-bottom-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 2px;
         }
         .seat-cards { display: flex; gap: 3px; }
 
@@ -1057,7 +1057,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Rotación aleatoria de primera apuesta y barra de tiempo activas.</div>
+        <div id="output-log">💬 [Saloon]: Cajas y barra de tiempo alineadas perfectamente.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1074,7 +1074,7 @@
         let jugadorEnPausa = false;
         let boteActual = 200;
         let turnoActual = 1;
-        let primerTurnoRotativo = 1; // Variable para alternar quién arranca la mano
+        let primerTurnoRotativo = 1;
         let contadorAccionesRonda = 0;
         let faseMano = 0;
         let cartasComunitariasGlobales = [];
@@ -1522,10 +1522,10 @@
                 let box = document.getElementById(`box-${i}`);
                 if (box) {
                     if (i === turnoActual) {
-                        box.style.borderColor = "#e74c3c"; // Borde rojo activo
+                        box.style.borderColor = "#e74c3c";
                         box.style.boxShadow = "0 0 14px #e74c3c";
                     } else {
-                        box.style.borderColor = "#27ae60"; // Reposo verde
+                        box.style.borderColor = "#27ae60";
                         box.style.boxShadow = "0 4px 12px rgba(0,0,0,0.8)";
                     }
                 }
@@ -1647,10 +1647,8 @@
                 }
 
                 log(`[Flop]: Cartas comunitarias repartidas.`);
-                
-                // ROTACIÓN DE PRIMERA APUESTA (MANO A MANO)
                 iniciarTurno(primerTurnoRotativo);
-                primerTurnoRotativo = (primerTurnoRotativo % 6) + 1; // Rota al siguiente jugador para la próxima mano
+                primerTurnoRotativo = (primerTurnoRotativo % 6) + 1;
 
             } catch (error) {
                 boteActual = 200;
@@ -1710,11 +1708,9 @@
                     }
                 }
 
-                log(`🃏 [Modo Local]: ¡Cartas repartidas con éxito! Arranca el jugador ${nombresAsientos[primerTurnoRotativo]}`);
-                
-                // ROTACIÓN DE PRIMERA APUESTA (MODO LOCAL)
+                log(`🃏 [Modo Local]: ¡Cartas repartidas con éxito!`);
                 iniciarTurno(primerTurnoRotativo);
-                primerTurnoRotativo = (primerTurnoRotativo % 6) + 1; // Rota para la siguiente mano
+                primerTurnoRotativo = (primerTurnoRotativo % 6) + 1;
             }
         }
 
@@ -1760,7 +1756,6 @@
                 let timerElem = document.getElementById(`timer-ui-${i}`);
                 if (timerElem) timerElem.innerText = (i === asientoNum) ? `⏰ ${segundosRestantes}s` : "";
                 
-                // Reset barra de tiempo
                 let bar = document.getElementById(`bar-${i}`);
                 if (bar) {
                     bar.style.transition = 'none';
@@ -1768,7 +1763,6 @@
                 }
             }
 
-            // Activar animación de la barra reduciéndose
             setTimeout(() => {
                 let activeBar = document.getElementById(`bar-${asientoNum}`);
                 if (activeBar) {
@@ -1795,7 +1789,7 @@
 
                     log(`⏰ ¡Tiempo agotado para **${nombresAsientos[asientoNum]}**! Fold automático.`);
                     retirados[asientoNum] = true;
-                    document.getElementById(`box-${asientoNum}`).style.borderColor = "#27ae60"; // Vuelve a verde reposo
+                    document.getElementById(`box-${asientoNum}`).style.borderColor = "#27ae60";
                     document.getElementById(`box-${asientoNum}`).style.boxShadow = "0 4px 12px rgba(0,0,0,0.8)";
 
                     contadorAccionesRonda++;
