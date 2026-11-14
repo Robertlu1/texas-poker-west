@@ -12,7 +12,7 @@
         }
         h2 { color: #f1c40f; text-shadow: 1px 1px #000; margin: 2px 0; font-size: 1.1em; }
         
-        /* PORTADA ORIGINAL CON EL PANEL DE REGISTRO */
+        /* PORTADA CON EL PANEL DE REGISTRO EN EL CENTRO */
         #pantalla-portada {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-image: url('portada_bandido.jpg'); background-size: cover; background-position: center;
@@ -117,14 +117,14 @@
         .card.red { color: #e74c3c; }
         .card-back { background: #c0392b; color: #f1c40f; border: 1px solid #f1c40f; font-size: 13px; }
 
-        /* EFECTO VICTORIA */
+        /* EFECTO VICTORIA Y MODAL ANIMADO */
         #victoria-animacion {
             display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 1000; text-align: center; background: rgba(0,0,0,0.8); padding: 20px;
-            border-radius: 15px; border: 3px solid #f1c40f; box-shadow: 0 0 40px rgba(241, 196, 15, 0.6);
+            z-index: 1000; text-align: center; background: rgba(0, 0, 0, 0.85); padding: 20px;
+            border-radius: 15px; border: 3px solid #2ecc71; box-shadow: 0 0 40px rgba(46, 204, 113, 0.6);
         }
-        #victoria-animacion img { width: 180px; border-radius: 10px; }
-        #victoria-animacion h2 { margin-top: 10px; font-size: 1.5em; text-transform: uppercase; color: #2ecc71; }
+        #victoria-animacion img { width: 200px; border-radius: 10px; margin-bottom: 10px; }
+        #victoria-animacion h2 { margin: 0; font-size: 1.8em; text-transform: uppercase; color: #2ecc71; text-shadow: 2px 2px 4px #000; }
 
         @keyframes explosionFuegoOro {
             0% { transform: translate(0, 0) scale(0.4); opacity: 1; filter: drop-shadow(0 0 8px #ff4500); }
@@ -145,13 +145,18 @@
             position: fixed; z-index: 400000; pointer-events: none; animation: volarFichaRecarga 1.2s ease-in-out forwards;
         }
 
-        /* ASIENTOS Y ESTADOS DE REPOSO */
+        /* ASIENTOS Y ESTADOS (REPOSO Y ALL-IN) */
         .seat { position: absolute; display: flex; align-items: center; gap: 6px; z-index: 10; transition: all 0.3s ease; }
         .seat.retirado { opacity: 0.35; filter: grayscale(90%); }
         .seat.en-pausa { opacity: 0.5; filter: grayscale(50%); }
-        .seat.sin-fichas { opacity: 0.3; filter: grayscale(100%); pointer-events: none; }
+        
+        /* Esta es la clase estricta para los que quedan en Cero */
+        .seat.sin-fichas { opacity: 0.25; filter: grayscale(100%); pointer-events: none; }
+        
         .seat.espectador { display: none !important; }
-        .seat.allin-estado .seat-box { border: 2px solid #8e44ad; box-shadow: 0 0 14px #8e44ad; }
+        
+        /* Borde morado intenso para el All-In */
+        .seat.allin-estado .seat-box { border: 2px solid #8e44ad; box-shadow: 0 0 18px #8e44ad; }
 
         /* CAJA FIJA Y ESTABLE */
         .seat-box {
@@ -318,13 +323,7 @@
         .btn-cerrar-tienda { background: #c0392b; color: white; border: none; padding: 6px 12px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 4px; width: 100%; margin-top: 5px; }
         .btn-cerrar-tienda:hover { background: #e74c3c; }
 
-        /* CARTAS Y CHAT */
-        #modal-mostrar-cartas {
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(10, 18, 28, 0.96); border: 3px solid #f1c40f; padding: 15px 25px; border-radius: 10px;
-            z-index: 100; box-shadow: 0 0 30px rgba(0,0,0,0.9); text-align: center;
-        }
-        #modal-mostrar-cartas h3 { color: #f1c40f; margin-top: 0; }
+        /* CHAT */
         #chat-flotante {
             position: fixed; bottom: 12px; left: 12px; width: 300px; height: 150px; background: rgba(6, 10, 15, 0.95);
             border: 1px solid #2c3e50; padding: 8px; display: flex; flex-direction: column; justify-content: space-between;
@@ -385,10 +384,9 @@
             <h2>Texas Poker West: Casino Pro</h2>
             
             <div class="poker-table" id="mesa-poker">
-                <!-- ANIMACIÓN DE VICTORIA CENTRAL (GIF Y TEXTO) -->
+                <!-- ANIMACIÓN DE VICTORIA CENTRAL (AHORA CON GIF ONLINE PARA QUE SIEMPRE SALGA) -->
                 <div id="victoria-animacion">
-                    <!-- Puedes reemplazar victoria.gif por el nombre de tu imagen/gif -->
-                    <img src="victoria.gif" alt="¡Victoria!" onerror="this.style.display='none';">
+                    <img id="img-victoria" src="https://media.tenor.com/P1i6E8Xb3wMAAAAC/winner-win.gif" alt="¡Victoria!">
                     <h2 id="victoria-texto">¡Gana El Gambusino!</h2>
                 </div>
 
@@ -571,21 +569,13 @@
         <button class="btn-cerrar-tienda" onclick="cerrarTiendaOro()">Cerrar Tienda</button>
     </div>
 
-    <div id="modal-mostrar-cartas">
-        <h3>🏆 ¡Has ganado la mano por abandono!</h3>
-        <p style="font-size: 12px; color: #ccc;">¿Deseas mostrar tus cartas privadas a la mesa?</p>
-        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
-            <button class="btn-bet" onclick="responderMostrarCartas(true)">Mostrar Cartas</button>
-            <button class="btn-bet btn-fold" onclick="responderMostrarCartas(false)">Guardar (Muck)</button>
-        </div>
-    </div>
-
+    <!-- CHAT Y BITÁCORA FLOTANTE -->
     <div id="chat-flotante">
         <div class="chat-header">
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Versión ensamblada. Todas las funciones solicitadas aplicadas.</div>
+        <div id="output-log">💬 [Saloon]: Versión con Portada Nueva, Reposo Estricto y GIF Animado activado.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -786,15 +776,15 @@
             if (pairs.length === 1) return { score: 1000 + pairs[0], nombre: "👤 Pareja" };
             return { score: valsUnicos[0], nombre: `Carta Alta (${parsed[0].str})` };
         }
-
-        // FUNCION PARA MOSTRAR GIF DE VICTORIA EN EL CENTRO
+        
+        // MOSTRAR ANIMACIÓN GIF AL GANADOR
         function mostrarGifVictoria(textoGanador) {
             let contenedor = document.getElementById('victoria-animacion');
             let texto = document.getElementById('victoria-texto');
             if(contenedor && texto) {
                 texto.innerText = textoGanador;
                 contenedor.style.display = 'block';
-                // Ocultar al cabo de 9 segundos (justo antes de repartir la nueva mano)
+                // El gif dura 9 segundos para que se quite 1 segundo antes de la siguiente mano
                 setTimeout(() => { contenedor.style.display = 'none'; }, 9000);
             }
         }
@@ -905,12 +895,13 @@
             mesa.appendChild(ficha); setTimeout(() => { ficha.remove(); }, 700);
         }
 
-        // LIMPIEZA TOTAL Y REPARTO
+        // LIMPIEZA TOTAL DE MEMORIA Y REPARTO
         function repartirCartasAPI() {
+            // LIMPIAR MEMORIA ESTRICTA AL INICIAR LA MANO
             apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
             allInJugadores = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
             
-            // Si el jugador se quedó sin fichas
+            // Si el jugador se quedó sin fichas, bloquear su caja y pedir recarga
             if (fichasJugador <= 0) {
                 let asientoDiv = document.getElementById('asiento-4');
                 let timerUi4 = document.getElementById('timer-ui-4');
@@ -924,7 +915,7 @@
             }
 
             try {
-                // MODO LOCAL FORZADO
+                // FORZAR MODO LOCAL EN ESTA VERSIÓN
                 throw new Error("Offline mode forced"); 
             } catch (error) {
                 boteActual = 200; contadorAccionesRonda = 0; faseMano = 1;
@@ -944,9 +935,12 @@
                     let asientoDiv = document.getElementById(`asiento-${i}`);
                     let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i];
                     
-                    if (asientoDiv) asientoDiv.classList.remove('retirado', 'sin-fichas', 'espectador', 'allin-estado');
+                    // PASO CRÍTICO: LIMPIAR ESTADOS VISUALES ANTERIORES
+                    if (asientoDiv) {
+                        asientoDiv.classList.remove('retirado', 'sin-fichas', 'espectador', 'allin-estado', 'en-pausa');
+                    }
 
-                    // APLICACIÓN ESTRICTA DEL REPOSO SI ESTÁ SIN FICHAS
+                    // APLICACIÓN ESTRICTA DEL REPOSO SI ESTÁN EN CERO (SIN FICHAS)
                     if (fichasAsiento <= 0 || (i === 4 && jugadorEnPausa)) { 
                         retirados[i] = true; 
                         if (asientoDiv) asientoDiv.classList.add(fichasAsiento <= 0 ? 'sin-fichas' : 'en-pausa', 'retirado'); 
@@ -1003,7 +997,7 @@
             for (let i = 1; i <= 6; i++) {
                 let timerElem = document.getElementById(`timer-ui-${i}`);
                 let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i];
-                if (timerElem && fichasAsiento > 0) { timerElem.innerText = (i === asientoNum) ? `⏳ ${segundosRestantes}s` : "--"; }
+                if (timerElem && fichasAsiento > 0 && !retirados[i]) { timerElem.innerText = (i === asientoNum) ? `⏳ ${segundosRestantes}s` : "--"; }
                 let bar = document.getElementById(`bar-${i}`);
                 if (bar) { bar.style.transition = 'none'; bar.style.width = (i === asientoNum) ? '100%' : '0%'; }
             }
@@ -1089,7 +1083,13 @@
                 fichasBots[botId] -= monto; boteActual += monto;
                 document.getElementById(`chips-s${botId}`).innerText = `[$] ${fichasBots[botId]}`; document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
                 if (monto > 0) { lanzarFichasAlBote(botId); apuestasMano[botId] += monto; }
-                if (fichasBots[botId] === 0) { allInJugadores[botId] = true; document.getElementById(`asiento-${botId}`).classList.add('allin-estado'); }
+                
+                // Si el bot se queda en cero, activar All-in
+                if (fichasBots[botId] <= 0) { 
+                    fichasBots[botId] = 0;
+                    allInJugadores[botId] = true; 
+                    document.getElementById(`asiento-${botId}`).classList.add('allin-estado'); 
+                }
                 log(`🤖 [${nombresAsientos[botId]}]: ${eleccion}.`);
             }
             contadorAccionesRonda++; siguienteTurnoAutomatico(botId);
@@ -1105,10 +1105,22 @@
                 let montoApuesta = 0;
                 if (accion === 'igualar') montoApuesta = 50;
                 else if (accion === 'subir') montoApuesta = parseInt(document.getElementById('range-subir').value);
-                else if (accion === 'allin') { montoApuesta = fichasJugador; allInJugadores[4] = true; document.getElementById('asiento-4').classList.add('allin-estado'); }
+                else if (accion === 'allin') { 
+                    montoApuesta = fichasJugador; 
+                    allInJugadores[4] = true; 
+                    document.getElementById('asiento-4').classList.add('allin-estado'); 
+                }
 
                 if (fichasJugador >= montoApuesta) {
                     fichasJugador -= montoApuesta; boteActual += montoApuesta;
+                    
+                    // Si caes a cero, forzar All-in
+                    if (fichasJugador <= 0) {
+                        fichasJugador = 0;
+                        allInJugadores[4] = true;
+                        document.getElementById('asiento-4').classList.add('allin-estado');
+                    }
+
                     document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`; document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
                     if (montoApuesta > 0) { lanzarFichasAlBote(4); apuestasMano[4] += montoApuesta; }
                     log(`[Tú]: ${accion} $${montoApuesta}`);
@@ -1123,6 +1135,7 @@
             apuestasArray.sort((a, b) => b.amount - a.amount);
             let maxBet = apuestasArray[0]; let secondMax = apuestasArray[1];
 
+            // Si la apuesta más alta es mayor que la segunda más alta, se devuelve la diferencia.
             if (maxBet.amount > 0 && maxBet.amount > secondMax.amount) {
                 let exceso = maxBet.amount - secondMax.amount;
                 if (maxBet.id === 4) {
@@ -1137,7 +1150,9 @@
         }
 
         function ejecutarShowdownFinalReal() {
+            // El vuelto se procesa ANTES de dar el premio
             devolverExcesoApuesta();
+            
             let activos = [];
             for (let i = 1; i <= 6; i++) { let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i]; if (!retirados[i] && fichasAsiento > 0) activos.push(i); }
 
@@ -1175,11 +1190,13 @@
 
         function verificarGanadorPorAbandono(ganadorId) {
             devolverExcesoApuesta();
+            
             if (ganadorId === 4) { document.getElementById('modal-mostrar-cartas').style.display = 'block'; }
             else {
                 fichasBots[ganadorId] += boteActual; document.getElementById(`chips-s${ganadorId}`).innerText = `[$] ${fichasBots[ganadorId]}`;
                 log(`🏆 ${nombresAsientos[ganadorId]} gana por abandono.`);
                 mostrarGifVictoria(`¡Gana ${nombresAsientos[ganadorId]} por abandono!`);
+                
                 boteActual = 0; document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
                 setTimeout(() => { repartirCartasAPI(); }, 10000);
             }
