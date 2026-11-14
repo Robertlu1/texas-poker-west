@@ -5,236 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Texas Poker West - Casino Pro</title>
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
         body, html {
-            background-color: #080d12;
-            color: #ffffff;
+            background-color: #080d12; color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
+            text-align: center; margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidden;
         }
-        h2 {
-            color: #f1c40f;
-            text-shadow: 1px 1px #000;
-            margin: 2px 0;
-            font-size: 1.1em;
-        }
+        h2 { color: #f1c40f; text-shadow: 1px 1px #000; margin: 2px 0; font-size: 1.1em; }
+        
+        /* PORTADA MEJORADA - ESTILO GLOBAL BASE COMBAT */
         #pantalla-portada {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-image: url('portada_bandido.jpg');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 999999;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: url('portada_bandido.jpg'); background-size: cover; background-position: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 999999;
         }
-        #portada-titulo {
-            font-size: 3.8em;
-            margin-bottom: 20px;
-            text-shadow: 3px 3px #000;
-            color: #f1c40f;
-        }
-        
-        /* DISEÑO DE LOGIN TIPO GLOBAL BASE COMBAT */
-        .login-container {
-            background: rgba(12, 18, 25, 0.85);
-            padding: 30px;
-            border-radius: 12px;
-            border: 2px solid #2c3e50;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            width: 320px;
-            text-align: center;
-        }
-        #input-nombre-jugador {
-            padding: 12px;
-            font-size: 16px;
-            border-radius: 8px;
-            border: 2px solid #f1c40f;
-            background: rgba(6, 10, 15, 0.9);
-            color: #fff;
-            text-align: center;
-            outline: none;
-            width: 100%;
-        }
-        #input-nombre-jugador::placeholder {
-            color: #7f8c8d;
-        }
-        .btn-entrar {
-            background-color: #e67e22;
-            color: white;
-            border: 2px solid #f1c40f;
-            padding: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
-            width: 100%;
-        }
-        .btn-entrar:hover { background-color: #d35400; }
-        
-        .btn-google {
-            background-color: #ffffff;
-            color: #333;
-            border: none;
-            padding: 12px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            width: 100%;
+        #portada-titulo { font-size: 4em; position: absolute; top: 15%; text-shadow: 4px 4px #000; color: #f1c40f; }
+
+        /* BOTÓN DE GOOGLE SUPERIOR DERECHO */
+        .btn-google-top {
+            position: absolute; top: 20px; right: 20px;
+            background: #ffffff; color: #333; border: none; padding: 10px 16px;
+            font-size: 14px; font-weight: bold; cursor: pointer; border-radius: 6px;
+            display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             transition: background 0.2s;
         }
-        .btn-google img { width: 20px; height: 20px; }
-        .btn-google:hover { background-color: #f1f1f1; }
-        
+        .btn-google-top img { width: 18px; height: 18px; }
+        .btn-google-top:hover { background-color: #f1f1f1; }
+
+        /* CAJA CENTRAL TRANSPARENTE */
+        .login-center-box {
+            background: rgba(12, 35, 60, 0.7);
+            border: 1.5px solid #3498db;
+            padding: 25px; border-radius: 8px;
+            backdrop-filter: blur(4px);
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8); width: 320px; z-index: 10;
+        }
+        .login-center-box h3 { margin: 0; font-size: 16px; color: #2ecc71; text-shadow: 1px 1px #000; }
+        #input-nombre-jugador {
+            width: 100%; padding: 12px; border-radius: 4px; border: none; outline: none;
+            text-align: center; font-size: 16px; font-weight: bold;
+        }
+        .btn-jugar-verde {
+            background: #27ae60; color: #fff; border: 1px solid #2ecc71; padding: 10px 30px;
+            font-size: 16px; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+        .btn-jugar-verde:hover { background: #2ecc71; }
+
         .loader-google {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
+            border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%;
+            width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 0 auto;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         #pantalla-salon {
-            display: none;
-            width: 100vw;
-            height: 100vh;
-            background: radial-gradient(circle, #1a2634 0%, #080d12 100%);
-            padding: 4px;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
+            display: none; width: 100vw; height: 100vh; background: radial-gradient(circle, #1a2634 0%, #080d12 100%);
+            padding: 4px; flex-direction: column; justify-content: space-between; align-items: center;
         }
         
         .saloon-container {
-            width: 99vw;
-            height: 98vh;
-            background: rgba(12, 18, 25, 0.98);
-            border: 2px solid #2c3e50;
-            border-radius: 10px;
-            padding: 6px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.9);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            width: 99vw; height: 98vh; background: rgba(12, 18, 25, 0.98); border: 2px solid #2c3e50;
+            border-radius: 10px; padding: 6px; box-shadow: 0 5px 25px rgba(0,0,0,0.9); position: relative;
+            display: flex; flex-direction: column; justify-content: space-between;
         }
         
         .btn-ampliar-top {
-            position: absolute;
-            top: 4px;
-            right: 120px;
-            background-color: #27ae60;
-            color: white;
-            border: 1px solid #2ecc71;
-            padding: 3px 8px;
-            font-size: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 4px;
-            z-index: 30;
+            position: absolute; top: 4px; right: 120px; background-color: #27ae60;
+            color: white; border: 1px solid #2ecc71; padding: 3px 8px; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 4px; z-index: 30;
         }
-        .btn-ampliar-top:hover { background-color: #2ecc71; }
 
         .music-panel-top {
-            position: absolute;
-            top: 4px;
-            left: 10px;
-            background: rgba(15, 23, 36, 0.95);
-            border: 1px solid #f1c40f;
-            padding: 4px 8px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            z-index: 99;
-            font-size: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.8);
+            position: absolute; top: 4px; left: 10px; background: rgba(15, 23, 36, 0.95);
+            border: 1px solid #f1c40f; padding: 4px 8px; border-radius: 6px; display: flex; align-items: center; gap: 6px; z-index: 99; font-size: 10px;
         }
         .music-panel-top input[type=range] { width: 50px; cursor: pointer; }
-        .btn-musica-ctrl {
-            background: #d4ac0d;
-            color: #000;
-            border: 1px solid #f1c40f;
-            padding: 2px 6px;
-            font-size: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 4px;
-        }
+        .btn-musica-ctrl { background: #d4ac0d; color: #000; border: 1px solid #f1c40f; padding: 2px 6px; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 4px; }
         .btn-musica-ctrl:hover { background: #f1c40f; }
         .btn-musica-ctrl.active-shuffle { background: #27ae60; color: #fff; border-color: #2ecc71; }
 
         .poker-table {
-            background: #0d4a22;
-            border: 10px solid #3d2314;
-            border-radius: 140px;
-            width: 82vw;
-            height: 52vh;
-            margin: 2px auto;
-            position: relative;
-            box-shadow: inset 0 0 60px rgba(0,0,0,0.8), 0 0 15px rgba(0,0,0,0.5);
-            transition: background 0.3s ease;
+            background: #0d4a22; border: 10px solid #3d2314; border-radius: 140px; width: 82vw; height: 52vh;
+            margin: 2px auto; position: relative; box-shadow: inset 0 0 60px rgba(0,0,0,0.8), 0 0 15px rgba(0,0,0,0.5); transition: background 0.3s ease;
         }
         
-        .table-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            z-index: 5;
-        }
-        .dealer-box {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid #f1c40f;
-            border-radius: 12px;
-            padding: 2px 6px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-        }
+        .table-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; z-index: 5; }
+        .dealer-box { background: rgba(0, 0, 0, 0.6); border: 1px solid #f1c40f; border-radius: 12px; padding: 2px 6px; display: flex; align-items: center; gap: 4px; cursor: pointer; }
         .dealer-box:hover { background: rgba(0, 0, 0, 0.8); }
         .dealer-avatar { font-size: 12px; }
         .dealer-info { font-size: 8px; color: #f1c40f; text-align: left; line-height: 1; }
 
         .community-cards { display: flex; gap: 5px; justify-content: center; }
-        
-        .card {
-            background: #ffffff; color: #000000; font-weight: bold; width: 38px; height: 50px;
-            border-radius: 4px; display: flex; align-items: center; justify-content: center;
-            font-size: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.6); border: 1px solid #bdc3c7;
-            position: relative; transition: background 0.3s ease, color 0.3s ease;
-        }
+        .card { background: #ffffff; color: #000000; font-weight: bold; width: 38px; height: 50px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.6); border: 1px solid #bdc3c7; }
         .card.red { color: #e74c3c; }
         .card-back { background: #c0392b; color: #f1c40f; border: 1px solid #f1c40f; font-size: 13px; }
 
@@ -243,34 +105,27 @@
             50% { filter: drop-shadow(0 0 18px #ffd700); opacity: 0.9; }
             100% { transform: translate(var(--dx), var(--dy)) scale(2.5); opacity: 0; filter: drop-shadow(0 0 2px #ff8c00); }
         }
-        .bengala-fuego-oro {
-            position: fixed; width: 16px; height: 16px; border-radius: 50%; pointer-events: none; z-index: 999;
-            box-shadow: 0 0 12px currentColor; animation: explosionFuegoOro 1.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
-        }
+        .bengala-fuego-oro { position: fixed; width: 16px; height: 16px; border-radius: 50%; pointer-events: none; z-index: 999; box-shadow: 0 0 12px currentColor; animation: explosionFuegoOro 1.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
 
         @keyframes volarFichaRecarga {
             0% { transform: scale(0.5) translateY(0); opacity: 0; }
             50% { transform: scale(2) translateY(-60px); opacity: 1; filter: drop-shadow(0 0 20px #ffd700); }
             100% { transform: scale(1) translate(0, 0); opacity: 1; }
         }
-        .ficha-volando-recarga {
-            position: fixed; z-index: 400000; pointer-events: none; animation: volarFichaRecarga 1.2s ease-in-out forwards;
-        }
+        .ficha-volando-recarga { position: fixed; z-index: 400000; pointer-events: none; animation: volarFichaRecarga 1.2s ease-in-out forwards; }
 
-        #animacion-victoria {
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 9999999; pointer-events: none;
-        }
+        #animacion-victoria { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999999; pointer-events: none; }
         #animacion-victoria img { max-width: 450px; max-height: 450px; border-radius: 20px; box-shadow: 0 0 50px #f1c40f, 0 0 100px #e67e22; }
 
         /* ESTRUCTURA GENERAL DEL ASIENTO */
         .seat { position: absolute; display: flex; align-items: center; gap: 6px; z-index: 10; transition: opacity 0.3s ease; }
+        
+        /* ESTADO DE RETIRO (FOLD) */
         .seat.retirado { opacity: 0.35; filter: grayscale(90%); }
         .seat.en-pausa { opacity: 0.5; }
         .seat.sin-fichas { opacity: 0.4; filter: grayscale(100%); }
         .seat.espectador { display: none !important; }
-        .seat.allin-estado .seat-box { border: 2px solid #8e44ad; box-shadow: 0 0 14px #8e44ad; }
-
+        
         /* CAJA FIJA Y ESTABLE */
         .seat-box {
             background: rgba(18, 26, 36, 0.95); border: 2.5px solid #27ae60; border-radius: 8px;
@@ -279,6 +134,9 @@
             flex-direction: column; justify-content: space-between; position: relative; flex-shrink: 0;
             overflow: hidden; transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
+
+        /* ESTADO DE ALL-IN (EL RESTO) - DEBE RESALTAR EN MORADO */
+        .seat.allin-estado .seat-box { border: 2.5px solid #8e44ad !important; box-shadow: 0 0 16px #8e44ad !important; }
 
         .timer-bar-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.1); }
         .timer-bar-fill { height: 100%; width: 100%; background: #e74c3c; transition: width 1s linear; }
@@ -296,168 +154,75 @@
         }
 
         .sticker-box { display: flex; flex-direction: column; gap: 4px; }
-        .btn-sticker {
-            background: rgba(40, 55, 71, 0.95); border: 1.5px solid #f1c40f; border-radius: 6px;
-            font-size: 14px; padding: 2px 4px; cursor: pointer; transition: transform 0.1s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center;
-        }
+        .btn-sticker { background: rgba(40, 55, 71, 0.95); border: 1.5px solid #f1c40f; border-radius: 6px; font-size: 14px; padding: 2px 4px; cursor: pointer; transition: transform 0.1s; display: flex; align-items: center; justify-content: center; }
         .btn-sticker:hover { transform: scale(1.2); background: rgba(212, 172, 13, 0.5); }
 
-        .avatar-box {
-            width: 65px; height: 65px; border-radius: 50%; border: 2.5px solid #f1c40f;
-            overflow: hidden; flex-shrink: 0; background: #2c3e50; box-shadow: 0 3px 8px rgba(0,0,0,0.9);
-        }
+        .avatar-box { width: 65px; height: 65px; border-radius: 50%; border: 2.5px solid #f1c40f; overflow: hidden; flex-shrink: 0; background: #2c3e50; box-shadow: 0 3px 8px rgba(0,0,0,0.9); }
         .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
-        /* EFECTO HOVER PARA EL AVATAR DEL JUGADOR */
         #asiento-4 .avatar-box:hover { border-color: #2ecc71; box-shadow: 0 0 15px #2ecc71; }
 
         .btn-sentarse-mesa {
-            display: none; position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%);
-            background: #27ae60; color: white; border: 1px solid #2ecc71; padding: 3px 10px;
-            font-size: 9px; font-weight: bold; cursor: pointer; border-radius: 10px; z-index: 20;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.8); white-space: nowrap;
+            display: none; position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); background: #27ae60; color: white; border: 1px solid #2ecc71; padding: 3px 10px; font-size: 9px; font-weight: bold; cursor: pointer; border-radius: 10px; z-index: 20; box-shadow: 0 2px 5px rgba(0,0,0,0.8); white-space: nowrap;
         }
-        .btn-sentarse-mesa:hover { background: #2ecc71; }
 
-        .seat-1 { top: 2px; left: 16%; }
-        .seat-2 { top: 2px; right: 16%; }
-        .seat-3 { top: 48%; right: 18px; transform: rotate(-90deg); transform-origin: center; width: 75px; height: 165px; }
-        .seat-3 .seat-box { width: 165px !important; height: 75px !important; }
-        .seat-4 { bottom: 2px; right: 16%; }
-        .seat-4 .seat-box { border-color: #2ecc71; background: rgba(15, 38, 25, 0.95); }
+        .seat-1 { top: 2px; left: 16%; } .seat-2 { top: 2px; right: 16%; }
+        .seat-3 { top: 48%; right: 18px; transform: rotate(-90deg); transform-origin: center; width: 75px; height: 165px; } .seat-3 .seat-box { width: 165px !important; height: 75px !important; }
+        .seat-4 { bottom: 2px; right: 16%; } .seat-4 .seat-box { border-color: #2ecc71; background: rgba(15, 38, 25, 0.95); }
         .seat-5 { bottom: 2px; left: 16%; }
-        .seat-6 { top: 9%; left: 35px; transform: rotate(90deg); transform-origin: center; width: 75px; height: 165px; }
-        .seat-6 .seat-box { width: 165px !important; height: 75px !important; }
+        .seat-6 { top: 9%; left: 35px; transform: rotate(90deg); transform-origin: center; width: 75px; height: 165px; } .seat-6 .seat-box { width: 165px !important; height: 75px !important; }
 
-        @keyframes volarFicha {
-            0% { transform: scale(1) translateY(0); opacity: 1; }
-            50% { transform: scale(1.5) translateY(-35px); opacity: 0.9; }
-            100% { transform: scale(0.6) translate(-100px, -50px); opacity: 0; }
-        }
+        @keyframes volarFicha { 0% { transform: scale(1) translateY(0); opacity: 1; } 50% { transform: scale(1.5) translateY(-35px); opacity: 0.9; } 100% { transform: scale(0.6) translate(-100px, -50px); opacity: 0; } }
         .ficha-volando { position: absolute; z-index: 100; pointer-events: none; animation: volarFicha 0.7s ease-in-out forwards; }
 
         .modo-container { display: flex; justify-content: center; gap: 8px; margin: 1px 0; }
-        .btn-modo {
-            background-color: #34495e; color: #ffffff; border: 1px solid #7f8c8d; padding: 3px 8px;
-            font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 5px; width: 20%;
-        }
-        .btn-modo:hover { background-color: #415b76; }
+        .btn-modo { background-color: #34495e; color: #ffffff; border: 1px solid #7f8c8d; padding: 3px 8px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 5px; width: 20%; }
         .btn-modo.selected { background-color: #27ae60; border-color: #2ecc71; }
-
-        #torneo-panel {
-            display: none; background: rgba(142, 68, 173, 0.25); border: 1px solid #9b59b6;
-            border-radius: 6px; padding: 3px 10px; font-size: 11px; color: #f39c12; font-weight: bold;
-            justify-content: space-around; align-items: center;
-        }
+        #torneo-panel { display: none; background: rgba(142, 68, 173, 0.25); border: 1px solid #9b59b6; border-radius: 6px; padding: 3px 10px; font-size: 11px; color: #f39c12; font-weight: bold; justify-content: space-around; align-items: center; }
 
         .controls-container { display: flex; justify-content: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 4px; border-radius: 5px; }
-        .btn-oeste {
-            background-color: #d35400; color: white; border: 1px solid #f1c40f; padding: 4px 14px;
-            font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 5px;
-        }
-        .btn-oeste:hover { background-color: #e67e22; }
-        
-        .betting-container {
-            display: flex; justify-content: center; align-items: center; gap: 8px;
-            background: rgba(11, 19, 26, 0.95); padding: 5px 10px; border-radius: 6px; border: 1px solid #2c3e50;
-        }
-        .btn-bet {
-            background-color: #27ae60; color: #fff; border: 1px solid #2ecc71; padding: 6px 12px;
-            font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-        }
-        .btn-bet:hover { background-color: #27ae60; }
+        .btn-oeste { background-color: #d35400; color: white; border: 1px solid #f1c40f; padding: 4px 14px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 5px; }
+        .betting-container { display: flex; justify-content: center; align-items: center; gap: 8px; background: rgba(11, 19, 26, 0.95); padding: 5px 10px; border-radius: 6px; border: 1px solid #2c3e50; }
+        .btn-bet { background-color: #27ae60; color: #fff; border: 1px solid #2ecc71; padding: 6px 12px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 5px; }
         .btn-fold { background-color: #c0392b; border-color: #e74c3c; }
-        .btn-fold:hover { background-color: #e74c3c; }
         .btn-allin { background-color: #8e44ad; border-color: #9b59b6; }
-        .btn-allin:hover { background-color: #9b59b6; }
-
-        .slider-box {
-            display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.4);
-            padding: 3px 8px; border-radius: 4px; border: 1px solid #4f5d73; font-size: 11px;
-        }
+        
+        .slider-box { display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.4); padding: 3px 8px; border-radius: 4px; border: 1px solid #4f5d73; font-size: 11px; }
         input[type=range] { width: 90px; cursor: pointer; }
-        .btn-enviar-slider {
-            background-color: #f39c12; color: #000; border: 1px solid #f1c40f; padding: 4px 8px;
-            font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 4px;
-        }
-        .btn-enviar-slider:hover { background-color: #f1c40f; }
-
+        .btn-enviar-slider { background-color: #f39c12; color: #000; border: 1px solid #f1c40f; padding: 4px 8px; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 4px; }
         .btn-mic { background-color: #7f8c8d; color: white; border: 1px solid #bdc3c7; padding: 4px 10px; cursor: pointer; border-radius: 5px; font-size: 11px; }
-        .btn-mic.active { background-color: #27ae60; border-color: #2ecc71; }
         #mic-status { font-size: 10px; color: #bdc3c7; margin-left: 5px; }
 
         /* MODALES GIGANTES DE ESPERA */
-        #modal-torneo-espera, #modal-multijugador-espera {
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(12, 18, 25, 0.98); border: 3px solid #f39c12; padding: 35px; border-radius: 16px;
-            z-index: 500000; text-align: center; box-shadow: 0 0 60px rgba(0,0,0,0.95); width: 460px; max-width: 95vw;
-        }
+        #modal-torneo-espera, #modal-multijugador-espera { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(12, 18, 25, 0.98); border: 3px solid #f39c12; padding: 35px; border-radius: 16px; z-index: 500000; text-align: center; }
 
-        /* PANEL INFERIOR DERECHO */
-        .customizer-panel {
-            position: fixed; bottom: 12px; right: 12px; background: rgba(15, 23, 36, 0.95);
-            border: 1px solid #f1c40f; padding: 6px 10px; border-radius: 8px; display: flex;
-            flex-direction: column; gap: 4px; z-index: 200000; box-shadow: 0 4px 15px rgba(0,0,0,0.8);
-            font-size: 10px; text-align: left;
-        }
+        /* PANEL INFERIOR DERECHO Y TIENDA ORO */
+        .customizer-panel { position: fixed; bottom: 12px; right: 12px; background: rgba(15, 23, 36, 0.95); border: 1px solid #f1c40f; padding: 6px 10px; border-radius: 8px; display: flex; flex-direction: column; gap: 4px; z-index: 200000; font-size: 10px; text-align: left; }
         .customizer-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
         .customizer-row select { background: #111a24; color: #f1c40f; border: 1px solid #4f5d73; padding: 2px 4px; font-size: 10px; border-radius: 4px; cursor: pointer; }
-        .btn-tienda-oro {
-            background-color: #d4ac0d; color: #000; border: 1px solid #f1c40f; padding: 4px 8px;
-            font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 4px; width: 100%; text-align: center; margin-top: 2px;
-        }
-        .btn-tienda-oro:hover { background-color: #f1c40f; }
+        .btn-tienda-oro { background-color: #d4ac0d; color: #000; border: 1px solid #f1c40f; padding: 4px 8px; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 4px; width: 100%; text-align: center; margin-top: 2px; }
 
-        /* MODAL TIENDA ORO */
-        #modal-tienda-oro {
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(12, 18, 25, 0.98); border: 3px solid #f1c40f; padding: 20px; border-radius: 12px;
-            z-index: 300000; width: 480px; max-width: 95vw; box-shadow: 0 0 40px rgba(0,0,0,0.9); text-align: left; max-height: 90vh; overflow-y: auto;
-        }
+        #modal-tienda-oro { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(12, 18, 25, 0.98); border: 3px solid #f1c40f; padding: 20px; border-radius: 12px; z-index: 300000; width: 480px; max-width: 95vw; box-shadow: 0 0 40px rgba(0,0,0,0.9); text-align: left; max-height: 90vh; overflow-y: auto; }
         #modal-tienda-oro h3 { color: #f1c40f; margin-top: 0; text-align: center; }
         .tienda-seccion { background: rgba(0, 0, 0, 0.4); border: 1px solid #2c3e50; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 11px; }
         .tienda-seccion h4 { color: #2ecc71; margin: 0 0 6px 0; font-size: 12px; }
         .input-admin { width: 100%; background: #111a24; border: 1px solid #4f5d73; color: #fff; padding: 5px; font-size: 11px; border-radius: 4px; margin-top: 4px; margin-bottom: 6px; }
-        .btn-whatsapp {
-            background-color: #25d366; color: white; text-decoration: none; padding: 6px 12px;
-            font-size: 11px; font-weight: bold; border-radius: 4px; display: inline-block; margin-top: 6px; text-align: center; width: 100%;
-        }
-        .btn-whatsapp:hover { background-color: #1ebe5d; }
-        
-        .btn-generar-codigo {
-            background-color: #8e44ad; color: white; border: 1px solid #9b59b6; padding: 5px 8px;
-            font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 4px; width: 100%; margin-bottom: 6px;
-        }
-        .btn-generar-codigo:hover { background-color: #9b59b6; }
-        .btn-liberar-fichas {
-            background-color: #f1c40f; color: #000; border: 1px solid #d4ac0d; padding: 6px 10px;
-            font-size: 11px; font-weight: bold; border-radius: 4px; width: 100%; cursor: not-allowed; opacity: 0.5; transition: all 0.3s ease;
-        }
+        .btn-whatsapp { background-color: #25d366; color: white; text-decoration: none; padding: 6px 12px; font-size: 11px; font-weight: bold; border-radius: 4px; display: inline-block; margin-top: 6px; text-align: center; width: 100%; }
+        .btn-generar-codigo { background-color: #8e44ad; color: white; border: 1px solid #9b59b6; padding: 5px 8px; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 4px; width: 100%; margin-bottom: 6px; }
+        .btn-liberar-fichas { background-color: #f1c40f; color: #000; border: 1px solid #d4ac0d; padding: 6px 10px; font-size: 11px; font-weight: bold; border-radius: 4px; width: 100%; cursor: not-allowed; opacity: 0.5; transition: all 0.3s ease; }
         .btn-liberar-fichas.activo { cursor: pointer; opacity: 1; background-color: #27ae60; color: #fff; border-color: #2ecc71; }
         .btn-cerrar-tienda { background: #c0392b; color: white; border: none; padding: 6px 12px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 4px; width: 100%; margin-top: 5px; }
-        .btn-cerrar-tienda:hover { background: #e74c3c; }
 
-        /* MODALES CARTAS Y CHAT */
-        #modal-mostrar-cartas {
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(10, 18, 28, 0.96); border: 3px solid #f1c40f; padding: 15px 25px; border-radius: 10px;
-            z-index: 100; box-shadow: 0 0 30px rgba(0,0,0,0.9); text-align: center;
-        }
+        /* MODALES CARTAS Y CHAT FLOTANTE */
+        #modal-mostrar-cartas { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(10, 18, 28, 0.96); border: 3px solid #f1c40f; padding: 15px 25px; border-radius: 10px; z-index: 100; box-shadow: 0 0 30px rgba(0,0,0,0.9); text-align: center; }
         #modal-mostrar-cartas h3 { color: #f1c40f; margin-top: 0; }
-        #chat-flotante {
-            position: fixed; bottom: 12px; left: 12px; width: 300px; height: 150px; background: rgba(6, 10, 15, 0.95);
-            border: 1px solid #2c3e50; padding: 8px; display: flex; flex-direction: column; justify-content: space-between;
-            border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.9); z-index: 200000; transition: all 0.3s ease;
-        }
+        #chat-flotante { position: fixed; bottom: 12px; left: 12px; width: 300px; height: 150px; background: rgba(6, 10, 15, 0.95); border: 1px solid #2c3e50; padding: 8px; display: flex; flex-direction: column; justify-content: space-between; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.9); z-index: 200000; transition: all 0.3s ease; }
         #chat-flotante.oculto { height: 30px; overflow: hidden; }
         .chat-header { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #f1c40f; font-weight: bold; border-bottom: 1px solid #2c3e50; padding-bottom: 3px; margin-bottom: 4px; }
         .btn-minimizar { background: #c0392b; color: white; border: none; cursor: pointer; font-size: 10px; padding: 1px 6px; border-radius: 3px; }
-        .btn-minimizar:hover { background: #e74c3c; }
         #output-log { flex-grow: 1; text-align: left; overflow-y: auto; font-size: 11px; color: #ffffff; word-break: break-word; line-height: 1.3; }
         .chat-input-box { display: flex; gap: 4px; margin-top: 4px; }
         #input-mensaje { flex-grow: 1; background: #111a24; border: 1px solid #4f5d73; color: #ffffff; padding: 5px 8px; font-size: 11px; border-radius: 4px; outline: none; }
         .btn-enviar-chat { background: #27ae60; color: #fff; border: none; padding: 5px 10px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 4px; }
-        .btn-enviar-chat:hover { background: #2ecc71; }
     </style>
 </head>
 <body>
@@ -474,23 +239,25 @@
 
     <!-- PANTALLA 1: PORTADA -->
     <div id="pantalla-portada">
+        
+        <!-- BOTÓN GOOGLE ESQUINA SUPERIOR DERECHA (Paso 2) -->
+        <button class="btn-google-top" id="btn-login-google" onclick="iniciarAuthGoogle()">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="G"> Iniciar sesión con Google
+        </button>
+
         <div id="portada-titulo">Texas Poker West</div>
         
-        <!-- LOGIN PASO 1 (GOOGLE) Y PASO 2 (NOMBRE) -->
-        <div class="login-container" id="login-step-1">
-            <button class="btn-google" onclick="iniciarAuthGoogle()">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="G"> Iniciar sesión con Google
-            </button>
-            <div id="google-loader" style="display: none; margin-top: 10px;">
-                <div class="loader-google"></div>
-                <p style="font-size: 12px; color: #bdc3c7; margin-top: 8px;">Conectando con Google...</p>
-            </div>
+        <!-- LOADER DE GOOGLE (Oculto) -->
+        <div id="google-loader" style="display: none; position: absolute; top: 70px; right: 20px;">
+            <div class="loader-google"></div>
+            <p style="font-size: 10px; color: #fff; margin-top: 5px;">Autenticando...</p>
         </div>
 
-        <div class="login-container" id="login-step-2" style="display: none;">
-            <p style="color: #2ecc71; font-size: 14px; margin: 0 0 10px 0; font-weight: bold;">✅ Cuenta de Google vinculada</p>
-            <input type="text" id="input-nombre-jugador" placeholder="Elige tu Nombre de Jugador" autocomplete="off" maxlength="15">
-            <button class="btn-entrar" onclick="entrarAlSaloon()">🤠 Entrar al Salón 🌵</button>
+        <!-- CAJA CENTRAL TRANSPARENTE PARA NOMBRE DE USUARIO (Oculta hasta logueo) -->
+        <div class="login-center-box" id="login-step-2" style="display: none;">
+            <h3>✅ Cuenta verificada</h3>
+            <input type="text" id="input-nombre-jugador" placeholder="Nombre de Jugador" autocomplete="off" maxlength="15">
+            <button class="btn-jugar-verde" onclick="entrarAlSaloon()">⚔️ Jugar</button>
         </div>
     </div>
 
@@ -550,7 +317,7 @@
                 <!-- Asiento 4 (Tú - Avatar Clickeable) -->
                 <div class="seat seat-4" id="asiento-4">
                     <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(4, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(4, '🍺')">🍺</button><button class="btn-sticker" onclick="lanzarSticker(4, 'regalo')">🎁</button></div>
-                    <div class="seat-box" id="box-4" style="border-color: #2ecc71; background: rgba(15, 38, 25, 0.95);">
+                    <div class="seat-box" id="box-4">
                         <div class="seat-top-row">
                             <span class="seat-name" id="nombre-etiqueta-tu">Jugador</span>
                             <span class="seat-chips" id="chips-s4">[$] 1k</span>
@@ -562,7 +329,7 @@
                         <div class="timer-bar-container"><div id="bar-4" class="timer-bar-fill"></div></div>
                     </div>
                     
-                    <!-- AVATAR MODIFICADO PARA SER CLICK Y CAMBIAR -->
+                    <!-- AVATAR INTERACTIVO (Paso 3) -->
                     <div class="avatar-box" onclick="cambiarAvatarJugador()" style="cursor: pointer;" title="Haz clic para cambiar tu Avatar">
                         <img id="img-avatar-jugador" src="avatar4.jpg" alt="Avatar">
                     </div>
@@ -627,7 +394,6 @@
 
             <!-- CONTROLES GENERALES -->
             <div class="controls-container">
-                <!-- BOTÓN UNIFICADO DE JUEGO -->
                 <button class="btn-oeste" onclick="accionRepartirUnificada()">🃏 Jugar / Repartir</button>
                 <button id="btn-hablar" class="btn-mic" onclick="toggleMicrofono()">🎙️ Micrófono</button>
                 <span id="mic-status">🎙️ Silenciado</span>
@@ -729,7 +495,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Versión VIP - Retorno seguro, vuelto al All-In, Google Auth y Avatares.</div>
+        <div id="output-log">💬 [Saloon]: Versión VIP - All-in corregido, Avatar interactivo, Portada Google tipo Global Base Combat.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -827,7 +593,7 @@
             jugadorEspectador = false; jugadorEnPausa = false; if (temporizadorSinFichas) clearInterval(temporizadorSinFichas);
             let asientoDiv = document.getElementById('asiento-4'); let nombreSpan = document.getElementById('nombre-etiqueta-tu');
             let btnSentarse = document.getElementById('btn-sentarse-asiento'); let btnRetornar = document.getElementById('btn-retornar-mesa');
-            asientoDiv.classList.remove('espectador', 'sin-fichas', 'en-pausa', 'allin-estado');
+            asientoDiv.classList.remove('espectador', 'sin-fichas', 'retirado', 'en-pausa', 'allin-estado');
             nombreSpan.innerText = nombreJugadorGlobal;
             btnSentarse.style.display = 'none'; btnRetornar.style.display = 'none'; allInJugadores[4] = false;
             
@@ -855,13 +621,13 @@
             setTimeout(() => { sticker.remove(); }, 1300);
         }
 
-        /* --- NUEVA FUNCIONALIDAD: CAMBIO DE AVATAR (PASO 3) --- */
+        /* --- ROTACIÓN DE AVATAR (Paso 3) --- */
         let avatarIndex = 4;
         function cambiarAvatarJugador() {
             avatarIndex++;
-            if (avatarIndex > 6) { avatarIndex = 1; } // Rota del 1 al 6
+            if (avatarIndex > 6) { avatarIndex = 1; }
             document.getElementById('img-avatar-jugador').src = `avatar${avatarIndex}.jpg`;
-            log(`🔄 [Estética]: Avatar modificado a avatar${avatarIndex}.jpg`);
+            log(`🔄 [Estética]: Cambiaste tu imagen a avatar${avatarIndex}.jpg`);
         }
 
         function evaluarManoPoker(cartasJugador, comunitarias) {
@@ -934,20 +700,20 @@
             document.getElementById('btn-sentarse-asiento').style.display = 'none'; document.getElementById('btn-retornar-mesa').style.display = 'none';
             for(let c=0; c<5; c++) { let cardElem = document.getElementById(`com-${c}`); cardElem.className = `card card-back`; cardElem.style.background = colorDorsoActual; cardElem.innerText = '🂠'; }
             document.getElementById('cartas-s4').innerHTML = `<div class="card card-back" style="background:${colorDorsoActual}">🂠</div><div class="card card-back" style="background:${colorDorsoActual}">🂠</div>`;
-            for(let i=1; i<=6; i++) { document.getElementById(`asiento-${i}`).classList.remove('retirado', 'sin-fichas', 'espectador'); let t = document.getElementById(`timer-ui-${i}`); if (t) t.innerText = "25s"; let box = document.getElementById(`box-${i}`); if (box) box.style.borderColor = "#27ae60"; }
+            for(let i=1; i<=6; i++) { document.getElementById(`asiento-${i}`).classList.remove('retirado', 'sin-fichas', 'espectador', 'allin-estado'); let t = document.getElementById(`timer-ui-${i}`); if (t) t.innerText = "25s"; let box = document.getElementById(`box-${i}`); if (box) box.style.borderColor = "#27ae60"; }
         }
 
-        /* --- FLUJO DE LOGIN MEJORADO (PASO 2) --- */
+        /* --- LOGIN GOOGLE TIPO GLOBAL BASE COMBAT (Paso 2) --- */
         function iniciarAuthGoogle() {
-            document.querySelector('.btn-google').style.display = 'none';
+            document.getElementById('btn-login-google').style.display = 'none';
             document.getElementById('google-loader').style.display = 'block';
             
-            // Simula el tiempo de conexión a los servidores de Google (1.5 segundos)
+            // Simula tiempo de respuesta del servidor de Google
             setTimeout(() => {
-                document.getElementById('login-step-1').style.display = 'none';
-                document.getElementById('login-step-2').style.display = 'flex';
-                log(`🌐 [Sistema]: Autenticación exitosa. Esperando Nombre de Jugador.`);
-            }, 1500);
+                document.getElementById('google-loader').style.display = 'none';
+                document.getElementById('login-step-2').style.display = 'flex'; // Enciende la caja central
+                log(`🌐 [Sistema]: Autenticación exitosa. Ingresa tu Nombre de Jugador.`);
+            }, 1800);
         }
 
         function entrarAlSaloon() {
@@ -1037,9 +803,10 @@
                 let box = document.getElementById(`box-${i}`);
                 if (box) {
                     let fichasActuales = (i === 4) ? fichasJugador : fichasBots[i];
-                    if (fichasActuales <= 0 || retirados[i]) { box.style.borderColor = "#7f8c8d"; box.style.boxShadow = "0 4px 12px rgba(0,0,0,0.8)"; } 
+                    if (fichasActuales <= 0 && !allInJugadores[i]) { box.style.borderColor = "#7f8c8d"; box.style.boxShadow = "0 4px 12px rgba(0,0,0,0.8)"; } 
+                    else if (retirados[i]) { box.style.borderColor = "#7f8c8d"; box.style.boxShadow = "0 4px 12px rgba(0,0,0,0.8)"; }
                     else if (i === turnoActual) { box.style.borderColor = "#e74c3c"; box.style.boxShadow = "0 0 14px #e74c3c"; } 
-                    else { box.style.borderColor = "#27ae60"; box.style.boxShadow = "0 4px 12px rgba(0,0,0,0.8)"; }
+                    else if (!allInJugadores[i]) { box.style.borderColor = "#27ae60"; box.style.boxShadow = "0 4px 12px rgba(0,0,0,0.8)"; }
                 }
             }
         }
@@ -1069,7 +836,7 @@
                 idUsuarioActual = data.usuario_id; fichasJugador = data.fichas_gratis;
                 document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`; document.getElementById('range-subir').max = fichasJugador;
             } catch (error) {
-                idUsuarioActual = 4; fichasJugador = 1000;
+                idUsuarioActual = 4; fichasJugador = 1000; // SIEMPRE ARRANCA CON 1K FICHAS
                 document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`; document.getElementById('range-subir').max = fichasJugador;
                 log(`🤠 [Sistema]: Conectado localmente como ${nombreJugadorGlobal}.`);
             }
@@ -1078,7 +845,14 @@
         async function repartirCartasAPI() {
             apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
             
+            // LIMPIAR ESTADOS VISUALES DEL ALL-IN DE LA MANO ANTERIOR
+            for(let i=1; i<=6; i++) {
+                document.getElementById(`asiento-${i}`).classList.remove('allin-estado');
+                allInJugadores[i] = false;
+            }
+            
             if (fichasJugador <= 0) {
+                // SI AHORA SÍ TIENES 0 AL INICIAR LA MANO, TE VAS A PAUSA (Paso 1)
                 if (!jugadorEspectador) {
                     jugadorEspectador = true; segundosEspectador = 300;
                     let asientoDiv = document.getElementById('asiento-4'); let nombreSpan = document.getElementById('nombre-etiqueta-tu'); let timerUi4 = document.getElementById('timer-ui-4');
@@ -1097,6 +871,7 @@
                 }
                 iniciarSiguienteManoBots(); return;
             }
+            
             if (jugadorEnPausa) { iniciarSiguienteManoBots(); return; }
 
             try {
@@ -1139,7 +914,7 @@
                 document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`; document.getElementById('mazo-info').innerText = `Cartas mazo: ${mazoLocal.length}`;
                 for(let i=1; i<=6; i++) {
                     let asientoDiv = document.getElementById(`asiento-${i}`); let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i];
-                    if (fichasAsiento <= 0) { retirados[i] = true; asientoDiv.classList.add('sin-fichas', 'retirado'); } else { retirados[i] = false; asientoDiv.classList.remove('retirado', 'allin-estado', 'sin-fichas', 'espectador'); }
+                    if (fichasAsiento <= 0) { retirados[i] = true; asientoDiv.classList.add('sin-fichas', 'retirado'); } else { retirados[i] = false; asientoDiv.classList.remove('retirado', 'sin-fichas', 'espectador'); }
                 }
                 for (let c = 0; c < 5; c++) {
                     let cardElem = document.getElementById(`com-${c}`);
@@ -1165,8 +940,8 @@
         }
 
         function iniciarSiguienteManoBots() {
-            apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
             boteActual = 200; contadorAccionesRonda = 0; faseMano = 1;
+            for(let i=1; i<=6; i++) { document.getElementById(`asiento-${i}`).classList.remove('allin-estado'); allInJugadores[i] = false; }
             const palos = ['♠', '♥', '♦', '♣']; const valores = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']; let mazoLocal = [];
             palos.forEach(p => { valores.forEach(v => { mazoLocal.push(v + p); }); });
             for (let i = mazoLocal.length - 1; i > 0; i--) { let j = Math.floor(Math.random() * (i + 1)); [mazoLocal[i], mazoLocal[j]] = [mazoLocal[j], mazoLocal[i]]; }
@@ -1181,7 +956,7 @@
                 let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i]; let contenedor = document.getElementById(`cartas-s${i}`);
                 if (contenedor) {
                     let htmlCartas = "";
-                    if (fichasAsiento <= 0) { htmlCartas = `<div class="card card-back" style="background:#555;">🚫</div><div class="card card-back" style="background:#555;">🚫</div>`; retirados[i] = true; }
+                    if (fichasAsiento <= 0) { htmlCartas = `<div class="card card-back" style="background:#555;">🚫</div><div class="card card-back" style="background:#555;">🚫</div>`; retirados[i] = true; document.getElementById(`asiento-${i}`).classList.add('sin-fichas'); }
                     else { retirados[i] = false; cartasBotsPrivadas[i] = [mazoLocal.pop(), mazoLocal.pop()]; htmlCartas = `<div class="card card-back" style="background:${colorDorsoActual}">🂠</div><div class="card card-back" style="background:${colorDorsoActual}">🂠</div>`; }
                     contenedor.innerHTML = htmlCartas;
                 }
@@ -1210,7 +985,7 @@
             actualizarTurnoVisual(asientoNum); segundosRestantes = 25;
             for (let i = 1; i <= 6; i++) {
                 let timerElem = document.getElementById(`timer-ui-${i}`); let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i];
-                if (timerElem && fichasAsiento > 0) { timerElem.innerText = (i === asientoNum) ? `⏳ ${segundosRestantes}s` : "--"; }
+                if (timerElem && fichasAsiento > 0 && !allInJugadores[i]) { timerElem.innerText = (i === asientoNum) ? `⏳ ${segundosRestantes}s` : "--"; }
                 let bar = document.getElementById(`bar-${i}`); if (bar) { bar.style.transition = 'none'; bar.style.width = (i === asientoNum) ? '100%' : '0%'; }
             }
             setTimeout(() => { let activeBar = document.getElementById(`bar-${asientoNum}`); if (activeBar) { activeBar.style.transition = 'width 25s linear'; activeBar.style.width = '0%'; } }, 50);
@@ -1219,7 +994,7 @@
             temporizadorTurno = setInterval(() => {
                 segundosRestantes--;
                 let timerElem = document.getElementById(`timer-ui-${asientoNum}`); let fichasActAsiento = (asientoNum === 4) ? fichasJugador : fichasBots[asientoNum];
-                if (timerElem && fichasActAsiento > 0) { timerElem.innerText = `⏳ ${segundosRestantes}s`; }
+                if (timerElem && fichasActAsiento > 0 && !allInJugadores[asientoNum]) { timerElem.innerText = `⏳ ${segundosRestantes}s`; }
                 if (segundosRestantes <= 0) {
                     clearInterval(temporizadorTurno); if (timerElem && fichasActAsiento > 0) timerElem.innerText = "--";
                     retirados[asientoNum] = true; document.getElementById(`asiento-${asientoNum}`).classList.add('retirado');
@@ -1238,10 +1013,20 @@
 
         function siguienteTurnoAutomatico(asientoActual) {
             let activos = [];
-            for (let i = 1; i <= 6; i++) { let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i]; if (!retirados[i] && fichasAsiento > 0 && !(i === 4 && (jugadorEspectador || fichasJugador <= 0))) activos.push(i); }
+            for (let i = 1; i <= 6; i++) { 
+                let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i]; 
+                // Considera activos a los que tienen fichas O están en all-in, siempre y cuando no se hayan retirado.
+                if (!retirados[i] && (fichasAsiento > 0 || allInJugadores[i]) && !(i === 4 && jugadorEspectador)) activos.push(i); 
+            }
+            
             if (activos.length === 1) { if (temporizadorTurno) clearInterval(temporizadorTurno); setTimeout(() => { verificarGanadorPorAbandono(activos[0]); }, 800); return; }
+            
             let pendientesAccion = activos.filter(id => !allInJugadores[id]);
-            if (pendientesAccion.length === 0) { if (temporizadorTurno) clearInterval(temporizadorTurno); setTimeout(() => { avanzarFaseComunitariaCompleta(); }, 1000); return; }
+            if (pendientesAccion.length === 0 || (pendientesAccion.length === 1 && activos.length > 1 && contadorAccionesRonda >= activos.length)) { 
+                // Todos están All-In, o solo queda 1 con fichas frente a puros All-Ins. Avanzamos hasta el final.
+                if (temporizadorTurno) clearInterval(temporizadorTurno); setTimeout(() => { avanzarFaseComunitariaCompleta(); }, 1000); return; 
+            }
+            
             if (contadorAccionesRonda >= 6) { if (temporizadorTurno) clearInterval(temporizadorTurno); avanzarFaseComunitaria(); return; }
             iniciarTurno((asientoActual % 6) + 1);
         }
@@ -1259,24 +1044,21 @@
             } else { ejecutarShowdownFinalReal(); }
         }
 
-        /* --- INTELIGENCIA DE BOT (PASO 1: EVALÚAN ALL-IN PARA RETIRARSE) --- */
+        /* --- INTELIGENCIA DE BOTS (Paso 1) --- */
         function ejecutarAccionBot(botId) {
-            let maxApuestaActual = Math.max(...Object.values(apuestasMano));
+            let maxApuesta = Math.max(...Object.values(apuestasMano));
             let miApuesta = apuestasMano[botId];
-            let diferencia = maxApuestaActual - miApuesta;
+            let diferencia = maxApuesta - miApuesta;
             
             let eleccion = ""; let monto = 0;
 
             if (diferencia > 0) {
-                // Alguien apostó alto o hizo All-In. El bot evalúa si iguala o se retira.
-                if (Math.random() > 0.5 && fichasBots[botId] > 0) { // 50% de probabilidad de ser valiente
+                // Alguien subió o hizo All-In. El bot debe igualar o retirarse.
+                if (Math.random() > 0.4 && fichasBots[botId] > 0) { // 60% prob de retirarse ante apuestas
                     eleccion = "igualar";
                     monto = Math.min(diferencia, fichasBots[botId]);
-                } else {
-                    eleccion = "retirarse";
-                }
+                } else { eleccion = "retirarse"; }
             } else {
-                // Normal si nadie ha subido
                 const jugadasBot = ["pasar", "subir", "pasar", "pasar"];
                 eleccion = jugadasBot[Math.floor(Math.random() * jugadasBot.length)];
                 if (eleccion === "subir") { monto = Math.min(50, fichasBots[botId]); }
@@ -1289,11 +1071,21 @@
             } else {
                 if (monto > 0) {
                     fichasBots[botId] -= monto; boteActual += monto; apuestasMano[botId] += monto;
-                    document.getElementById(`chips-s${botId}`).innerText = `[$] ${fichasBots[botId]}`; document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
+                    document.getElementById(`chips-s${botId}`).innerText = `[$] ${fichasBots[botId]}`;
+                    document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
                     let fichaHtml = document.createElement('div'); fichaHtml.className = 'ficha-volando'; fichaHtml.innerHTML = '<img src="ficha.png" style="width: 32px;">';
                     document.getElementById('mesa-poker').appendChild(fichaHtml); setTimeout(() => fichaHtml.remove(), 700);
+                    
+                    if (fichasBots[botId] <= 0) {
+                        allInJugadores[botId] = true;
+                        document.getElementById(`asiento-${botId}`).classList.add('allin-estado');
+                        log(`🤖 [${nombresAsientos[botId]}]: ¡Va con Todo (All-In)!`);
+                    } else {
+                        log(`🤖 [${nombresAsientos[botId]}]: ${eleccion}.`);
+                    }
+                } else {
+                    log(`🤖 [${nombresAsientos[botId]}]: Pasa.`);
                 }
-                log(`🤖 [${nombresAsientos[botId]}]: ${eleccion}.`);
             }
             contadorAccionesRonda++; siguienteTurnoAutomatico(botId);
         }
@@ -1309,10 +1101,11 @@
                 if (accion === 'igualar') {
                     let maxApuesta = Math.max(...Object.values(apuestasMano));
                     montoApuesta = maxApuesta - apuestasMano[4];
-                    if (montoApuesta === 0) montoApuesta = 50; // Si no hay apuesta, es como una mini-subida base.
+                    if (montoApuesta === 0) montoApuesta = 50; 
                     montoApuesta = Math.min(montoApuesta, fichasJugador);
-                } else if (accion === 'subir') montoApuesta = parseInt(document.getElementById('range-subir').value);
-                else if (accion === 'allin') { montoApuesta = fichasJugador; allInJugadores[4] = true; document.getElementById('asiento-4').classList.add('allin-estado'); }
+                }
+                else if (accion === 'subir') montoApuesta = parseInt(document.getElementById('range-subir').value);
+                else if (accion === 'allin') { montoApuesta = fichasJugador; }
 
                 if (fichasJugador >= montoApuesta) {
                     fichasJugador -= montoApuesta; boteActual += montoApuesta;
@@ -1322,13 +1115,20 @@
                         document.getElementById('mesa-poker').appendChild(fichaHtml); setTimeout(() => fichaHtml.remove(), 700);
                         apuestasMano[4] += montoApuesta; 
                     }
-                    log(`🤠 [${nombreJugadorGlobal}]: ${accion} $${montoApuesta}`);
+                    
+                    if (fichasJugador <= 0) {
+                        allInJugadores[4] = true;
+                        document.getElementById('asiento-4').classList.add('allin-estado');
+                        log(`🤠 [${nombreJugadorGlobal}]: ¡ALL-IN! Has apostado tu resto.`);
+                    } else {
+                        log(`🤠 [${nombreJugadorGlobal}]: ${accion} $${montoApuesta}`);
+                    }
                 }
             }
             contadorAccionesRonda++; siguienteTurnoAutomatico(4);
         }
 
-        /* --- DEVOLVER EXCESO DE ALL-IN (PASO 1) --- */
+        /* --- DEVOLVER EXCESO DE ALL-IN (Paso 1) --- */
         function devolverExcesoApuesta() {
             let apuestasArray = Object.entries(apuestasMano).map(([id, amount]) => ({ id: parseInt(id), amount: amount }));
             apuestasArray.sort((a, b) => b.amount - a.amount);
@@ -1356,14 +1156,22 @@
 
         function ejecutarShowdownFinalReal() {
             devolverExcesoApuesta(); // Se devuelve el vuelto justo antes de entregar el bote.
+            
             let activos = [];
-            for (let i = 1; i <= 6; i++) { let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i]; if (!retirados[i] && fichasAsiento > 0 && !(i === 4 && (jugadorEspectador || fichasJugador <= 0))) activos.push(i); }
+            // Evaluar ganador SÓLO entre los que no se retiraron
+            for (let i = 1; i <= 6; i++) { 
+                let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i]; 
+                if (!retirados[i] && (fichasAsiento >= 0 || allInJugadores[i]) && !(i === 4 && jugadorEspectador)) activos.push(i); 
+            }
+            
             let mejorPuntaje = -1, ganadorId = activos[0] || 1, nombreMejorMano = "";
             activos.forEach(id => {
                 let res = evaluarManoPoker((id === 4) ? cartasJugadorPrivadas : cartasBotsPrivadas[id], cartasComunitariasGlobales);
                 if (res.score > mejorPuntaje) { mejorPuntaje = res.score; ganadorId = id; nombreMejorMano = res.nombre; }
             });
+            
             for (let i = 1; i <= 6; i++) { if (!retirados[i] && i !== ganadorId) { document.getElementById(`cartas-s${i}`).innerHTML = `<div class="card card-back" style="background:${colorDorsoActual}">🂠</div><div class="card card-back" style="background:${colorDorsoActual}">🂠</div>`; } }
+            
             let cartasGanador = (ganadorId === 4) ? cartasJugadorPrivadas : cartasBotsPrivadas[ganadorId];
             if (cartasGanador) {
                 let htmlG = ""; cartasGanador.forEach(c => { htmlG += `<div class="card ${c.includes('♥')||c.includes('♦')?'red':''}" style="background:#ffffff;">${c}</div>`; });
@@ -1383,6 +1191,7 @@
                 fichasBots[ganadorId] += boteActual; document.getElementById(`chips-s${ganadorId}`).innerText = `[$] ${fichasBots[ganadorId]}`; log(`🏠 Gana **${nombresAsientos[ganadorId]}** con ${nombreMejorMano}.`);
             }
             boteActual = 0; document.getElementById('pot-display').innerText = `BOTE: 0 USDT`; faseMano = 0;
+            
             setTimeout(() => { log(`💃 [Crupier]: ¡10 segundos cumplidos! Repartiendo nueva mano...`); repartirCartasAPI(); }, 10000);
         }
 
