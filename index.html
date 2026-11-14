@@ -644,7 +644,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Rediseño de Portada, Sistema LocalStorage, Avatares 1-12 y Secuencia de Victoria Integrados.</div>
+        <div id="output-log">💬 [Saloon]: Rediseño de Portada, Sistema LocalStorage, Avatares 1-12 y Secuencia de Victoria Integrados. Bug visual de mesa resuelto.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -883,6 +883,12 @@
                 
                 if(cartasV && cartasMesa) {
                     cartasV.innerHTML = cartasMesa.innerHTML;
+                    
+                    // CORRECCIÓN CLAVE AQUÍ: Le borramos los IDs a las cartas copiadas 
+                    // para que no rompan el reparto de la siguiente mano.
+                    let clones = cartasV.querySelectorAll('.card');
+                    clones.forEach(c => c.removeAttribute('id'));
+                    
                     cartasMesa.style.opacity = '0';
                 }
 
@@ -891,6 +897,7 @@
                 setTimeout(() => { 
                     contenedor.style.display = 'none'; 
                     if(cartasMesa) cartasMesa.style.opacity = '1'; 
+                    if(cartasV) cartasV.innerHTML = ''; // Limpiamos los clones para evitar cualquier residuo
                 }, 9000);
             }
         }
