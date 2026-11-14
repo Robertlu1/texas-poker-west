@@ -711,8 +711,8 @@
         let indicePistaActual = 0;
         let modoAleatorioMusica = false;
 
-        // LISTA DE VIDEOS DE VICTORIA (Asegúrate de nombrarlos así en tu carpeta)
-        const videosVictoria = ["victoria1.mp4", "victoria2.mp4", "victoria3.mp4", "victoria4.mp4", "victoria5.mp4", "victoria6.mp4", "victoria7.mp4"];
+        // LISTA DE VIDEOS DE VICTORIA (Con el Winner principal al inicio, 8 en total)
+        const videosVictoria = ["winner-win.gif.mp4", "victoria1.mp4", "victoria2.mp4", "victoria3.mp4", "victoria4.mp4", "victoria5.mp4", "victoria6.mp4", "victoria7.mp4"];
         let indiceVictoria = 0;
 
         function cambiarVolumenMusica(valor) { let audio = document.getElementById('audio-fondo'); if (audio) { audio.volume = parseFloat(valor); log(`🎵 [Música]: Volumen a ${Math.round(valor * 100)}%`); } }
@@ -878,7 +878,7 @@
                 // ROTAR EL VIDEO DE VICTORIA
                 if (vidVictoria) {
                     vidVictoria.src = videosVictoria[indiceVictoria];
-                    indiceVictoria = (indiceVictoria + 1) % videosVictoria.length; // Avanza al siguiente (0 al 6)
+                    indiceVictoria = (indiceVictoria + 1) % videosVictoria.length; // Avanza al siguiente (0 al 7)
                 }
                 
                 if(cartasV && cartasMesa) {
