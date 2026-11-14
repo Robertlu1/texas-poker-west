@@ -12,7 +12,7 @@
         }
         h2 { color: #f1c40f; text-shadow: 1px 1px #000; margin: 2px 0; font-size: 1.1em; }
         
-        /* PORTADA CON FONDO Y PANEL CENTRAL DE REGISTRO */
+        /* PORTADA ORIGINAL CON EL PANEL DE REGISTRO */
         #pantalla-portada {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-image: url('portada_bandido.jpg'); background-size: cover; background-position: center;
@@ -117,6 +117,15 @@
         .card.red { color: #e74c3c; }
         .card-back { background: #c0392b; color: #f1c40f; border: 1px solid #f1c40f; font-size: 13px; }
 
+        /* EFECTO VICTORIA */
+        #victoria-animacion {
+            display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 1000; text-align: center; background: rgba(0,0,0,0.8); padding: 20px;
+            border-radius: 15px; border: 3px solid #f1c40f; box-shadow: 0 0 40px rgba(241, 196, 15, 0.6);
+        }
+        #victoria-animacion img { width: 180px; border-radius: 10px; }
+        #victoria-animacion h2 { margin-top: 10px; font-size: 1.5em; text-transform: uppercase; color: #2ecc71; }
+
         @keyframes explosionFuegoOro {
             0% { transform: translate(0, 0) scale(0.4); opacity: 1; filter: drop-shadow(0 0 8px #ff4500); }
             50% { filter: drop-shadow(0 0 18px #ffd700); opacity: 0.9; }
@@ -136,11 +145,11 @@
             position: fixed; z-index: 400000; pointer-events: none; animation: volarFichaRecarga 1.2s ease-in-out forwards;
         }
 
-        /* ASIENTOS */
-        .seat { position: absolute; display: flex; align-items: center; gap: 6px; z-index: 10; }
+        /* ASIENTOS Y ESTADOS DE REPOSO */
+        .seat { position: absolute; display: flex; align-items: center; gap: 6px; z-index: 10; transition: all 0.3s ease; }
         .seat.retirado { opacity: 0.35; filter: grayscale(90%); }
-        .seat.en-pausa { opacity: 0.5; }
-        .seat.sin-fichas { opacity: 0.4; filter: grayscale(100%); }
+        .seat.en-pausa { opacity: 0.5; filter: grayscale(50%); }
+        .seat.sin-fichas { opacity: 0.3; filter: grayscale(100%); pointer-events: none; }
         .seat.espectador { display: none !important; }
         .seat.allin-estado .seat-box { border: 2px solid #8e44ad; box-shadow: 0 0 14px #8e44ad; }
 
@@ -376,6 +385,13 @@
             <h2>Texas Poker West: Casino Pro</h2>
             
             <div class="poker-table" id="mesa-poker">
+                <!-- ANIMACIÓN DE VICTORIA CENTRAL (GIF Y TEXTO) -->
+                <div id="victoria-animacion">
+                    <!-- Puedes reemplazar victoria.gif por el nombre de tu imagen/gif -->
+                    <img src="victoria.gif" alt="¡Victoria!" onerror="this.style.display='none';">
+                    <h2 id="victoria-texto">¡Gana El Gambusino!</h2>
+                </div>
+
                 <!-- Asiento 1 -->
                 <div class="seat seat-1 bot-seat" id="asiento-1">
                     <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(1, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(1, '🍺')">🍺</button></div>
@@ -569,7 +585,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Ingreso desde portada con nombre integrado.</div>
+        <div id="output-log">💬 [Saloon]: Versión ensamblada. Todas las funciones solicitadas aplicadas.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -614,14 +630,14 @@
         let indicePistaActual = 0;
         let modoAleatorioMusica = false;
 
-        // INGRESO AL JUEGO CON REGISTRO DE NOMBRE DESDE LA PORTADA
+        // INGRESO AL JUEGO CON REGISTRO DE NOMBRE DESDE LA PORTADA (SOLUCIÓN DEL BOTÓN)
         function iniciarConNombre() {
             let nombre = document.getElementById('nombreJugador').value.trim();
             if(nombre !== "") {
                 document.getElementById('nombre-etiqueta-tu').innerText = nombre + " [ID: 4]";
                 entrarAlSaloon();
             } else {
-                alert("⚠️ Por favor, escribe un nombre de jugador.");
+                alert("⚠️ Por favor, escribe un nombre de jugador antes de entrar.");
             }
         }
 
@@ -771,6 +787,18 @@
             return { score: valsUnicos[0], nombre: `Carta Alta (${parsed[0].str})` };
         }
 
+        // FUNCION PARA MOSTRAR GIF DE VICTORIA EN EL CENTRO
+        function mostrarGifVictoria(textoGanador) {
+            let contenedor = document.getElementById('victoria-animacion');
+            let texto = document.getElementById('victoria-texto');
+            if(contenedor && texto) {
+                texto.innerText = textoGanador;
+                contenedor.style.display = 'block';
+                // Ocultar al cabo de 9 segundos (justo antes de repartir la nueva mano)
+                setTimeout(() => { contenedor.style.display = 'none'; }, 9000);
+            }
+        }
+
         function lanzarBengalasMajestuosas(asientoId) {
             const contenedorCartas = document.getElementById(`cartas-s${asientoId}`); if (!contenedorCartas) return;
             const rect = contenedorCartas.getBoundingClientRect(); const centroX = rect.left + rect.width / 2; const centroY = rect.top + rect.height / 2;
@@ -882,6 +910,7 @@
             apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
             allInJugadores = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
             
+            // Si el jugador se quedó sin fichas
             if (fichasJugador <= 0) {
                 let asientoDiv = document.getElementById('asiento-4');
                 let timerUi4 = document.getElementById('timer-ui-4');
@@ -917,6 +946,7 @@
                     
                     if (asientoDiv) asientoDiv.classList.remove('retirado', 'sin-fichas', 'espectador', 'allin-estado');
 
+                    // APLICACIÓN ESTRICTA DEL REPOSO SI ESTÁ SIN FICHAS
                     if (fichasAsiento <= 0 || (i === 4 && jugadorEnPausa)) { 
                         retirados[i] = true; 
                         if (asientoDiv) asientoDiv.classList.add(fichasAsiento <= 0 ? 'sin-fichas' : 'en-pausa', 'retirado'); 
@@ -1087,6 +1117,7 @@
             contadorAccionesRonda++; siguienteTurnoAutomatico(4);
         }
 
+        // DEVOLUCIÓN DE EXCEDENTE EN ALL-IN
         function devolverExcesoApuesta() {
             let apuestasArray = Object.entries(apuestasMano).map(([id, amount]) => ({ id: parseInt(id), amount: amount }));
             apuestasArray.sort((a, b) => b.amount - a.amount);
@@ -1123,12 +1154,17 @@
                 let htmlG = ""; cartasGanador.forEach(c => { htmlG += `<div class="card ${c.includes('♥')||c.includes('♦')?'red':''}" style="background:#ffffff;">${c}</div>`; });
                 document.getElementById(`cartas-s${ganadorId}`).innerHTML = htmlG;
             }
+            
             lanzarBengalasMajestuosas(ganadorId);
 
             if (ganadorId === 4) {
-                fichasJugador += boteActual; document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`; log(`🎉 ¡VICTORIA! Ganaste ${boteActual} USDT con ${nombreMejorMano}!`);
+                fichasJugador += boteActual; document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`; 
+                log(`🎉 ¡VICTORIA! Ganaste ${boteActual} USDT con ${nombreMejorMano}!`);
+                mostrarGifVictoria(`¡Ganaste con ${nombreMejorMano}!`);
             } else {
-                fichasBots[ganadorId] += boteActual; document.getElementById(`chips-s${ganadorId}`).innerText = `[$] ${fichasBots[ganadorId]}`; log(`🏠 Gana **${nombresAsientos[ganadorId]}** con ${nombreMejorMano}.`);
+                fichasBots[ganadorId] += boteActual; document.getElementById(`chips-s${ganadorId}`).innerText = `[$] ${fichasBots[ganadorId]}`; 
+                log(`🏠 Gana **${nombresAsientos[ganadorId]}** con ${nombreMejorMano}.`);
+                mostrarGifVictoria(`¡Gana ${nombresAsientos[ganadorId]}!`);
             }
 
             boteActual = 0; document.getElementById('pot-display').innerText = `BOTE: 0 USDT`; faseMano = 0;
@@ -1143,6 +1179,7 @@
             else {
                 fichasBots[ganadorId] += boteActual; document.getElementById(`chips-s${ganadorId}`).innerText = `[$] ${fichasBots[ganadorId]}`;
                 log(`🏆 ${nombresAsientos[ganadorId]} gana por abandono.`);
+                mostrarGifVictoria(`¡Gana ${nombresAsientos[ganadorId]} por abandono!`);
                 boteActual = 0; document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
                 setTimeout(() => { repartirCartasAPI(); }, 10000);
             }
@@ -1151,6 +1188,7 @@
         function responderMostrarCartas(mostrar) {
             document.getElementById('modal-mostrar-cartas').style.display = 'none';
             fichasJugador += boteActual; document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`; log(`🏆 ¡Ganaste por abandono!`);
+            mostrarGifVictoria(`¡Ganaste por abandono!`);
             boteActual = 0; document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
             setTimeout(() => { repartirCartasAPI(); }, 10000);
         }
