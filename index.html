@@ -47,7 +47,7 @@
             color: #f1c40f;
         }
         
-        /* NUEVOS ESTILOS PARA LA CAJA DE LOGIN EN PORTADA */
+        /* DISEÑO DE LOGIN TIPO GLOBAL BASE COMBAT */
         .login-container {
             background: rgba(12, 18, 25, 0.85);
             padding: 30px;
@@ -58,6 +58,7 @@
             gap: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             width: 320px;
+            text-align: center;
         }
         #input-nombre-jugador {
             padding: 12px;
@@ -87,18 +88,12 @@
         }
         .btn-entrar:hover { background-color: #d35400; }
         
-        .divider {
-            color: #bdc3c7;
-            font-size: 12px;
-            margin: 2px 0;
-            position: relative;
-        }
         .btn-google {
             background-color: #ffffff;
             color: #333;
             border: none;
-            padding: 10px;
-            font-size: 14px;
+            padding: 12px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
             border-radius: 8px;
@@ -108,12 +103,21 @@
             gap: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             width: 100%;
+            transition: background 0.2s;
         }
-        .btn-google img {
-            width: 18px;
-            height: 18px;
-        }
+        .btn-google img { width: 20px; height: 20px; }
         .btn-google:hover { background-color: #f1f1f1; }
+        
+        .loader-google {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         #pantalla-salon {
             display: none;
@@ -221,34 +225,15 @@
         }
         .dealer-box:hover { background: rgba(0, 0, 0, 0.8); }
         .dealer-avatar { font-size: 12px; }
-        .dealer-info {
-            font-size: 8px;
-            color: #f1c40f;
-            text-align: left;
-            line-height: 1;
-        }
+        .dealer-info { font-size: 8px; color: #f1c40f; text-align: left; line-height: 1; }
 
-        .community-cards {
-            display: flex;
-            gap: 5px;
-            justify-content: center;
-        }
+        .community-cards { display: flex; gap: 5px; justify-content: center; }
         
         .card {
-            background: #ffffff;
-            color: #000000;
-            font-weight: bold;
-            width: 38px;
-            height: 50px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.6);
-            border: 1px solid #bdc3c7;
-            position: relative;
-            transition: background 0.3s ease, color 0.3s ease;
+            background: #ffffff; color: #000000; font-weight: bold; width: 38px; height: 50px;
+            border-radius: 4px; display: flex; align-items: center; justify-content: center;
+            font-size: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.6); border: 1px solid #bdc3c7;
+            position: relative; transition: background 0.3s ease, color 0.3s ease;
         }
         .card.red { color: #e74c3c; }
         .card-back { background: #c0392b; color: #f1c40f; border: 1px solid #f1c40f; font-size: 13px; }
@@ -259,14 +244,8 @@
             100% { transform: translate(var(--dx), var(--dy)) scale(2.5); opacity: 0; filter: drop-shadow(0 0 2px #ff8c00); }
         }
         .bengala-fuego-oro {
-            position: fixed;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 999;
-            box-shadow: 0 0 12px currentColor;
-            animation: explosionFuegoOro 1.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+            position: fixed; width: 16px; height: 16px; border-radius: 50%; pointer-events: none; z-index: 999;
+            box-shadow: 0 0 12px currentColor; animation: explosionFuegoOro 1.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
         }
 
         @keyframes volarFichaRecarga {
@@ -275,14 +254,17 @@
             100% { transform: scale(1) translate(0, 0); opacity: 1; }
         }
         .ficha-volando-recarga {
-            position: fixed;
-            z-index: 400000;
-            pointer-events: none;
-            animation: volarFichaRecarga 1.2s ease-in-out forwards;
+            position: fixed; z-index: 400000; pointer-events: none; animation: volarFichaRecarga 1.2s ease-in-out forwards;
         }
 
+        #animacion-victoria {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 9999999; pointer-events: none;
+        }
+        #animacion-victoria img { max-width: 450px; max-height: 450px; border-radius: 20px; box-shadow: 0 0 50px #f1c40f, 0 0 100px #e67e22; }
+
         /* ESTRUCTURA GENERAL DEL ASIENTO */
-        .seat { position: absolute; display: flex; align-items: center; gap: 6px; z-index: 10; }
+        .seat { position: absolute; display: flex; align-items: center; gap: 6px; z-index: 10; transition: opacity 0.3s ease; }
         .seat.retirado { opacity: 0.35; filter: grayscale(90%); }
         .seat.en-pausa { opacity: 0.5; }
         .seat.sin-fichas { opacity: 0.4; filter: grayscale(100%); }
@@ -313,21 +295,21 @@
             align-items: center; justify-content: center; min-width: 50px; box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* BOTONES DE STICKERS */
         .sticker-box { display: flex; flex-direction: column; gap: 4px; }
         .btn-sticker {
             background: rgba(40, 55, 71, 0.95); border: 1.5px solid #f1c40f; border-radius: 6px;
-            font-size: 15px; padding: 4px 6px; cursor: pointer; transition: transform 0.1s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.6);
+            font-size: 14px; padding: 2px 4px; cursor: pointer; transition: transform 0.1s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center;
         }
         .btn-sticker:hover { transform: scale(1.2); background: rgba(212, 172, 13, 0.5); }
 
-        /* AVATAR */
         .avatar-box {
             width: 65px; height: 65px; border-radius: 50%; border: 2.5px solid #f1c40f;
             overflow: hidden; flex-shrink: 0; background: #2c3e50; box-shadow: 0 3px 8px rgba(0,0,0,0.9);
         }
         .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+        /* EFECTO HOVER PARA EL AVATAR DEL JUGADOR */
+        #asiento-4 .avatar-box:hover { border-color: #2ecc71; box-shadow: 0 0 15px #2ecc71; }
 
         .btn-sentarse-mesa {
             display: none; position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%);
@@ -455,13 +437,13 @@
         .btn-cerrar-tienda { background: #c0392b; color: white; border: none; padding: 6px 12px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 4px; width: 100%; margin-top: 5px; }
         .btn-cerrar-tienda:hover { background: #e74c3c; }
 
+        /* MODALES CARTAS Y CHAT */
         #modal-mostrar-cartas {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: rgba(10, 18, 28, 0.96); border: 3px solid #f1c40f; padding: 15px 25px; border-radius: 10px;
             z-index: 100; box-shadow: 0 0 30px rgba(0,0,0,0.9); text-align: center;
         }
         #modal-mostrar-cartas h3 { color: #f1c40f; margin-top: 0; }
-
         #chat-flotante {
             position: fixed; bottom: 12px; left: 12px; width: 300px; height: 150px; background: rgba(6, 10, 15, 0.95);
             border: 1px solid #2c3e50; padding: 8px; display: flex; flex-direction: column; justify-content: space-between;
@@ -483,26 +465,32 @@
     <!-- REPRODUCTOR DE MÚSICA LOCAL -->
     <audio id="audio-fondo" onended="reproducirSiguienteMusicaAutompetica()" loop>
         <source src="musica_saloon1.mp3" type="audio/mp3">
-        Tu navegador no soporta audio ambiental.
     </audio>
 
     <!-- DIV PARA ANIMACIÓN DE VICTORIA -->
-    <div id="animacion-victoria" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999999; pointer-events: none;">
-        <img src="victoria.gif" alt="¡Victoria!" style="max-width: 450px; max-height: 450px; border-radius: 20px; box-shadow: 0 0 50px #f1c40f, 0 0 100px #e67e22;">
+    <div id="animacion-victoria">
+        <img src="victoria.gif" alt="¡Victoria!">
     </div>
 
     <!-- PANTALLA 1: PORTADA -->
     <div id="pantalla-portada">
         <div id="portada-titulo">Texas Poker West</div>
         
-        <!-- DISEÑO VIP DE INGRESO -->
-        <div class="login-container">
-            <input type="text" id="input-nombre-jugador" placeholder="Ingresa tu nombre de jugador" autocomplete="off" maxlength="15">
-            <button class="btn-entrar" onclick="entrarAlSaloon()">🤠 Entrar al Salón 🌵</button>
-            <div class="divider">o</div>
-            <button class="btn-google" onclick="iniciarSesionGoogleMock()">
+        <!-- LOGIN PASO 1 (GOOGLE) Y PASO 2 (NOMBRE) -->
+        <div class="login-container" id="login-step-1">
+            <button class="btn-google" onclick="iniciarAuthGoogle()">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="G"> Iniciar sesión con Google
             </button>
+            <div id="google-loader" style="display: none; margin-top: 10px;">
+                <div class="loader-google"></div>
+                <p style="font-size: 12px; color: #bdc3c7; margin-top: 8px;">Conectando con Google...</p>
+            </div>
+        </div>
+
+        <div class="login-container" id="login-step-2" style="display: none;">
+            <p style="color: #2ecc71; font-size: 14px; margin: 0 0 10px 0; font-weight: bold;">✅ Cuenta de Google vinculada</p>
+            <input type="text" id="input-nombre-jugador" placeholder="Elige tu Nombre de Jugador" autocomplete="off" maxlength="15">
+            <button class="btn-entrar" onclick="entrarAlSaloon()">🤠 Entrar al Salón 🌵</button>
         </div>
     </div>
 
@@ -528,7 +516,7 @@
             <div class="poker-table" id="mesa-poker">
                 <!-- Asiento 1 -->
                 <div class="seat seat-1 bot-seat" id="asiento-1">
-                    <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(1, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(1, '🍺')">🍺</button></div>
+                    <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(1, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(1, '🍺')">🍺</button><button class="btn-sticker" onclick="lanzarSticker(1, 'regalo')">🎁</button></div>
                     <div class="seat-box" id="box-1">
                         <div class="seat-top-row"><span class="seat-name">El Gambusino</span><span class="seat-chips" id="chips-s1">[$] 1k</span></div>
                         <div class="seat-bottom-row"><div class="seat-cards" id="cartas-s1"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div><span id="timer-ui-1" class="timer-display">25s</span></div>
@@ -539,7 +527,7 @@
 
                 <!-- Asiento 2 -->
                 <div class="seat seat-2 bot-seat" id="asiento-2">
-                    <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(2, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(2, '🍺')">🍺</button></div>
+                    <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(2, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(2, '🍺')">🍺</button><button class="btn-sticker" onclick="lanzarSticker(2, 'regalo')">🎁</button></div>
                     <div class="seat-box" id="box-2">
                         <div class="seat-top-row"><span class="seat-name">Don Aurelio</span><span class="seat-chips" id="chips-s2">[$] 1k</span></div>
                         <div class="seat-bottom-row"><div class="seat-cards" id="cartas-s2"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div><span id="timer-ui-2" class="timer-display">25s</span></div>
@@ -550,7 +538,7 @@
 
                 <!-- Asiento 3 -->
                 <div class="seat seat-3 bot-seat" id="asiento-3">
-                    <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(3, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(3, '🍺')">🍺</button></div>
+                    <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(3, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(3, '🍺')">🍺</button><button class="btn-sticker" onclick="lanzarSticker(3, 'regalo')">🎁</button></div>
                     <div class="seat-box" id="box-3">
                         <div class="seat-top-row"><span class="seat-name">Forajido Joe</span><span class="seat-chips" id="chips-s3">[$] 1k</span></div>
                         <div class="seat-bottom-row"><div class="seat-cards" id="cartas-s3"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div><span id="timer-ui-3" class="timer-display">25s</span></div>
@@ -559,12 +547,12 @@
                     <div class="avatar-box"><img src="avatar3.jpg" alt="Avatar"></div>
                 </div>
 
-                <!-- Asiento 4 (Tú) -->
+                <!-- Asiento 4 (Tú - Avatar Clickeable) -->
                 <div class="seat seat-4" id="asiento-4">
-                    <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(4, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(4, '🍺')">🍺</button></div>
+                    <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(4, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(4, '🍺')">🍺</button><button class="btn-sticker" onclick="lanzarSticker(4, 'regalo')">🎁</button></div>
                     <div class="seat-box" id="box-4" style="border-color: #2ecc71; background: rgba(15, 38, 25, 0.95);">
                         <div class="seat-top-row">
-                            <span class="seat-name" id="nombre-etiqueta-tu">Tú</span>
+                            <span class="seat-name" id="nombre-etiqueta-tu">Jugador</span>
                             <span class="seat-chips" id="chips-s4">[$] 1k</span>
                         </div>
                         <div class="seat-bottom-row">
@@ -573,14 +561,19 @@
                         </div>
                         <div class="timer-bar-container"><div id="bar-4" class="timer-bar-fill"></div></div>
                     </div>
-                    <div class="avatar-box"><img src="avatar4.jpg" alt="Avatar"></div>
+                    
+                    <!-- AVATAR MODIFICADO PARA SER CLICK Y CAMBIAR -->
+                    <div class="avatar-box" onclick="cambiarAvatarJugador()" style="cursor: pointer;" title="Haz clic para cambiar tu Avatar">
+                        <img id="img-avatar-jugador" src="avatar4.jpg" alt="Avatar">
+                    </div>
+                    
                     <button id="btn-sentarse-asiento" class="btn-sentarse-mesa" onclick="togglePausaJugador()">🟢 Sentarse</button>
                     <button id="btn-retornar-mesa" class="btn-sentarse-mesa" style="display:none; bottom: -44px; background: #e67e22; border-color: #f1c40f;" onclick="forzarRetornoMesa()">🤠 Retornar a Mesa</button>
                 </div>
 
                 <!-- Asiento 5 -->
                 <div class="seat seat-5 bot-seat" id="asiento-5">
-                    <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(5, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(5, '🍺')">🍺</button></div>
+                    <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(5, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(5, '🍺')">🍺</button><button class="btn-sticker" onclick="lanzarSticker(5, 'regalo')">🎁</button></div>
                     <div class="seat-box" id="box-5">
                         <div class="seat-top-row"><span class="seat-name">Sheriff Miller</span><span class="seat-chips" id="chips-s5">[$] 1k</span></div>
                         <div class="seat-bottom-row"><div class="seat-cards" id="cartas-s5"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div><span id="timer-ui-5" class="timer-display">25s</span></div>
@@ -591,7 +584,7 @@
 
                 <!-- Asiento 6 -->
                 <div class="seat seat-6 bot-seat" id="asiento-6">
-                    <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(6, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(6, '🍺')">🍺</button></div>
+                    <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(6, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(6, '🍺')">🍺</button><button class="btn-sticker" onclick="lanzarSticker(6, 'regalo')">🎁</button></div>
                     <div class="seat-box" id="box-6">
                         <div class="seat-top-row"><span class="seat-name">El Forastero</span><span class="seat-chips" id="chips-s6">[$] 1k</span></div>
                         <div class="seat-bottom-row"><div class="seat-cards" id="cartas-s6"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div><span id="timer-ui-6" class="timer-display">25s</span></div>
@@ -634,7 +627,7 @@
 
             <!-- CONTROLES GENERALES -->
             <div class="controls-container">
-                <!-- BOTÓN UNIFICADO: CONECTAR Y REPARTIR -->
+                <!-- BOTÓN UNIFICADO DE JUEGO -->
                 <button class="btn-oeste" onclick="accionRepartirUnificada()">🃏 Jugar / Repartir</button>
                 <button id="btn-hablar" class="btn-mic" onclick="toggleMicrofono()">🎙️ Micrófono</button>
                 <span id="mic-status">🎙️ Silenciado</span>
@@ -655,15 +648,13 @@
         </div>
     </div>
 
-    <!-- MODAL GIGANTE DE ESPERA DE TORNEO -->
+    <!-- MODALES GIGANTES DE ESPERA -->
     <div id="modal-torneo-espera">
         <h3 style="color: #f39c12; font-size: 1.6em; margin-top: 0;">🤠 Sala de Espera - Torneo 🌵</h3>
         <p style="font-size: 13px; color: #ccc;">Esperando rivales humanos en el salón...</p>
         <div id="reloj-torneo-gigante" style="font-size: 3em; color: #e74c3c; font-weight: bold; margin: 15px 0; text-shadow: 0 0 10px rgba(231,76,60,0.5);">15:00</div>
         <button class="btn-oeste" onclick="forzarInicioBotsTorneo()" style="background: #27ae60; padding: 8px 20px; font-size: 13px; width: 100%;">⚡ Iniciar Partida con Bots Ahora</button>
     </div>
-
-    <!-- MODAL GIGANTE DE ESPERA MULTIJUGADOR -->
     <div id="modal-multijugador-espera">
         <h3 style="color: #3498db; font-size: 1.6em; margin-top: 0;">🌐 Sala Multijugador 🤝</h3>
         <p style="font-size: 13px; color: #ccc;">Buscando vaqueros conectados en red...</p>
@@ -671,7 +662,7 @@
         <button class="btn-oeste" onclick="regresarAlLobby()" style="background: #c0392b; padding: 8px 20px; font-size: 13px; width: 100%;">🏠 Salir al Lobby Ahora</button>
     </div>
 
-    <!-- PANEL INFERIOR DERECHO -->
+    <!-- PANEL INFERIOR DERECHO Y TIENDA ORO -->
     <div class="customizer-panel">
         <div class="customizer-row">
             <span>🎨 Paño:</span>
@@ -694,7 +685,6 @@
         <button class="btn-tienda-oro" onclick="abrirTiendaOro()">🛒 Tienda Fichas Oro</button>
     </div>
 
-    <!-- MODAL DE LA TIENDA Y PANEL ADMIN -->
     <div id="modal-tienda-oro">
         <h3>🛒 Tienda Oficial - Fichas Oro</h3>
         <div class="tienda-seccion">
@@ -725,7 +715,7 @@
         <button class="btn-cerrar-tienda" onclick="cerrarTiendaOro()">Cerrar Tienda</button>
     </div>
 
-    <!-- MODALES CARTAS Y CHAT -->
+    <!-- MODAL CARTAS Y CHAT FLOTANTE -->
     <div id="modal-mostrar-cartas">
         <h3>🏆 ¡Has ganado la mano por abandono!</h3>
         <p style="font-size: 12px; color: #ccc;">¿Deseas mostrar tus cartas privadas a la mesa?</p>
@@ -739,7 +729,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Versión VIP - Portada y nombre integrados.</div>
+        <div id="output-log">💬 [Saloon]: Versión VIP - Retorno seguro, vuelto al All-In, Google Auth y Avatares.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -748,7 +738,7 @@
 
     <script>
         let idUsuarioActual = 4;
-        let nombreJugadorGlobal = "Vaquero"; // Nombre por defecto
+        let nombreJugadorGlobal = "Vaquero"; 
 
         let fichasJugador = 1000;
         let fichasBots = { 1: 1000, 2: 1000, 3: 1000, 5: 1000, 6: 1000 };
@@ -774,6 +764,7 @@
         let cartasJugadorPrivadas = [];
         let temporizadorTurno = null;
         let segundosRestantes = 25;
+        let apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
 
         let modoActual = 'Práctica';
         let torneoPartidaActual = 1;
@@ -836,23 +827,41 @@
             jugadorEspectador = false; jugadorEnPausa = false; if (temporizadorSinFichas) clearInterval(temporizadorSinFichas);
             let asientoDiv = document.getElementById('asiento-4'); let nombreSpan = document.getElementById('nombre-etiqueta-tu');
             let btnSentarse = document.getElementById('btn-sentarse-asiento'); let btnRetornar = document.getElementById('btn-retornar-mesa');
-            asientoDiv.classList.remove('espectador', 'sin-fichas', 'retirado', 'en-pausa');
+            asientoDiv.classList.remove('espectador', 'sin-fichas', 'en-pausa', 'allin-estado');
             nombreSpan.innerText = nombreJugadorGlobal;
-            btnSentarse.style.display = 'none'; btnRetornar.style.display = 'none'; retirados[4] = false; allInJugadores[4] = false;
-            log(`🤠 [Mesa]: ¡Te has reincorporado a la partida!`);
-            if (faseMano === 0) { repartirCartasAPI(); } else { iniciarTurno(4); }
+            btnSentarse.style.display = 'none'; btnRetornar.style.display = 'none'; allInJugadores[4] = false;
+            
+            if (faseMano === 0) {
+                retirados[4] = false; log(`🤠 [Mesa]: ¡Te has reincorporado a la partida!`); repartirCartasAPI();
+            } else {
+                retirados[4] = true; log(`🤠 [Mesa]: Caja activa. Te unirás automáticamente en la siguiente mano.`);
+            }
         }
 
-        function lanzarSticker(targetSeatId, emoji) {
+        function lanzarSticker(targetSeatId, tipoEmojiOGif) {
             const asientoOrigen = document.getElementById(`asiento-4`); const asientoDestino = document.getElementById(`asiento-${targetSeatId}`);
             const mesa = document.getElementById('mesa-poker'); const sticker = document.createElement('div');
-            sticker.style.position = 'absolute'; sticker.style.fontSize = '36px'; sticker.style.zIndex = '500'; sticker.style.pointerEvents = 'none'; sticker.innerText = emoji;
+            sticker.style.position = 'absolute'; sticker.style.fontSize = '36px'; sticker.style.zIndex = '500'; sticker.style.pointerEvents = 'none'; 
+            
+            if (tipoEmojiOGif === 'regalo') {
+                sticker.innerHTML = '<img src="regalo.gif" style="width: 45px; height: 45px; border-radius: 8px;">';
+            } else { sticker.innerHTML = tipoEmojiOGif; }
+
             const rectOrigen = asientoOrigen.getBoundingClientRect(); const rectDestino = asientoDestino.getBoundingClientRect(); const rectMesa = mesa.getBoundingClientRect();
             sticker.style.left = (rectOrigen.left - rectMesa.left + 30) + 'px'; sticker.style.top = (rectOrigen.top - rectMesa.top + 15) + 'px';
             mesa.appendChild(sticker); sticker.style.transition = 'all 0.8s cubic-bezier(0.1, 0.9, 0.2, 1)';
             setTimeout(() => { sticker.style.left = (rectDestino.left - rectMesa.left + 30) + 'px'; sticker.style.top = (rectDestino.top - rectMesa.top + 15) + 'px'; sticker.style.transform = 'scale(2.2) rotate(360deg)'; sticker.style.opacity = '1'; }, 50);
             setTimeout(() => { sticker.style.transform = 'scale(2.5) rotate(0deg)'; sticker.style.opacity = '0'; }, 800);
             setTimeout(() => { sticker.remove(); }, 1300);
+        }
+
+        /* --- NUEVA FUNCIONALIDAD: CAMBIO DE AVATAR (PASO 3) --- */
+        let avatarIndex = 4;
+        function cambiarAvatarJugador() {
+            avatarIndex++;
+            if (avatarIndex > 6) { avatarIndex = 1; } // Rota del 1 al 6
+            document.getElementById('img-avatar-jugador').src = `avatar${avatarIndex}.jpg`;
+            log(`🔄 [Estética]: Avatar modificado a avatar${avatarIndex}.jpg`);
         }
 
         function evaluarManoPoker(cartasJugador, comunitarias) {
@@ -867,8 +876,7 @@
             if (!straightHigh && valsUnicos.includes(14) && valsUnicos.includes(5) && valsUnicos.includes(4) && valsUnicos.includes(3) && valsUnicos.includes(2)) { straightHigh = 5; }
             let isFlush = flushSuit !== null; let isStraight = straightHigh > 0;
             if (isFlush && isStraight) {
-                let flushCards = parsed.filter(c => c.palo === flushSuit);
-                let fVals = [...new Set(flushCards.map(c => c.val))].sort((a, b) => b - a);
+                let flushCards = parsed.filter(c => c.palo === flushSuit); let fVals = [...new Set(flushCards.map(c => c.val))].sort((a, b) => b - a);
                 for (let i = 0; i <= fVals.length - 5; i++) { if (fVals[i] - fVals[i+4] === 4) { return { score: 8000 + fVals[i], nombre: fVals[i] === 14 ? "👑 ¡Escalera Real!" : "🔥 ¡Escalera de Color!" }; } }
             }
             let quads = [], trips = [], pairs = [];
@@ -919,6 +927,7 @@
             document.getElementById('pantalla-salon').style.display = 'none'; document.getElementById('pantalla-portada').style.display = 'flex';
             document.getElementById('modal-torneo-espera').style.display = 'none'; document.getElementById('modal-multijugador-espera').style.display = 'none';
             fichasJugador = 1000; boteActual = 200; jugadorEnPausa = false; jugadorEspectador = false; faseMano = 0;
+            apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
             document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`; document.getElementById('pot-display').innerText = `BOTE: 200 USDT`;
             document.getElementById('asiento-4').classList.remove('en-pausa', 'retirado', 'allin-estado', 'sin-fichas', 'espectador');
             document.getElementById('nombre-etiqueta-tu').innerText = nombreJugadorGlobal;
@@ -928,7 +937,19 @@
             for(let i=1; i<=6; i++) { document.getElementById(`asiento-${i}`).classList.remove('retirado', 'sin-fichas', 'espectador'); let t = document.getElementById(`timer-ui-${i}`); if (t) t.innerText = "25s"; let box = document.getElementById(`box-${i}`); if (box) box.style.borderColor = "#27ae60"; }
         }
 
-        /* --- NUEVAS FUNCIONES DE LOGIN (PASO 1) --- */
+        /* --- FLUJO DE LOGIN MEJORADO (PASO 2) --- */
+        function iniciarAuthGoogle() {
+            document.querySelector('.btn-google').style.display = 'none';
+            document.getElementById('google-loader').style.display = 'block';
+            
+            // Simula el tiempo de conexión a los servidores de Google (1.5 segundos)
+            setTimeout(() => {
+                document.getElementById('login-step-1').style.display = 'none';
+                document.getElementById('login-step-2').style.display = 'flex';
+                log(`🌐 [Sistema]: Autenticación exitosa. Esperando Nombre de Jugador.`);
+            }, 1500);
+        }
+
         function entrarAlSaloon() {
             let inputName = document.getElementById('input-nombre-jugador').value.trim();
             if (inputName !== "") { nombreJugadorGlobal = inputName; }
@@ -942,25 +963,16 @@
             actualizarVisibilidadBots(); cambiarColorDorso(colorDorsoActual);
         }
 
-        function iniciarSesionGoogleMock() {
-            nombreJugadorGlobal = "Jugador_" + Math.floor(Math.random() * 9999);
-            entrarAlSaloon();
-            log(`🌐 [Sistema]: Sesión iniciada con Google (${nombreJugadorGlobal}).`);
-        }
-
         function actualizarVisibilidadBots() {
             let bots = document.querySelectorAll('.bot-seat');
             bots.forEach(b => { if (modoActual === 'Práctica') { b.style.display = 'flex'; } else { b.style.display = 'none'; } });
         }
-
         function togglePantallaCompleta() { if (!document.fullscreenElement) { document.documentElement.requestFullscreen(); } else { if (document.exitFullscreen) { document.exitFullscreen(); } } }
-
         function toggleChat() {
             const chatBox = document.getElementById('chat-flotante'); const btnToggle = document.getElementById('btn-toggle-chat'); const inputArea = document.getElementById('chat-input-area');
             chatBox.classList.toggle('oculto');
             if (chatBox.classList.contains('oculto')) { btnToggle.innerText = "▼ Mostrar"; inputArea.style.display = 'none'; } else { btnToggle.innerText = "▲ Ocultar"; inputArea.style.display = 'flex'; }
         }
-
         function actualizarValorSlider(val) { document.getElementById('slider-valor').innerText = val; }
 
         function enviarMensajeChat() {
@@ -970,7 +982,6 @@
                 setTimeout(() => { let botsActivos = [1, 2, 3, 5, 6]; let botAzar = botsActivos[Math.floor(Math.random() * botsActivos.length)]; let respuestasBot = ["¡Así se habla, vaquero!", "¡Ese bote es mío!", "Juego prudente...", "¡No cantes victoria!"]; log(`🤖 [${nombresAsientos[botAzar]}]: ${respuestasBot[Math.floor(Math.random() * respuestasBot.length)]}`); }, 1500);
             }
         }
-
         function enviarConEnter(event) { if (event.key === 'Enter') { enviarMensajeChat(); } }
 
         function seleccionarModo(modo) {
@@ -1041,7 +1052,6 @@
             mesa.appendChild(ficha); setTimeout(() => { ficha.remove(); }, 700);
         }
 
-        /* --- BOTÓN UNIFICADO DE JUEGO (PASO 3) --- */
         let conexionIniciada = false;
         async function accionRepartirUnificada() {
             if (!conexionIniciada) {
@@ -1066,6 +1076,8 @@
         }
 
         async function repartirCartasAPI() {
+            apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+            
             if (fichasJugador <= 0) {
                 if (!jugadorEspectador) {
                     jugadorEspectador = true; segundosEspectador = 300;
@@ -1078,7 +1090,7 @@
                         let mins = Math.floor(segundosEspectador / 60); let secs = segundosEspectador % 60;
                         if (timerUi4) timerUi4.innerText = `⏳ ${mins}:${secs < 10 ? '0' : ''}${secs}`;
                         if (segundosEspectador <= 0) {
-                            clearInterval(temporizadorSinFichas); jugadorEspectador = true; asientoDiv.classList.add('espectador'); nombreSpan.innerText = nombreJugadorGlobal + " [Espectador 👁️]";
+                            clearInterval(temporizadorSinFichas); jugadorEspectador = true; asientoDiv.classList.add('espectador'); nombreSpan.innerText = nombreJugadorGlobal + " [👁️]";
                             alert(`👁️ Tiempo de recarga agotado (5 min). Modo espectador activado.`);
                         }
                     }, 1000);
@@ -1153,6 +1165,7 @@
         }
 
         function iniciarSiguienteManoBots() {
+            apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
             boteActual = 200; contadorAccionesRonda = 0; faseMano = 1;
             const palos = ['♠', '♥', '♦', '♣']; const valores = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']; let mazoLocal = [];
             palos.forEach(p => { valores.forEach(v => { mazoLocal.push(v + p); }); });
@@ -1246,12 +1259,40 @@
             } else { ejecutarShowdownFinalReal(); }
         }
 
+        /* --- INTELIGENCIA DE BOT (PASO 1: EVALÚAN ALL-IN PARA RETIRARSE) --- */
         function ejecutarAccionBot(botId) {
-            const jugadasBot = ["igualar", "subir", "pasar"]; let eleccion = jugadasBot[Math.floor(Math.random() * jugadasBot.length)]; let monto = eleccion === "subir" ? 50 : (eleccion === "igualar" ? 50 : 0);
-            if (fichasBots[botId] >= monto) {
-                fichasBots[botId] -= monto; boteActual += monto;
-                document.getElementById(`chips-s${botId}`).innerText = `[$] ${fichasBots[botId]}`; document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
-                if (monto > 0) lanzarFichasAlBote(botId);
+            let maxApuestaActual = Math.max(...Object.values(apuestasMano));
+            let miApuesta = apuestasMano[botId];
+            let diferencia = maxApuestaActual - miApuesta;
+            
+            let eleccion = ""; let monto = 0;
+
+            if (diferencia > 0) {
+                // Alguien apostó alto o hizo All-In. El bot evalúa si iguala o se retira.
+                if (Math.random() > 0.5 && fichasBots[botId] > 0) { // 50% de probabilidad de ser valiente
+                    eleccion = "igualar";
+                    monto = Math.min(diferencia, fichasBots[botId]);
+                } else {
+                    eleccion = "retirarse";
+                }
+            } else {
+                // Normal si nadie ha subido
+                const jugadasBot = ["pasar", "subir", "pasar", "pasar"];
+                eleccion = jugadasBot[Math.floor(Math.random() * jugadasBot.length)];
+                if (eleccion === "subir") { monto = Math.min(50, fichasBots[botId]); }
+            }
+
+            if (eleccion === "retirarse") {
+                retirados[botId] = true;
+                document.getElementById(`asiento-${botId}`).classList.add('retirado');
+                log(`🤖 [${nombresAsientos[botId]}]: Se retira (Fold).`);
+            } else {
+                if (monto > 0) {
+                    fichasBots[botId] -= monto; boteActual += monto; apuestasMano[botId] += monto;
+                    document.getElementById(`chips-s${botId}`).innerText = `[$] ${fichasBots[botId]}`; document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
+                    let fichaHtml = document.createElement('div'); fichaHtml.className = 'ficha-volando'; fichaHtml.innerHTML = '<img src="ficha.png" style="width: 32px;">';
+                    document.getElementById('mesa-poker').appendChild(fichaHtml); setTimeout(() => fichaHtml.remove(), 700);
+                }
                 log(`🤖 [${nombresAsientos[botId]}]: ${eleccion}.`);
             }
             contadorAccionesRonda++; siguienteTurnoAutomatico(botId);
@@ -1260,31 +1301,61 @@
         function apostarJugador(accion) {
             if (turnoActual !== 4) return;
             clearInterval(temporizadorTurno); document.getElementById('timer-ui-4').innerText = "--"; document.getElementById(`box-4`).style.borderColor = "#27ae60";
+
             if (accion === 'retirarse') {
                 retirados[4] = true; document.getElementById('asiento-4').classList.add('retirado'); log(`🤠 [${nombreJugadorGlobal}]: Te retiraste (Fold).`);
             } else {
                 let montoApuesta = 0;
-                if (accion === 'igualar') montoApuesta = 50; else if (accion === 'subir') montoApuesta = parseInt(document.getElementById('range-subir').value); else if (accion === 'allin') { montoApuesta = fichasJugador; allInJugadores[4] = true; document.getElementById('asiento-4').classList.add('allin-estado'); }
+                if (accion === 'igualar') {
+                    let maxApuesta = Math.max(...Object.values(apuestasMano));
+                    montoApuesta = maxApuesta - apuestasMano[4];
+                    if (montoApuesta === 0) montoApuesta = 50; // Si no hay apuesta, es como una mini-subida base.
+                    montoApuesta = Math.min(montoApuesta, fichasJugador);
+                } else if (accion === 'subir') montoApuesta = parseInt(document.getElementById('range-subir').value);
+                else if (accion === 'allin') { montoApuesta = fichasJugador; allInJugadores[4] = true; document.getElementById('asiento-4').classList.add('allin-estado'); }
+
                 if (fichasJugador >= montoApuesta) {
                     fichasJugador -= montoApuesta; boteActual += montoApuesta;
                     document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`; document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
-                    if (montoApuesta > 0) lanzarFichasAlBote(4);
+                    if (montoApuesta > 0) { 
+                        let fichaHtml = document.createElement('div'); fichaHtml.className = 'ficha-volando'; fichaHtml.innerHTML = '<img src="ficha.png" style="width: 32px;">';
+                        document.getElementById('mesa-poker').appendChild(fichaHtml); setTimeout(() => fichaHtml.remove(), 700);
+                        apuestasMano[4] += montoApuesta; 
+                    }
                     log(`🤠 [${nombreJugadorGlobal}]: ${accion} $${montoApuesta}`);
                 }
             }
             contadorAccionesRonda++; siguienteTurnoAutomatico(4);
         }
 
-        /* --- FUNCIÓN ANIMACIÓN GIGANTE (PASO 2) --- */
-        function mostrarAnimacionVictoria() {
-            let anim = document.getElementById('animacion-victoria');
-            if (anim) {
-                anim.style.display = 'block';
-                setTimeout(() => { anim.style.display = 'none'; }, 4000);
+        /* --- DEVOLVER EXCESO DE ALL-IN (PASO 1) --- */
+        function devolverExcesoApuesta() {
+            let apuestasArray = Object.entries(apuestasMano).map(([id, amount]) => ({ id: parseInt(id), amount: amount }));
+            apuestasArray.sort((a, b) => b.amount - a.amount);
+            let maxBet = apuestasArray[0]; let secondMax = apuestasArray[1];
+
+            if (maxBet.amount > 0 && maxBet.amount > secondMax.amount) {
+                let exceso = maxBet.amount - secondMax.amount;
+                if (maxBet.id === 4) {
+                    fichasJugador += exceso; document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`; 
+                    log(`💸 [Mesa]: Se te devolvió tu vuelto de $${exceso} (apuesta no igualada).`);
+                } else {
+                    fichasBots[maxBet.id] += exceso; document.getElementById(`chips-s${maxBet.id}`).innerText = `[$] ${fichasBots[maxBet.id]}`;
+                    log(`💸 [Mesa]: Vuelto de $${exceso} devuelto a ${nombresAsientos[maxBet.id]}.`);
+                }
+                boteActual -= exceso; if (boteActual < 0) boteActual = 0;
+                document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
+                apuestasMano[maxBet.id] = secondMax.amount;
             }
         }
 
+        function mostrarAnimacionVictoria() {
+            let anim = document.getElementById('animacion-victoria');
+            if (anim) { anim.style.display = 'block'; setTimeout(() => { anim.style.display = 'none'; }, 4000); }
+        }
+
         function ejecutarShowdownFinalReal() {
+            devolverExcesoApuesta(); // Se devuelve el vuelto justo antes de entregar el bote.
             let activos = [];
             for (let i = 1; i <= 6; i++) { let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i]; if (!retirados[i] && fichasAsiento > 0 && !(i === 4 && (jugadorEspectador || fichasJugador <= 0))) activos.push(i); }
             let mejorPuntaje = -1, ganadorId = activos[0] || 1, nombreMejorMano = "";
@@ -1302,9 +1373,7 @@
 
             if (ganadorId === 4) {
                 fichasJugador += boteActual; document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`; log(`🎉 ¡VICTORIA! Ganaste ${boteActual} USDT con ${nombreMejorMano}!`);
-                
-                mostrarAnimacionVictoria(); // Llama a la animación
-
+                mostrarAnimacionVictoria();
                 if (modoActual === 'Campaña') {
                     torneoVictoriasUsuario++;
                     if (torneoVictoriasUsuario >= 2) { alert(`🤠 ¡CAMPEÓN DEL TORNEO!`); torneoPartidaActual = 1; torneoVictoriasUsuario = 0; } else { torneoPartidaActual++; }
@@ -1314,26 +1383,25 @@
                 fichasBots[ganadorId] += boteActual; document.getElementById(`chips-s${ganadorId}`).innerText = `[$] ${fichasBots[ganadorId]}`; log(`🏠 Gana **${nombresAsientos[ganadorId]}** con ${nombreMejorMano}.`);
             }
             boteActual = 0; document.getElementById('pot-display').innerText = `BOTE: 0 USDT`; faseMano = 0;
-            setTimeout(() => { repartirCartasAPI(); }, 5000); // 5 segundos temporal para no hacerte esperar tanto ahora mismo
+            setTimeout(() => { log(`💃 [Crupier]: ¡10 segundos cumplidos! Repartiendo nueva mano...`); repartirCartasAPI(); }, 10000);
         }
 
         function verificarGanadorPorAbandono(ganadorId) {
+            devolverExcesoApuesta();
             if (ganadorId === 4) { document.getElementById('modal-mostrar-cartas').style.display = 'block'; }
             else {
                 fichasBots[ganadorId] += boteActual; document.getElementById(`chips-s${ganadorId}`).innerText = `[$] ${fichasBots[ganadorId]}`; log(`🏆 ${nombresAsientos[ganadorId]} gana por abandono.`);
                 boteActual = 0; document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
-                setTimeout(() => { repartirCartasAPI(); }, 5000);
+                setTimeout(() => { repartirCartasAPI(); }, 10000);
             }
         }
 
         function responderMostrarCartas(mostrar) {
             document.getElementById('modal-mostrar-cartas').style.display = 'none';
             fichasJugador += boteActual; document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`; log(`🏆 ¡Ganaste por abandono!`);
-            
-            mostrarAnimacionVictoria(); // Llama a la animación al ganar por abandono
-
+            mostrarAnimacionVictoria();
             boteActual = 0; document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
-            setTimeout(() => { repartirCartasAPI(); }, 5000);
+            setTimeout(() => { repartirCartasAPI(); }, 10000);
         }
 
         async function toggleMicrofono() {
