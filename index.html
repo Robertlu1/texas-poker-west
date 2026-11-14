@@ -117,13 +117,12 @@
         .card.red { color: #e74c3c; }
         .card-back { background: #c0392b; color: #f1c40f; border: 1px solid #f1c40f; font-size: 13px; }
 
-        /* EFECTO VICTORIA Y MODAL ANIMADO */
+        /* EFECTO VICTORIA */
         #victoria-animacion {
             display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             z-index: 1000; text-align: center; background: rgba(0, 0, 0, 0.85); padding: 20px;
             border-radius: 15px; border: 3px solid #2ecc71; box-shadow: 0 0 40px rgba(46, 204, 113, 0.6);
         }
-        #victoria-animacion img { width: 200px; border-radius: 10px; margin-bottom: 10px; }
         #victoria-animacion h2 { margin: 0; font-size: 1.8em; text-transform: uppercase; color: #2ecc71; text-shadow: 2px 2px 4px #000; }
 
         @keyframes explosionFuegoOro {
@@ -149,13 +148,8 @@
         .seat { position: absolute; display: flex; align-items: center; gap: 6px; z-index: 10; transition: all 0.3s ease; }
         .seat.retirado { opacity: 0.35; filter: grayscale(90%); }
         .seat.en-pausa { opacity: 0.5; filter: grayscale(50%); }
-        
-        /* Esta es la clase estricta para los que quedan en Cero */
         .seat.sin-fichas { opacity: 0.25; filter: grayscale(100%); pointer-events: none; }
-        
         .seat.espectador { display: none !important; }
-        
-        /* Borde morado intenso para el All-In */
         .seat.allin-estado .seat-box { border: 2px solid #8e44ad; box-shadow: 0 0 18px #8e44ad; }
 
         /* CAJA FIJA Y ESTABLE */
@@ -323,7 +317,27 @@
         .btn-cerrar-tienda { background: #c0392b; color: white; border: none; padding: 6px 12px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 4px; width: 100%; margin-top: 5px; }
         .btn-cerrar-tienda:hover { background: #e74c3c; }
 
-        /* CHAT */
+        /* NUEVO MENÚ MOFARSE */
+        #modal-mofarse {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(10, 18, 28, 0.98); border: 3px solid #e67e22; padding: 20px; border-radius: 12px;
+            z-index: 400000; text-align: center; box-shadow: 0 0 40px rgba(0,0,0,0.9); width: 320px;
+        }
+        #modal-mofarse h3 { color: #e67e22; margin-top: 0; }
+        .mofa-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+        .btn-mofa-opt {
+            background: #34495e; color: #fff; border: 1px solid #f1c40f; padding: 10px 5px;
+            border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 11px;
+        }
+        .btn-mofa-opt:hover { background: #f1c40f; color: #000; }
+
+        /* CARTAS Y CHAT */
+        #modal-mostrar-cartas {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(10, 18, 28, 0.96); border: 3px solid #f1c40f; padding: 15px 25px; border-radius: 10px;
+            z-index: 100; box-shadow: 0 0 30px rgba(0,0,0,0.9); text-align: center;
+        }
+        #modal-mostrar-cartas h3 { color: #f1c40f; margin-top: 0; }
         #chat-flotante {
             position: fixed; bottom: 12px; left: 12px; width: 300px; height: 150px; background: rgba(6, 10, 15, 0.95);
             border: 1px solid #2c3e50; padding: 8px; display: flex; flex-direction: column; justify-content: space-between;
@@ -384,15 +398,19 @@
             <h2>Texas Poker West: Casino Pro</h2>
             
             <div class="poker-table" id="mesa-poker">
-                <!-- ANIMACIÓN DE VICTORIA CENTRAL (AHORA CON GIF ONLINE PARA QUE SIEMPRE SALGA) -->
+                <!-- ANIMACIÓN DE VICTORIA CENTRAL USANDO VIDEO PARA MP4 -->
                 <div id="victoria-animacion">
-                    <img id="img-victoria" src="https://media.tenor.com/P1i6E8Xb3wMAAAAC/winner-win.gif" alt="¡Victoria!">
+                    <video id="vid-victoria" src="winner-win.gif.mp4" autoplay loop muted playsinline style="width: 200px; border-radius: 10px; margin-bottom: 10px;"></video>
                     <h2 id="victoria-texto">¡Gana El Gambusino!</h2>
                 </div>
 
                 <!-- Asiento 1 -->
                 <div class="seat seat-1 bot-seat" id="asiento-1">
-                    <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(1, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(1, '🍺')">🍺</button></div>
+                    <div class="sticker-box">
+                        <button class="btn-sticker" onclick="lanzarSticker(1, '🔥')">🔥</button>
+                        <button class="btn-sticker" onclick="lanzarSticker(1, '🍺')">🍺</button>
+                        <button class="btn-sticker" onclick="abrirMenuMofarse(1)" title="Mofarse">😜</button>
+                    </div>
                     <div class="seat-box" id="box-1">
                         <div class="seat-top-row"><span class="seat-name">El Gambusino</span><span class="seat-chips" id="chips-s1">[$] 1k</span></div>
                         <div class="seat-bottom-row"><div class="seat-cards" id="cartas-s1"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div><span id="timer-ui-1" class="timer-display">25s</span></div>
@@ -403,7 +421,11 @@
 
                 <!-- Asiento 2 -->
                 <div class="seat seat-2 bot-seat" id="asiento-2">
-                    <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(2, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(2, '🍺')">🍺</button></div>
+                    <div class="sticker-box">
+                        <button class="btn-sticker" onclick="lanzarSticker(2, '🔥')">🔥</button>
+                        <button class="btn-sticker" onclick="lanzarSticker(2, '🍺')">🍺</button>
+                        <button class="btn-sticker" onclick="abrirMenuMofarse(2)" title="Mofarse">😜</button>
+                    </div>
                     <div class="seat-box" id="box-2">
                         <div class="seat-top-row"><span class="seat-name">Don Aurelio</span><span class="seat-chips" id="chips-s2">[$] 1k</span></div>
                         <div class="seat-bottom-row"><div class="seat-cards" id="cartas-s2"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div><span id="timer-ui-2" class="timer-display">25s</span></div>
@@ -414,7 +436,11 @@
 
                 <!-- Asiento 3 -->
                 <div class="seat seat-3 bot-seat" id="asiento-3">
-                    <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(3, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(3, '🍺')">🍺</button></div>
+                    <div class="sticker-box">
+                        <button class="btn-sticker" onclick="lanzarSticker(3, '🔥')">🔥</button>
+                        <button class="btn-sticker" onclick="lanzarSticker(3, '🍺')">🍺</button>
+                        <button class="btn-sticker" onclick="abrirMenuMofarse(3)" title="Mofarse">😜</button>
+                    </div>
                     <div class="seat-box" id="box-3">
                         <div class="seat-top-row"><span class="seat-name">Forajido Joe</span><span class="seat-chips" id="chips-s3">[$] 1k</span></div>
                         <div class="seat-bottom-row"><div class="seat-cards" id="cartas-s3"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div><span id="timer-ui-3" class="timer-display">25s</span></div>
@@ -425,7 +451,11 @@
 
                 <!-- Asiento 4 (Tú) -->
                 <div class="seat seat-4" id="asiento-4">
-                    <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(4, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(4, '🍺')">🍺</button></div>
+                    <div class="sticker-box">
+                        <button class="btn-sticker" onclick="lanzarSticker(4, '🔥')">🔥</button>
+                        <button class="btn-sticker" onclick="lanzarSticker(4, '🍺')">🍺</button>
+                        <button class="btn-sticker" onclick="abrirMenuMofarse(4)" title="Mofarse">😜</button>
+                    </div>
                     <div class="seat-box" id="box-4" style="border-color: #2ecc71; background: rgba(15, 38, 25, 0.95);">
                         <div class="seat-top-row"><span class="seat-name" id="nombre-etiqueta-tu">Tú [ID: 4]</span><span class="seat-chips" id="chips-s4">[$] 1k</span></div>
                         <div class="seat-bottom-row"><div class="seat-cards" id="cartas-s4"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div><span id="timer-ui-4" class="timer-display">25s</span></div>
@@ -439,7 +469,11 @@
 
                 <!-- Asiento 5 -->
                 <div class="seat seat-5 bot-seat" id="asiento-5">
-                    <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(5, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(5, '🍺')">🍺</button></div>
+                    <div class="sticker-box">
+                        <button class="btn-sticker" onclick="lanzarSticker(5, '🔥')">🔥</button>
+                        <button class="btn-sticker" onclick="lanzarSticker(5, '🍺')">🍺</button>
+                        <button class="btn-sticker" onclick="abrirMenuMofarse(5)" title="Mofarse">😜</button>
+                    </div>
                     <div class="seat-box" id="box-5">
                         <div class="seat-top-row"><span class="seat-name">Sheriff Miller</span><span class="seat-chips" id="chips-s5">[$] 1k</span></div>
                         <div class="seat-bottom-row"><div class="seat-cards" id="cartas-s5"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div><span id="timer-ui-5" class="timer-display">25s</span></div>
@@ -450,7 +484,11 @@
 
                 <!-- Asiento 6 -->
                 <div class="seat seat-6 bot-seat" id="asiento-6">
-                    <div class="sticker-box"><button class="btn-sticker" onclick="lanzarSticker(6, '🔥')">🔥</button><button class="btn-sticker" onclick="lanzarSticker(6, '🍺')">🍺</button></div>
+                    <div class="sticker-box">
+                        <button class="btn-sticker" onclick="lanzarSticker(6, '🔥')">🔥</button>
+                        <button class="btn-sticker" onclick="lanzarSticker(6, '🍺')">🍺</button>
+                        <button class="btn-sticker" onclick="abrirMenuMofarse(6)" title="Mofarse">😜</button>
+                    </div>
                     <div class="seat-box" id="box-6">
                         <div class="seat-top-row"><span class="seat-name">El Forastero</span><span class="seat-chips" id="chips-s6">[$] 1k</span></div>
                         <div class="seat-bottom-row"><div class="seat-cards" id="cartas-s6"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div><span id="timer-ui-6" class="timer-display">25s</span></div>
@@ -508,6 +546,21 @@
                 <button class="btn-bet btn-fold" onclick="apostarJugador('retirarse')">Retirarse (Fold)</button>
             </div>
         </div>
+    </div>
+
+    <!-- MODAL DE MOFARSE (OPCIONES DE GIF) -->
+    <div id="modal-mofarse">
+        <h3>😜 Elige tu Mofa</h3>
+        <div class="mofa-grid">
+            <button class="btn-mofa-opt" onclick="ejecutarMofa(1)">Gif 1</button>
+            <button class="btn-mofa-opt" onclick="ejecutarMofa(2)">Gif 2</button>
+            <button class="btn-mofa-opt" onclick="ejecutarMofa(3)">Gif 3</button>
+            <button class="btn-mofa-opt" onclick="ejecutarMofa(4)">Gif 4</button>
+            <button class="btn-mofa-opt" onclick="ejecutarMofa(5)">Gif 5</button>
+            <button class="btn-mofa-opt" onclick="ejecutarMofa(6)">Gif 6</button>
+            <button class="btn-mofa-opt" onclick="ejecutarMofa(7)">Gif 7</button>
+        </div>
+        <button class="btn-cerrar-tienda" onclick="cerrarMenuMofarse()">Cancelar</button>
     </div>
 
     <!-- MODALES VARIOS -->
@@ -569,13 +622,21 @@
         <button class="btn-cerrar-tienda" onclick="cerrarTiendaOro()">Cerrar Tienda</button>
     </div>
 
-    <!-- CHAT Y BITÁCORA FLOTANTE -->
+    <div id="modal-mostrar-cartas">
+        <h3>🏆 ¡Has ganado la mano por abandono!</h3>
+        <p style="font-size: 12px; color: #ccc;">¿Deseas mostrar tus cartas privadas a la mesa?</p>
+        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
+            <button class="btn-bet" onclick="responderMostrarCartas(true)">Mostrar Cartas</button>
+            <button class="btn-bet btn-fold" onclick="responderMostrarCartas(false)">Guardar (Muck)</button>
+        </div>
+    </div>
+
     <div id="chat-flotante">
         <div class="chat-header">
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Versión con Portada Nueva, Reposo Estricto y GIF Animado activado.</div>
+        <div id="output-log">💬 [Saloon]: Versión 1.6 - Botón Mofarse, Video de Victoria en mp4 y reset de All-In activados.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -620,7 +681,7 @@
         let indicePistaActual = 0;
         let modoAleatorioMusica = false;
 
-        // INGRESO AL JUEGO CON REGISTRO DE NOMBRE DESDE LA PORTADA (SOLUCIÓN DEL BOTÓN)
+        // INGRESO AL JUEGO CON REGISTRO DE NOMBRE DESDE LA PORTADA
         function iniciarConNombre() {
             let nombre = document.getElementById('nombreJugador').value.trim();
             if(nombre !== "") {
@@ -729,6 +790,67 @@
             if (faseMano === 0) { repartirCartasAPI(); } else { iniciarTurno(4); }
         }
 
+        // SISTEMA DE MOFARSE (VIDEO) Y STICKERS
+        let mofaTargetActual = null;
+
+        function abrirMenuMofarse(targetId) {
+            mofaTargetActual = targetId;
+            document.getElementById('modal-mofarse').style.display = 'block';
+        }
+
+        function cerrarMenuMofarse() {
+            document.getElementById('modal-mofarse').style.display = 'none';
+        }
+
+        function ejecutarMofa(mofaNum) {
+            cerrarMenuMofarse();
+            lanzarAnimacionMofa(mofaTargetActual, mofaNum);
+        }
+
+        function lanzarAnimacionMofa(targetSeatId, mofaNum) {
+            const asientoDestino = document.getElementById(`asiento-${targetSeatId}`);
+            const mesa = document.getElementById('mesa-poker');
+            const mofaVideo = document.createElement('video');
+            
+            mofaVideo.src = `gif${mofaNum}.mp4`;
+            mofaVideo.autoplay = true;
+            mofaVideo.loop = true;
+            mofaVideo.muted = true;
+            mofaVideo.setAttribute('playsinline', '');
+            
+            mofaVideo.style.position = 'absolute';
+            mofaVideo.style.width = '120px';
+            mofaVideo.style.height = '120px';
+            mofaVideo.style.zIndex = '600';
+            mofaVideo.style.borderRadius = '10px';
+            mofaVideo.style.boxShadow = '0 0 15px rgba(255,255,255,0.5)';
+            mofaVideo.style.pointerEvents = 'none';
+
+            const rectDestino = asientoDestino.getBoundingClientRect();
+            const rectMesa = mesa.getBoundingClientRect();
+
+            mofaVideo.style.left = (rectDestino.left - rectMesa.left + 20) + 'px';
+            mofaVideo.style.top = (rectDestino.top - rectMesa.top - 40) + 'px'; // Aparece un poco más arriba
+
+            mesa.appendChild(mofaVideo);
+
+            mofaVideo.animate([
+                { transform: 'scale(0) translateY(20px)', opacity: 0 },
+                { transform: 'scale(1) translateY(0)', opacity: 1 }
+            ], { duration: 300, fill: 'forwards' });
+
+            // Se elimina solo a los 4 segundos
+            setTimeout(() => {
+                mofaVideo.animate([
+                    { transform: 'scale(1) translateY(0)', opacity: 1 },
+                    { transform: 'scale(0) translateY(-20px)', opacity: 0 }
+                ], { duration: 300, fill: 'forwards' });
+                setTimeout(() => mofaVideo.remove(), 300);
+            }, 4000);
+            
+            log(`💬 [Saloon]: ¡Has enviado la Mofa ${mofaNum} a ${nombresAsientos[targetSeatId]}!`);
+        }
+
         function lanzarSticker(targetSeatId, emoji) {
             const asientoOrigen = document.getElementById(`asiento-4`); const asientoDestino = document.getElementById(`asiento-${targetSeatId}`);
             const mesa = document.getElementById('mesa-poker'); const sticker = document.createElement('div');
@@ -776,7 +898,7 @@
             if (pairs.length === 1) return { score: 1000 + pairs[0], nombre: "👤 Pareja" };
             return { score: valsUnicos[0], nombre: `Carta Alta (${parsed[0].str})` };
         }
-        
+
         // MOSTRAR ANIMACIÓN GIF AL GANADOR
         function mostrarGifVictoria(textoGanador) {
             let contenedor = document.getElementById('victoria-animacion');
@@ -895,7 +1017,7 @@
             mesa.appendChild(ficha); setTimeout(() => { ficha.remove(); }, 700);
         }
 
-        // LIMPIEZA TOTAL DE MEMORIA Y REPARTO
+        // LIMPIEZA TOTAL Y REPARTO DE CARTAS
         function repartirCartasAPI() {
             // LIMPIAR MEMORIA ESTRICTA AL INICIAR LA MANO
             apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
