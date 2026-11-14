@@ -399,9 +399,9 @@
             <h2>Texas Poker West: Casino Pro</h2>
             
             <div class="poker-table" id="mesa-poker">
-                <!-- ANIMACIÓN DE VICTORIA CENTRAL (AQUÍ PONEMOS EL GIF O VIDEO) -->
+                <!-- ANIMACIÓN DE VICTORIA EN VIDEO MP4 -->
                 <div id="victoria-animacion">
-                    <img id="img-victoria" src="winner-win.gif.mp4" alt="¡Victoria!" style="width: 200px; border-radius: 10px; margin-bottom: 10px;" onerror="this.src='victoria.gif';">
+                    <video id="vid-victoria" src="winner-win.gif.mp4" autoplay loop muted playsinline style="width: 200px; border-radius: 10px; margin-bottom: 10px;"></video>
                     <h2 id="victoria-texto">¡Gana El Gambusino!</h2>
                 </div>
 
@@ -464,6 +464,7 @@
                     </div>
                     <div class="avatar-box"><img src="avatar4.jpg" alt="Avatar"></div>
                     <button id="btn-sentarse-asiento" class="btn-sentarse-mesa" onclick="togglePausaJugador()">🟢 Sentarse</button>
+                    <!-- BOTÓN DE RETORNO RÁPIDO AGREGADO Y BLINDADO -->
                     <button id="btn-retornar-mesa" class="btn-sentarse-mesa" style="display:none; bottom: -44px; background: #e67e22; border-color: #f1c40f;" onclick="forzarRetornoMesa()">🤠 Retornar a Mesa</button>
                 </div>
 
@@ -631,13 +632,12 @@
         </div>
     </div>
 
-    <!-- CHAT Y BITÁCORA FLOTANTE -->
     <div id="chat-flotante">
         <div class="chat-header">
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Sistema Inteligente de All-In Activo. ¡Listos para repartir!</div>
+        <div id="output-log">💬 [Saloon]: Bot Inteligencia corregida. Si vas All-In, deberán Igualar o Retirarse obligatoriamente.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -670,7 +670,6 @@
         let temporizadorTurno = null;
         let segundosRestantes = 25;
 
-        // RASTREO PARA EL CÁLCULO DEL VUELTO EN ALL-IN
         let apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
         
         let modoActual = 'Práctica';
@@ -766,7 +765,6 @@
             if (idCliente === "4" || idCliente === idUsuarioActual.toString() || idCliente.toLowerCase() === "vaquero") {
                 fichasJugador += cantidad; document.getElementById('chips-s4').innerText = `[$] ${fichasJugador.toLocaleString()}`; document.getElementById('range-subir').max = fichasJugador;
                 
-                // MOSTRAR BOTÓN DE RETORNO RÁPIDO BAJO EL ASIENTO 4
                 document.getElementById('btn-retornar-mesa').style.display = 'block';
                 log(`🪙 [Tienda]: Fichas acreditadas. Haz clic en '🤠 Retornar a Mesa' para activar tu turno.`);
             }
@@ -778,7 +776,6 @@
             let btnLiberar = document.getElementById('btn-liberar-fichas-id'); btnLiberar.setAttribute('disabled', 'true'); btnLiberar.classList.remove('activo');
         }
 
-        // RETORNO RÁPIDO PARA EL JUGADOR 4
         function forzarRetornoMesa() {
             jugadorEnPausa = false;
             let asientoDiv = document.getElementById('asiento-4');
@@ -794,7 +791,7 @@
             if (faseMano === 0) { repartirCartasAPI(); } else { iniciarTurno(4); }
         }
 
-        // SISTEMA DE MOFARSE (VIDEO MP4)
+        // SISTEMA DE MOFARSE (VIDEO) Y STICKERS
         let mofaTargetActual = null;
 
         function abrirMenuMofarse(targetId) {
@@ -1019,17 +1016,21 @@
             mesa.appendChild(ficha); setTimeout(() => { ficha.remove(); }, 700);
         }
 
-        // LIMPIEZA TOTAL DE MEMORIA Y REPARTO
+        // LIMPIEZA TOTAL Y REPARTO
         function repartirCartasAPI() {
-            // LIMPIAR MEMORIA ESTRICTA AL INICIAR LA MANO
+            // LIMPIAR MEMORIAS Y ESTADOS DE ALL-IN ESTRICTAMENTE ANTES DE REPARTIR
             apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
-            allInJugadores = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
             
-            // Si el jugador se quedó sin fichas, bloquear su caja y pedir recarga
+            for (let i = 1; i <= 6; i++) {
+                allInJugadores[i] = false;
+                let asDiv = document.getElementById(`asiento-${i}`);
+                if (asDiv) asDiv.classList.remove('allin-estado');
+            }
+            
+            // Si el jugador se quedó en 0 en la mano anterior, se bloquea y pide recarga
             if (fichasJugador <= 0) {
                 let asientoDiv = document.getElementById('asiento-4');
                 let timerUi4 = document.getElementById('timer-ui-4');
-                asientoDiv.classList.remove('allin-estado');
                 asientoDiv.classList.add('sin-fichas', 'en-pausa');
                 if (timerUi4) timerUi4.innerText = "--";
                 retirados[4] = true;
@@ -1039,6 +1040,7 @@
             }
 
             try {
+                // FORZAR MODO LOCAL EN ESTA VERSIÓN
                 throw new Error("Offline mode forced"); 
             } catch (error) {
                 boteActual = 200; contadorAccionesRonda = 0; faseMano = 1;
@@ -1058,11 +1060,12 @@
                     let asientoDiv = document.getElementById(`asiento-${i}`);
                     let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i];
                     
+                    // PASO CRÍTICO: LIMPIAR ESTADOS VISUALES DE ZOMBIES DE LA MANO ANTERIOR
                     if (asientoDiv) {
-                        asientoDiv.classList.remove('retirado', 'sin-fichas', 'espectador', 'allin-estado', 'en-pausa');
+                        asientoDiv.classList.remove('retirado', 'sin-fichas', 'espectador', 'en-pausa');
                     }
 
-                    // APLICACIÓN ESTRICTA DEL REPOSO SI ESTÁN EN CERO (SIN FICHAS)
+                    // APLICACIÓN ESTRICTA DEL REPOSO: SI ESTÁN EN CERO PERMANECEN RETIRADOS
                     if (fichasAsiento <= 0 || (i === 4 && jugadorEnPausa)) { 
                         retirados[i] = true; 
                         if (asientoDiv) asientoDiv.classList.add(fichasAsiento <= 0 ? 'sin-fichas' : 'en-pausa', 'retirado'); 
@@ -1109,10 +1112,13 @@
 
         function iniciarTurno(asientoNum) {
             let fichasActuales = (asientoNum === 4) ? fichasJugador : fichasBots[asientoNum];
+            
+            // Si está retirado, está all-in o no tiene plata, salta su turno rápido
             if (retirados[asientoNum] || allInJugadores[asientoNum] || fichasActuales <= 0) {
                 siguienteTurnoAutomatico(asientoNum);
                 return;
             }
+            
             actualizarTurnoVisual(asientoNum);
             segundosRestantes = 25;
             
@@ -1161,12 +1167,14 @@
                 if (!retirados[i] && fichasAsiento > 0) activos.push(i);
             }
 
+            // Si todos menos uno hicieron Fold (abandono)
             if (activos.length === 1) {
                 if (temporizadorTurno) clearInterval(temporizadorTurno);
                 setTimeout(() => { verificarGanadorPorAbandono(activos[0]); }, 800);
                 return;
             }
 
+            // Si los que quedan activos ya hicieron All-In, se salta la ronda de apuestas directo a comunitarias
             let pendientesAccion = activos.filter(id => !allInJugadores[id]);
             if (pendientesAccion.length === 0) {
                 if (temporizadorTurno) clearInterval(temporizadorTurno);
@@ -1174,6 +1182,7 @@
                 return;
             }
 
+            // Si todos apostaron/pasaron su turno en la ronda
             if (contadorAccionesRonda >= 6) {
                 if (temporizadorTurno) clearInterval(temporizadorTurno);
                 avanzarFaseComunitaria();
@@ -1196,92 +1205,80 @@
             } else { ejecutarShowdownFinalReal(); }
         }
 
-        // BOTS INTELIGENTES QUE CONTESTAN AL ALL-IN DE VERDAD
+        // 🧠 INTELIGENCIA ARTIFICIAL DEL BOT REPARADA (AHORA SABEN REACCIONAR A UN ALL-IN)
         function ejecutarAccionBot(botId) {
-            let apuestaMaxima = Math.max(...Object.values(apuestasMano));
-            let apuestaFaltante = apuestaMaxima - apuestasMano[botId];
-
-            let eleccion = "pasar";
+            // Verificar si hay algún jugador en la mesa con All-In activo
+            let alguienAllIn = Object.values(allInJugadores).some(estado => estado === true);
+            
+            let eleccion = "";
             let monto = 0;
 
-            if (apuestaFaltante > 0) {
-                // Hay una apuesta en la mesa. El bot decide si iguala o se retira.
-                if (Math.random() > 0.4) {
-                    eleccion = "igualar";
-                    monto = Math.min(fichasBots[botId], apuestaFaltante);
+            if (alguienAllIn) {
+                // Si alguien tiró All-In, los bots NO pueden "pasar" gratis. O igualan (call) o se retiran (fold)
+                let esValiente = Math.random() < 0.25; // 25% de probabilidad de ser valiente y pagar el All-In
+                
+                if (esValiente) {
+                    eleccion = "igualar all-in";
+                    monto = fichasBots[botId]; // Se va en All-In también
                 } else {
                     eleccion = "retirarse";
                 }
             } else {
-                // No hay apuesta extra. Pasa o sube.
-                if (Math.random() > 0.8) {
-                    eleccion = "subir";
-                    monto = 50;
-                } else {
-                    eleccion = "pasar";
-                    monto = 0;
-                }
+                // Comportamiento normal si nadie está en All-In
+                const jugadasBot = ["igualar", "pasar", "subir", "retirarse"];
+                eleccion = jugadasBot[Math.floor(Math.random() * jugadasBot.length)];
+                if (eleccion === "subir") monto = 100;
+                else if (eleccion === "igualar") monto = 50;
+                else monto = 0; // pasar o retirarse
             }
 
+            // Ejecutar la decisión tomada
             if (eleccion === "retirarse") {
                 retirados[botId] = true;
                 document.getElementById(`asiento-${botId}`).classList.add('retirado');
                 log(`🤖 [${nombresAsientos[botId]}]: Se retira (Fold).`);
             } else {
                 if (fichasBots[botId] >= monto) {
-                    fichasBots[botId] -= monto; 
-                    boteActual += monto;
+                    fichasBots[botId] -= monto; boteActual += monto;
                     document.getElementById(`chips-s${botId}`).innerText = `[$] ${fichasBots[botId]}`; 
                     document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
-                    
                     if (monto > 0) { 
                         lanzarFichasAlBote(botId); 
                         apuestasMano[botId] += monto; 
                     }
                     
-                    if (fichasBots[botId] <= 0) { 
+                    // Si el bot apostó todo su resto
+                    if (fichasBots[botId] <= 0 && monto > 0) { 
                         fichasBots[botId] = 0;
                         allInJugadores[botId] = true; 
                         document.getElementById(`asiento-${botId}`).classList.add('allin-estado'); 
-                        log(`🤖 [${nombresAsientos[botId]}]: ¡ALL-IN por $${monto}!`);
-                    } else {
-                        log(`🤖 [${nombresAsientos[botId]}]: ${eleccion === 'igualar' ? 'Iguala $'+monto : (eleccion === 'subir' ? 'Sube $'+monto : 'Pasa')}.`);
                     }
+                    log(`🤖 [${nombresAsientos[botId]}]: ${eleccion}.`);
                 }
             }
-            
-            contadorAccionesRonda++; 
-            siguienteTurnoAutomatico(botId);
+            contadorAccionesRonda++; siguienteTurnoAutomatico(botId);
         }
 
-        // TUS APUESTAS (IGUALAR Y SUBIR INTELIGENTES)
         function apostarJugador(accion) {
             if (turnoActual !== 4) return;
             clearInterval(temporizadorTurno); document.getElementById('timer-ui-4').innerText = "--"; document.getElementById(`box-4`).style.borderColor = "#27ae60";
-
-            let apuestaMaxima = Math.max(...Object.values(apuestasMano));
-            let apuestaFaltante = apuestaMaxima - apuestasMano[4];
 
             if (accion === 'retirarse') {
                 retirados[4] = true; document.getElementById('asiento-4').classList.add('retirado'); log(`[Tú]: Te retiraste (Fold).`);
             } else {
                 let montoApuesta = 0;
-                
-                if (accion === 'pasar') {
-                    montoApuesta = 0;
-                } else if (accion === 'igualar') {
-                    montoApuesta = apuestaFaltante > 0 ? Math.min(fichasJugador, apuestaFaltante) : 0;
-                } else if (accion === 'subir') {
-                    let extra = parseInt(document.getElementById('range-subir').value);
-                    montoApuesta = apuestaFaltante + extra;
-                    montoApuesta = Math.min(fichasJugador, montoApuesta); // No apostar más de lo que tienes
-                } else if (accion === 'allin') { 
+                if (accion === 'igualar') montoApuesta = 50;
+                else if (accion === 'subir') montoApuesta = parseInt(document.getElementById('range-subir').value);
+                else if (accion === 'allin') { 
                     montoApuesta = fichasJugador; 
+                    allInJugadores[4] = true; 
+                    document.getElementById('asiento-4').classList.add('allin-estado'); 
                 }
 
                 if (fichasJugador >= montoApuesta) {
                     fichasJugador -= montoApuesta; boteActual += montoApuesta;
                     
+                    // Si el jugador apostó todo su resto
                     if (fichasJugador <= 0) {
                         fichasJugador = 0;
                         allInJugadores[4] = true;
@@ -1290,21 +1287,19 @@
 
                     document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`; document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
                     if (montoApuesta > 0) { lanzarFichasAlBote(4); apuestasMano[4] += montoApuesta; }
-                    
-                    let logAccion = accion === 'allin' ? '¡All-In!' : (accion === 'igualar' ? 'Iguala' : (accion === 'pasar' ? 'Pasa' : 'Sube'));
-                    log(`[Tú]: ${logAccion} ${montoApuesta > 0 ? '$'+montoApuesta : ''}`);
+                    log(`[Tú]: ${accion} $${montoApuesta}`);
                 }
             }
             contadorAccionesRonda++; siguienteTurnoAutomatico(4);
         }
 
-        // DEVOLUCIÓN DEL VUELTO
+        // DEVOLUCIÓN DEL EXCEDENTE (VUELTO) DE LAS APUESTAS ANTES DE ENTREGAR EL BOTE
         function devolverExcesoApuesta() {
             let apuestasArray = Object.entries(apuestasMano).map(([id, amount]) => ({ id: parseInt(id), amount: amount }));
             apuestasArray.sort((a, b) => b.amount - a.amount);
             let maxBet = apuestasArray[0]; let secondMax = apuestasArray[1];
 
-            // Si hay una diferencia entre el 1ro y el 2do, devuelve el excedente
+            // Si el jugador con la apuesta más alta superó al segundo, se le devuelve la diferencia.
             if (maxBet.amount > 0 && maxBet.amount > secondMax.amount) {
                 let exceso = maxBet.amount - secondMax.amount;
                 if (maxBet.id === 4) {
@@ -1319,16 +1314,14 @@
         }
 
         function ejecutarShowdownFinalReal() {
-            // El vuelto se devuelve antes de adjudicar el premio
+            // Se calcula y se devuelve el vuelto ANTES de adjudicar el premio del bote
             devolverExcesoApuesta();
             
             let activos = [];
+            // Juegan el premio todos los que no se retiraron o los que hayan ido All-In valientemente
             for (let i = 1; i <= 6; i++) { 
                 let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i]; 
-                // Evalúa solo a los que tienen cartas
-                if (!retirados[i] || allInJugadores[i]) {
-                    activos.push(i);
-                }
+                if (!retirados[i] || allInJugadores[i]) { activos.push(i); }
             }
 
             let mejorPuntaje = -1, ganadorId = activos[0] || 1, nombreMejorMano = "";
@@ -1337,12 +1330,10 @@
                 if (res.score > mejorPuntaje) { mejorPuntaje = res.score; ganadorId = id; nombreMejorMano = res.nombre; }
             });
 
-            for (let i = 1; i <= 6; i++) { 
-                if (i !== ganadorId) { 
-                    document.getElementById(`cartas-s${i}`).innerHTML = `<div class="card card-back" style="background:${colorDorsoActual}">🂠</div><div class="card card-back" style="background:${colorDorsoActual}">🂠</div>`; 
-                } 
-            }
+            // Voltear cartas de los perdedores
+            for (let i = 1; i <= 6; i++) { if (!retirados[i] && i !== ganadorId) { document.getElementById(`cartas-s${i}`).innerHTML = `<div class="card card-back" style="background:${colorDorsoActual}">🂠</div><div class="card card-back" style="background:${colorDorsoActual}">🂠</div>`; } }
 
+            // Mostrar cartas del ganador real
             let cartasGanador = (ganadorId === 4) ? cartasJugadorPrivadas : cartasBotsPrivadas[ganadorId];
             if (cartasGanador) {
                 let htmlG = ""; cartasGanador.forEach(c => { htmlG += `<div class="card ${c.includes('♥')||c.includes('♦')?'red':''}" style="background:#ffffff;">${c}</div>`; });
@@ -1363,11 +1354,12 @@
 
             boteActual = 0; document.getElementById('pot-display').innerText = `BOTE: 0 USDT`; faseMano = 0;
             
-            // LA CRUPIER ESPERA EXACTAMENTE 10 SEGUNDOS ANTES DE REPARTIR LA SIGUIENTE MANO
+            // LA CRUPIER ESPERA 10 SEGUNDOS CLAVADOS ANTES DE REPARTIR LA SIGUIENTE MANO
             setTimeout(() => { log(`💃 [Crupier]: ¡10 segundos cumplidos! Repartiendo nueva mano...`); repartirCartasAPI(); }, 10000);
         }
 
         function verificarGanadorPorAbandono(ganadorId) {
+            // El vuelto se procesa ANTES del abandono
             devolverExcesoApuesta();
             
             if (ganadorId === 4) { document.getElementById('modal-mostrar-cartas').style.display = 'block'; }
