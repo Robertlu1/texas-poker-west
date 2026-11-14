@@ -12,7 +12,7 @@
         }
         h2 { color: #f1c40f; text-shadow: 1px 1px #000; margin: 2px 0; font-size: 1.1em; }
         
-        /* PORTADA CON EL PANEL DE REGISTRO EN EL CENTRO */
+        /* PORTADA ORIGINAL REESTRUCTURADA CON EL PANEL DE REGISTRO */
         #pantalla-portada {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-image: url('portada_bandido.jpg'); background-size: cover; background-position: center;
@@ -20,6 +20,7 @@
             z-index: 999999;
         }
         
+        /* EL PANEL DE INGRESO ESTILO NEÓN/MILITAR */
         .center-panel {
             background: rgba(4, 30, 66, 0.85);
             border: 2px solid #2980b9; padding: 30px 50px; border-radius: 12px;
@@ -120,10 +121,10 @@
         /* EFECTO VICTORIA */
         #victoria-animacion {
             display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 1000; text-align: center; background: rgba(0, 0, 0, 0.85); padding: 20px;
-            border-radius: 15px; border: 3px solid #2ecc71; box-shadow: 0 0 40px rgba(46, 204, 113, 0.6);
+            z-index: 1000; text-align: center; background: rgba(0,0,0,0.8); padding: 20px;
+            border-radius: 15px; border: 3px solid #f1c40f; box-shadow: 0 0 40px rgba(241, 196, 15, 0.6);
         }
-        #victoria-animacion h2 { margin: 0; font-size: 1.8em; text-transform: uppercase; color: #2ecc71; text-shadow: 2px 2px 4px #000; }
+        #victoria-animacion h2 { margin-top: 10px; font-size: 1.5em; text-transform: uppercase; color: #2ecc71; }
 
         @keyframes explosionFuegoOro {
             0% { transform: translate(0, 0) scale(0.4); opacity: 1; filter: drop-shadow(0 0 8px #ff4500); }
@@ -144,7 +145,7 @@
             position: fixed; z-index: 400000; pointer-events: none; animation: volarFichaRecarga 1.2s ease-in-out forwards;
         }
 
-        /* ASIENTOS Y ESTADOS (REPOSO Y ALL-IN) */
+        /* ASIENTOS Y ESTADOS */
         .seat { position: absolute; display: flex; align-items: center; gap: 6px; z-index: 10; transition: all 0.3s ease; }
         .seat.retirado { opacity: 0.35; filter: grayscale(90%); }
         .seat.en-pausa { opacity: 0.5; filter: grayscale(50%); }
@@ -267,6 +268,20 @@
         .btn-mic.active { background-color: #27ae60; border-color: #2ecc71; }
         #mic-status { font-size: 10px; color: #bdc3c7; margin-left: 5px; }
 
+        /* MENÚ MOFARSE */
+        #modal-mofarse {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(10, 18, 28, 0.98); border: 3px solid #e67e22; padding: 20px; border-radius: 12px;
+            z-index: 400000; text-align: center; box-shadow: 0 0 40px rgba(0,0,0,0.9); width: 320px;
+        }
+        #modal-mofarse h3 { color: #e67e22; margin-top: 0; }
+        .mofa-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+        .btn-mofa-opt {
+            background: #34495e; color: #fff; border: 1px solid #f1c40f; padding: 10px 5px;
+            border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 11px;
+        }
+        .btn-mofa-opt:hover { background: #f1c40f; color: #000; }
+
         /* MODALES ESPERA */
         #modal-torneo-espera, #modal-multijugador-espera {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -316,20 +331,6 @@
         .btn-liberar-fichas.activo { cursor: pointer; opacity: 1; background-color: #27ae60; color: #fff; border-color: #2ecc71; }
         .btn-cerrar-tienda { background: #c0392b; color: white; border: none; padding: 6px 12px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 4px; width: 100%; margin-top: 5px; }
         .btn-cerrar-tienda:hover { background: #e74c3c; }
-
-        /* NUEVO MENÚ MOFARSE */
-        #modal-mofarse {
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(10, 18, 28, 0.98); border: 3px solid #e67e22; padding: 20px; border-radius: 12px;
-            z-index: 400000; text-align: center; box-shadow: 0 0 40px rgba(0,0,0,0.9); width: 320px;
-        }
-        #modal-mofarse h3 { color: #e67e22; margin-top: 0; }
-        .mofa-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
-        .btn-mofa-opt {
-            background: #34495e; color: #fff; border: 1px solid #f1c40f; padding: 10px 5px;
-            border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 11px;
-        }
-        .btn-mofa-opt:hover { background: #f1c40f; color: #000; }
 
         /* CARTAS Y CHAT */
         #modal-mostrar-cartas {
@@ -398,7 +399,7 @@
             <h2>Texas Poker West: Casino Pro</h2>
             
             <div class="poker-table" id="mesa-poker">
-                <!-- ANIMACIÓN DE VICTORIA CENTRAL USANDO VIDEO PARA MP4 -->
+                <!-- ANIMACIÓN DE VICTORIA EN VIDEO MP4 -->
                 <div id="victoria-animacion">
                     <video id="vid-victoria" src="winner-win.gif.mp4" autoplay loop muted playsinline style="width: 200px; border-radius: 10px; margin-bottom: 10px;"></video>
                     <h2 id="victoria-texto">¡Gana El Gambusino!</h2>
@@ -636,7 +637,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Versión 1.6 - Botón Mofarse, Video de Victoria en mp4 y reset de All-In activados.</div>
+        <div id="output-log">💬 [Saloon]: Versión Total (Matemática All-In de vueltos, GIF Victoria, Mofas MP4 y Reset Reposo) lista.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -648,6 +649,8 @@
         let fichasJugador = 1000;
         let fichasBots = { 1: 1000, 2: 1000, 3: 1000, 5: 1000, 6: 1000 };
         let cartasBotsPrivadas = { 1: [], 2: [], 3: [], 5: [], 6: [] };
+        
+        // ESTADOS DE JUGADORES
         let retirados = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
         let allInJugadores = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
         let jugadorEnPausa = false;
@@ -667,6 +670,7 @@
         let temporizadorTurno = null;
         let segundosRestantes = 25;
 
+        // RASTREO PARA EL CÁLCULO DEL VUELTO EN ALL-IN
         let apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
         
         let modoActual = 'Práctica';
@@ -830,7 +834,7 @@
             const rectMesa = mesa.getBoundingClientRect();
 
             mofaVideo.style.left = (rectDestino.left - rectMesa.left + 20) + 'px';
-            mofaVideo.style.top = (rectDestino.top - rectMesa.top - 40) + 'px'; // Aparece un poco más arriba
+            mofaVideo.style.top = (rectDestino.top - rectMesa.top - 40) + 'px';
 
             mesa.appendChild(mofaVideo);
 
@@ -839,7 +843,6 @@
                 { transform: 'scale(1) translateY(0)', opacity: 1 }
             ], { duration: 300, fill: 'forwards' });
 
-            // Se elimina solo a los 4 segundos
             setTimeout(() => {
                 mofaVideo.animate([
                     { transform: 'scale(1) translateY(0)', opacity: 1 },
@@ -898,15 +901,14 @@
             if (pairs.length === 1) return { score: 1000 + pairs[0], nombre: "👤 Pareja" };
             return { score: valsUnicos[0], nombre: `Carta Alta (${parsed[0].str})` };
         }
-
-        // MOSTRAR ANIMACIÓN GIF AL GANADOR
+        
+        // MOSTRAR ANIMACIÓN DE VICTORIA EN EL CENTRO
         function mostrarGifVictoria(textoGanador) {
             let contenedor = document.getElementById('victoria-animacion');
             let texto = document.getElementById('victoria-texto');
             if(contenedor && texto) {
                 texto.innerText = textoGanador;
                 contenedor.style.display = 'block';
-                // El gif dura 9 segundos para que se quite 1 segundo antes de la siguiente mano
                 setTimeout(() => { contenedor.style.display = 'none'; }, 9000);
             }
         }
@@ -1017,27 +1019,45 @@
             mesa.appendChild(ficha); setTimeout(() => { ficha.remove(); }, 700);
         }
 
-        // LIMPIEZA TOTAL Y REPARTO DE CARTAS
+        // LIMPIEZA TOTAL Y REPARTO
         function repartirCartasAPI() {
-            // LIMPIAR MEMORIA ESTRICTA AL INICIAR LA MANO
+            // Limpiar memorias de apuestas
             apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
-            allInJugadores = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
             
-            // Si el jugador se quedó sin fichas, bloquear su caja y pedir recarga
-            if (fichasJugador <= 0) {
-                let asientoDiv = document.getElementById('asiento-4');
-                let timerUi4 = document.getElementById('timer-ui-4');
-                asientoDiv.classList.remove('allin-estado');
-                asientoDiv.classList.add('sin-fichas', 'en-pausa');
-                if (timerUi4) timerUi4.innerText = "--";
-                retirados[4] = true;
-                log(`🚫 [Sistema]: Perdiste tu resto. Ve a la Tienda para recargar y continuar.`);
-            } else if (jugadorEnPausa) {
-                retirados[4] = true;
+            // PRIMERO: Limpiar los estados de allin de la mano anterior
+            for (let i = 1; i <= 6; i++) {
+                allInJugadores[i] = false;
+                let asientoDiv = document.getElementById(`asiento-${i}`);
+                if (asientoDiv) {
+                    asientoDiv.classList.remove('allin-estado');
+                }
+            }
+
+            // SEGUNDO: Evaluar quién está en cero ANTES de repartir para bloquearlo y ponerlo en reposo estricto
+            for (let i = 1; i <= 6; i++) {
+                let currentFichas = (i === 4) ? fichasJugador : fichasBots[i];
+                let asientoDiv = document.getElementById(`asiento-${i}`);
+                
+                if (currentFichas <= 0) {
+                    retirados[i] = true;
+                    if (asientoDiv) asientoDiv.classList.add('sin-fichas', 'retirado');
+                    if (i === 4) {
+                        document.getElementById('nombre-etiqueta-tu').innerText = "Tú (Sin Fichas 🚫)";
+                        let timerUi4 = document.getElementById('timer-ui-4');
+                        if (timerUi4) timerUi4.innerText = "--";
+                        log(`🚫 [Sistema]: Perdiste tu resto. Ve a la Tienda para recargar y continuar.`);
+                    }
+                } else if (i === 4 && jugadorEnPausa) {
+                    retirados[4] = true;
+                } else {
+                    // Si el jugador TIENE fichas y no está en pausa, limpiarle cualquier estado gris o de reposo
+                    retirados[i] = false;
+                    if (asientoDiv) asientoDiv.classList.remove('retirado', 'sin-fichas', 'en-pausa');
+                }
             }
 
             try {
-                // FORZAR MODO LOCAL EN ESTA VERSIÓN
+                // FORZAR MODO LOCAL EN ESTA VERSIÓN PARA QUE NO DEPENDA DE SERVIDOR
                 throw new Error("Offline mode forced"); 
             } catch (error) {
                 boteActual = 200; contadorAccionesRonda = 0; faseMano = 1;
@@ -1047,32 +1067,19 @@
                 cartasComunitariasGlobales = [mazoLocal.pop(), mazoLocal.pop(), mazoLocal.pop(), mazoLocal.pop(), mazoLocal.pop()];
                 document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
 
+                // Pintar cartas comunitarias
                 for (let c = 0; c < 5; c++) {
                     let cardElem = document.getElementById(`com-${c}`);
                     if (c < 3) { let cartaVal = cartasComunitariasGlobales[c]; cardElem.className = `card ${cartaVal.includes('♥')||cartaVal.includes('♦')?'red':''}`; cardElem.style.background = '#ffffff'; cardElem.innerText = cartaVal; } 
                     else { cardElem.className = `card card-back`; cardElem.style.background = colorDorsoActual; cardElem.innerText = '🂠'; }
                 }
 
+                // Pintar cartas a cada jugador (o dejarlas vacías si están en reposo estricto)
                 for (let i = 1; i <= 6; i++) {
-                    let asientoDiv = document.getElementById(`asiento-${i}`);
-                    let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i];
-                    
-                    // PASO CRÍTICO: LIMPIAR ESTADOS VISUALES ANTERIORES
-                    if (asientoDiv) {
-                        asientoDiv.classList.remove('retirado', 'sin-fichas', 'espectador', 'allin-estado', 'en-pausa');
-                    }
-
-                    // APLICACIÓN ESTRICTA DEL REPOSO SI ESTÁN EN CERO (SIN FICHAS)
-                    if (fichasAsiento <= 0 || (i === 4 && jugadorEnPausa)) { 
-                        retirados[i] = true; 
-                        if (asientoDiv) asientoDiv.classList.add(fichasAsiento <= 0 ? 'sin-fichas' : 'en-pausa', 'retirado'); 
-                    } else { 
-                        retirados[i] = false; 
-                    }
-
                     let contenedor = document.getElementById(`cartas-s${i}`);
                     if (contenedor) {
                         let htmlCartas = "";
+                        // Si el jugador está retirado (ya sea por quedarse sin fichas o estar en pausa)
                         if (retirados[i]) { 
                             htmlCartas = `<div class="card card-back" style="background:#555;">🚫</div><div class="card card-back" style="background:#555;">🚫</div>`; 
                         } else { 
@@ -1236,7 +1243,7 @@
                 if (fichasJugador >= montoApuesta) {
                     fichasJugador -= montoApuesta; boteActual += montoApuesta;
                     
-                    // Si caes a cero, forzar All-in
+                    // Si caes a cero, forzar All-in y dejar el borde morado
                     if (fichasJugador <= 0) {
                         fichasJugador = 0;
                         allInJugadores[4] = true;
@@ -1251,7 +1258,7 @@
             contadorAccionesRonda++; siguienteTurnoAutomatico(4);
         }
 
-        // DEVOLUCIÓN DE EXCEDENTE EN ALL-IN
+        // DEVOLUCIÓN DE EXCEDENTE EN ALL-IN ANTES DEL REPARTO FINAL
         function devolverExcesoApuesta() {
             let apuestasArray = Object.entries(apuestasMano).map(([id, amount]) => ({ id: parseInt(id), amount: amount }));
             apuestasArray.sort((a, b) => b.amount - a.amount);
@@ -1276,7 +1283,13 @@
             devolverExcesoApuesta();
             
             let activos = [];
-            for (let i = 1; i <= 6; i++) { let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i]; if (!retirados[i] && fichasAsiento > 0) activos.push(i); }
+            // Evaluar a los que no se han retirado (o que hayan ido all-in)
+            for (let i = 1; i <= 6; i++) { 
+                let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i]; 
+                if (!retirados[i] || allInJugadores[i]) {
+                    activos.push(i);
+                }
+            }
 
             let mejorPuntaje = -1, ganadorId = activos[0] || 1, nombreMejorMano = "";
             activos.forEach(id => {
@@ -1284,8 +1297,14 @@
                 if (res.score > mejorPuntaje) { mejorPuntaje = res.score; ganadorId = id; nombreMejorMano = res.nombre; }
             });
 
-            for (let i = 1; i <= 6; i++) { if (!retirados[i] && i !== ganadorId) { document.getElementById(`cartas-s${i}`).innerHTML = `<div class="card card-back" style="background:${colorDorsoActual}">🂠</div><div class="card card-back" style="background:${colorDorsoActual}">🂠</div>`; } }
+            // Los que perdieron voltean sus cartas
+            for (let i = 1; i <= 6; i++) { 
+                if (i !== ganadorId) { 
+                    document.getElementById(`cartas-s${i}`).innerHTML = `<div class="card card-back" style="background:${colorDorsoActual}">🂠</div><div class="card card-back" style="background:${colorDorsoActual}">🂠</div>`; 
+                } 
+            }
 
+            // Se muestran las cartas del ganador
             let cartasGanador = (ganadorId === 4) ? cartasJugadorPrivadas : cartasBotsPrivadas[ganadorId];
             if (cartasGanador) {
                 let htmlG = ""; cartasGanador.forEach(c => { htmlG += `<div class="card ${c.includes('♥')||c.includes('♦')?'red':''}" style="background:#ffffff;">${c}</div>`; });
