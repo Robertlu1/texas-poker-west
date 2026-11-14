@@ -120,8 +120,7 @@
 
         /* EFECTO VICTORIA Y CARTAS INTEGRADAS */
         #victoria-animacion {
-            display: none; /* Cambiará a flex en JS */
-            flex-direction: column; align-items: center; gap: 8px;
+            display: none; flex-direction: column; align-items: center; gap: 8px;
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             z-index: 1000; text-align: center; background: rgba(0, 0, 0, 0.9); padding: 15px 25px;
             border-radius: 15px; border: 3px solid #2ecc71; box-shadow: 0 0 40px rgba(46, 204, 113, 0.8);
@@ -286,14 +285,14 @@
         }
         .btn-mofa-opt:hover { background: #f1c40f; color: #000; }
 
-        /* MENÚ AVATARES */
+        /* MENÚ AVATARES (AMPLIADO A 12 AVATARES) */
         #modal-avatar {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: rgba(10, 18, 28, 0.98); border: 3px solid #3498db; padding: 20px; border-radius: 12px;
-            z-index: 400000; text-align: center; box-shadow: 0 0 40px rgba(0,0,0,0.9); width: 320px;
+            z-index: 400000; text-align: center; box-shadow: 0 0 40px rgba(0,0,0,0.9); width: 380px;
         }
         #modal-avatar h3 { color: #3498db; margin-top: 0; }
-        .avatar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 15px; }
+        .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
         .avatar-grid img { width: 100%; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
         .avatar-grid img:hover { border-color: #f1c40f; transform: scale(1.1); }
 
@@ -347,13 +346,7 @@
         .btn-cerrar-tienda { background: #c0392b; color: white; border: none; padding: 6px 12px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 4px; width: 100%; margin-top: 5px; }
         .btn-cerrar-tienda:hover { background: #e74c3c; }
 
-        /* CARTAS Y CHAT */
-        #modal-mostrar-cartas {
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(10, 18, 28, 0.96); border: 3px solid #f1c40f; padding: 15px 25px; border-radius: 10px;
-            z-index: 100; box-shadow: 0 0 30px rgba(0,0,0,0.9); text-align: center;
-        }
-        #modal-mostrar-cartas h3 { color: #f1c40f; margin-top: 0; }
+        /* CHAT */
         #chat-flotante {
             position: fixed; bottom: 12px; left: 12px; width: 300px; height: 150px; background: rgba(6, 10, 15, 0.95);
             border: 1px solid #2c3e50; padding: 8px; display: flex; flex-direction: column; justify-content: space-between;
@@ -372,10 +365,12 @@
 </head>
 <body>
 
+    <!-- MÚSICA LOCAL SIN LOOP PARA PERMITIR SECUENCIA -->
     <audio id="audio-fondo" onended="siguientePistaMusica()">
         <source src="musica_saloon1.mp3" type="audio/mp3">
     </audio>
 
+    <!-- PORTADA ORIGINAL REESTILIZADA CON PANEL DE MADERA/ORO -->
     <div id="pantalla-portada">
         <div class="center-panel">
             <label for="nombreJugador">ELIJA SU NOMBRE DE JUGADOR</label>
@@ -390,8 +385,10 @@
         </div>
     </div>
 
+    <!-- SALÓN PRINCIPAL -->
     <div id="pantalla-salon">
         <div class="saloon-container">
+            <!-- PANEL MÚSICA -->
             <div class="music-panel-top">
                 <span id="label-pista-actual">🎵 Pista 1/7:</span>
                 <button class="btn-musica-ctrl" onclick="toggleReproduccionMusica()" id="btn-play-pause">▶️ Play</button>
@@ -409,10 +406,9 @@
             <h2>Texas Poker West: Casino Pro</h2>
             
             <div class="poker-table" id="mesa-poker">
-                <!-- ANIMACIÓN DE VICTORIA REDISEÑADA PARA INCLUIR LAS CARTAS -->
+                <!-- ANIMACIÓN DE VICTORIA REDISEÑADA PARA INCLUIR LAS CARTAS Y SECUENCIA -->
                 <div id="victoria-animacion">
-                    <video id="vid-victoria" src="winner-win.gif.mp4" autoplay loop muted playsinline style="width: 200px; border-radius: 10px; margin-bottom: 0;"></video>
-                    <!-- Aquí se inyectarán las cartas de la mesa durante la victoria -->
+                    <video id="vid-victoria" src="victoria1.mp4" autoplay loop muted playsinline style="width: 200px; border-radius: 10px; margin-bottom: 0;"></video>
                     <div id="victoria-cartas" class="community-cards"></div>
                     <h2 id="victoria-texto">¡Gana El Gambusino!</h2>
                 </div>
@@ -555,7 +551,7 @@
         <button class="btn-cerrar-tienda" onclick="cerrarMenuMofarse()">Cancelar</button>
     </div>
 
-    <!-- MODAL DE SELECCIÓN DE AVATAR -->
+    <!-- MODAL DE SELECCIÓN DE AVATAR (AMPLIADO A 12) -->
     <div id="modal-avatar">
         <h3>🎩 Elige tu Avatar</h3>
         <div class="avatar-grid">
@@ -565,10 +561,17 @@
             <img src="avatar4.jpg" onclick="seleccionarAvatar('avatar4.jpg')" alt="Avatar 4">
             <img src="avatar5.jpg" onclick="seleccionarAvatar('avatar5.jpg')" alt="Avatar 5">
             <img src="avatar6.jpg" onclick="seleccionarAvatar('avatar6.jpg')" alt="Avatar 6">
+            <img src="avatar7.jpg" onclick="seleccionarAvatar('avatar7.jpg')" alt="Avatar 7" onerror="this.src='avatar1.jpg'">
+            <img src="avatar8.jpg" onclick="seleccionarAvatar('avatar8.jpg')" alt="Avatar 8" onerror="this.src='avatar1.jpg'">
+            <img src="avatar9.jpg" onclick="seleccionarAvatar('avatar9.jpg')" alt="Avatar 9" onerror="this.src='avatar1.jpg'">
+            <img src="avatar10.jpg" onclick="seleccionarAvatar('avatar10.jpg')" alt="Avatar 10" onerror="this.src='avatar1.jpg'">
+            <img src="avatar11.jpg" onclick="seleccionarAvatar('avatar11.jpg')" alt="Avatar 11" onerror="this.src='avatar1.jpg'">
+            <img src="avatar12.jpg" onclick="seleccionarAvatar('avatar12.jpg')" alt="Avatar 12" onerror="this.src='avatar1.jpg'">
         </div>
         <button class="btn-cerrar-tienda" onclick="cerrarMenuAvatar()">Cancelar</button>
     </div>
 
+    <!-- MODALES VARIOS -->
     <div id="modal-torneo-espera">
         <h3 style="color: #f39c12; font-size: 1.6em; margin-top: 0;">🤠 Sala de Espera - Torneo 🌵</h3>
         <div id="reloj-torneo-gigante" style="font-size: 3em; color: #e74c3c; font-weight: bold; margin: 15px 0;">15:00</div>
@@ -641,7 +644,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Modificación de Avatares y Cartas en el Panel de Victoria instaladas.</div>
+        <div id="output-log">💬 [Saloon]: Rediseño de Portada, Sistema LocalStorage, Avatares 1-12 y Secuencia de Victoria Integrados.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -649,19 +652,27 @@
     </div>
 
     <script>
+        // -------------------------------------------------------------
+        // MEMORIA DEL NAVEGADOR PARA EL NOMBRE DEL JUGADOR
+        // -------------------------------------------------------------
         document.addEventListener("DOMContentLoaded", () => {
             let nombreGuardado = localStorage.getItem('tpw_nombre_usuario');
-            if (nombreGuardado) { document.getElementById('nombreJugador').value = nombreGuardado; }
+            if (nombreGuardado) {
+                document.getElementById('nombreJugador').value = nombreGuardado;
+            }
         });
 
         function iniciarConNombre() {
             let nombre = document.getElementById('nombreJugador').value.trim();
             if(nombre !== "") {
-                localStorage.setItem('tpw_nombre_usuario', nombre);
+                localStorage.setItem('tpw_nombre_usuario', nombre); // Guarda el nombre en el navegador
                 document.getElementById('nombre-etiqueta-tu').innerText = nombre + " [ID: 4]";
                 entrarAlSaloon();
-            } else { alert("⚠️ Por favor, escribe un nombre de jugador antes de entrar."); }
+            } else {
+                alert("⚠️ Por favor, escribe un nombre de jugador antes de entrar.");
+            }
         }
+        // -------------------------------------------------------------
 
         let idUsuarioActual = 4;
         let fichasJugador = 1000;
@@ -695,9 +706,14 @@
         let colorDorsoActual = '#c0392b';
         let codigoSeguridadActual = "";
 
+        // LISTA DE PISTAS DE AUDIO LOCALES
         const playlistMusica = ["musica_saloon1.mp3","musica_saloon2.mp3","musica_saloon3.mp3","musica_saloon4.mp3","musica_saloon5.mp3","musica_saloon6.mp3","musica_saloon7.mp3"];
         let indicePistaActual = 0;
         let modoAleatorioMusica = false;
+
+        // LISTA DE VIDEOS DE VICTORIA (Asegúrate de nombrarlos así en tu carpeta)
+        const videosVictoria = ["victoria1.mp4", "victoria2.mp4", "victoria3.mp4", "victoria4.mp4", "victoria5.mp4", "victoria6.mp4", "victoria7.mp4"];
+        let indiceVictoria = 0;
 
         function cambiarVolumenMusica(valor) { let audio = document.getElementById('audio-fondo'); if (audio) { audio.volume = parseFloat(valor); log(`🎵 [Música]: Volumen a ${Math.round(valor * 100)}%`); } }
         function toggleReproduccionMusica() {
@@ -854,21 +870,26 @@
             let texto = document.getElementById('victoria-texto');
             let cartasV = document.getElementById('victoria-cartas');
             let cartasMesa = document.getElementById('community-container');
+            let vidVictoria = document.getElementById('vid-victoria');
 
             if(contenedor && texto) {
                 texto.innerText = textoGanador; 
                 
-                // ABSORBER LAS CARTAS DE LA MESA AL PANEL DE VICTORIA
+                // ROTAR EL VIDEO DE VICTORIA
+                if (vidVictoria) {
+                    vidVictoria.src = videosVictoria[indiceVictoria];
+                    indiceVictoria = (indiceVictoria + 1) % videosVictoria.length; // Avanza al siguiente (0 al 6)
+                }
+                
                 if(cartasV && cartasMesa) {
                     cartasV.innerHTML = cartasMesa.innerHTML;
-                    cartasMesa.style.opacity = '0'; // Ocultamos las del fondo
+                    cartasMesa.style.opacity = '0';
                 }
 
-                contenedor.style.display = 'flex'; // Usamos flex para apilarlas
+                contenedor.style.display = 'flex'; 
                 
                 setTimeout(() => { 
                     contenedor.style.display = 'none'; 
-                    // Devolver la opacidad a la mesa para la siguiente mano
                     if(cartasMesa) cartasMesa.style.opacity = '1'; 
                 }, 9000);
             }
@@ -956,7 +977,8 @@
             for (let i = 1; i <= 6; i++) {
                 let box = document.getElementById(`box-${i}`);
                 if (box) {
-                    if (retirados[i]) { box.style.borderColor = "#7f8c8d"; box.style.boxShadow = "0 4px 12px rgba(0,0,0,0.8)"; } 
+                    let fichasActuales = (i === 4) ? fichasJugador : fichasBots[i];
+                    if (fichasActuales <= 0 || retirados[i]) { box.style.borderColor = "#7f8c8d"; box.style.boxShadow = "0 4px 12px rgba(0,0,0,0.8)"; } 
                     else if (i === turnoActual) { box.style.borderColor = "#e74c3c"; box.style.boxShadow = "0 0 14px #e74c3c"; } 
                     else { box.style.borderColor = "#27ae60"; box.style.boxShadow = "0 4px 12px rgba(0,0,0,0.8)"; }
                 }
@@ -974,7 +996,6 @@
         function repartirCartasAPI() {
             apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
             
-            // Garantizamos que las cartas regresan al centro por si acaso
             document.getElementById('community-container').style.opacity = '1';
 
             for (let i = 1; i <= 6; i++) {
