@@ -12,7 +12,7 @@
         }
         h2 { color: #f1c40f; text-shadow: 1px 1px #000; margin: 2px 0; font-size: 1.1em; }
         
-        /* PORTADA ORIGINAL REESTRUCTURADA CON EL PANEL DE REGISTRO */
+        /* PORTADA CON EL PANEL DE REGISTRO EN EL CENTRO */
         #pantalla-portada {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-image: url('portada_bandido.jpg'); background-size: cover; background-position: center;
@@ -20,19 +20,15 @@
             z-index: 999999;
         }
         
-        /* PANEL DE INGRESO ESTILO VIEJO OESTE / DORADO */
         .center-panel {
-            background: rgba(30, 15, 5, 0.9); /* Madera oscura y cálida */
-            border: 2px solid #f1c40f; /* Borde Dorado */
-            padding: 30px 50px; border-radius: 12px;
-            text-align: center; 
-            box-shadow: 0 0 25px rgba(241, 196, 15, 0.4), inset 0 0 15px rgba(0,0,0,0.9);
+            background: rgba(30, 15, 5, 0.9);
+            border: 2px solid #f1c40f; padding: 30px 50px; border-radius: 12px;
+            text-align: center; box-shadow: 0 0 25px rgba(241, 196, 15, 0.4), inset 0 0 15px rgba(0,0,0,0.9);
             display: flex; flex-direction: column; align-items: center; gap: 20px;
         }
         .center-panel label {
             color: #f1c40f; font-size: 1.2rem; font-weight: bold;
-            text-transform: uppercase; letter-spacing: 1px;
-            text-shadow: 2px 2px 4px #000;
+            text-transform: uppercase; letter-spacing: 1px; text-shadow: 2px 2px 4px #000;
         }
         .input-row { display: flex; gap: 10px; justify-content: center; }
         .input-row input {
@@ -111,7 +107,7 @@
         .dealer-avatar { font-size: 12px; }
         .dealer-info { font-size: 8px; color: #f1c40f; text-align: left; line-height: 1; }
 
-        .community-cards { display: flex; gap: 5px; justify-content: center; }
+        .community-cards { display: flex; gap: 5px; justify-content: center; transition: opacity 0.3s ease; }
         
         .card {
             background: #ffffff; color: #000000; font-weight: bold; width: 38px; height: 50px;
@@ -122,13 +118,16 @@
         .card.red { color: #e74c3c; }
         .card-back { background: #c0392b; color: #f1c40f; border: 1px solid #f1c40f; font-size: 13px; }
 
-        /* EFECTO VICTORIA */
+        /* EFECTO VICTORIA Y CARTAS INTEGRADAS */
         #victoria-animacion {
-            display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 1000; text-align: center; background: rgba(0, 0, 0, 0.85); padding: 20px;
-            border-radius: 15px; border: 3px solid #2ecc71; box-shadow: 0 0 40px rgba(46, 204, 113, 0.6);
+            display: none; /* Cambiará a flex en JS */
+            flex-direction: column; align-items: center; gap: 8px;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 1000; text-align: center; background: rgba(0, 0, 0, 0.9); padding: 15px 25px;
+            border-radius: 15px; border: 3px solid #2ecc71; box-shadow: 0 0 40px rgba(46, 204, 113, 0.8);
         }
-        #victoria-animacion h2 { margin: 0; font-size: 1.8em; text-transform: uppercase; color: #2ecc71; text-shadow: 2px 2px 4px #000; }
+        #victoria-animacion h2 { margin: 0; font-size: 1.6em; text-transform: uppercase; color: #2ecc71; text-shadow: 2px 2px 4px #000; }
+        #victoria-cartas { transform: scale(0.9); margin-bottom: 5px; }
 
         @keyframes explosionFuegoOro {
             0% { transform: translate(0, 0) scale(0.4); opacity: 1; filter: drop-shadow(0 0 8px #ff4500); }
@@ -192,7 +191,9 @@
         .avatar-box {
             width: 65px; height: 65px; border-radius: 50%; border: 2.5px solid #f1c40f;
             overflow: hidden; flex-shrink: 0; background: #2c3e50; box-shadow: 0 3px 8px rgba(0,0,0,0.9);
+            cursor: pointer; transition: transform 0.2s, border-color 0.2s;
         }
+        .avatar-box:hover { transform: scale(1.05); border-color: #2ecc71; }
         .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
 
         .btn-sentarse-mesa {
@@ -285,6 +286,17 @@
         }
         .btn-mofa-opt:hover { background: #f1c40f; color: #000; }
 
+        /* MENÚ AVATARES */
+        #modal-avatar {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(10, 18, 28, 0.98); border: 3px solid #3498db; padding: 20px; border-radius: 12px;
+            z-index: 400000; text-align: center; box-shadow: 0 0 40px rgba(0,0,0,0.9); width: 320px;
+        }
+        #modal-avatar h3 { color: #3498db; margin-top: 0; }
+        .avatar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 15px; }
+        .avatar-grid img { width: 100%; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
+        .avatar-grid img:hover { border-color: #f1c40f; transform: scale(1.1); }
+
         /* MODALES ESPERA */
         #modal-torneo-espera, #modal-multijugador-espera {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -360,13 +372,10 @@
 </head>
 <body>
 
-    <!-- MÚSICA LOCAL (SIN 'loop' PARA QUE PUEDA SALTAR A LA SIGUIENTE) -->
     <audio id="audio-fondo" onended="siguientePistaMusica()">
         <source src="musica_saloon1.mp3" type="audio/mp3">
-        Tu navegador no soporta audio ambiental.
     </audio>
 
-    <!-- PORTADA ORIGINAL REESTILIZADA CON PANEL DE MADERA/ORO -->
     <div id="pantalla-portada">
         <div class="center-panel">
             <label for="nombreJugador">ELIJA SU NOMBRE DE JUGADOR</label>
@@ -381,10 +390,8 @@
         </div>
     </div>
 
-    <!-- SALÓN PRINCIPAL -->
     <div id="pantalla-salon">
         <div class="saloon-container">
-            <!-- PANEL MÚSICA -->
             <div class="music-panel-top">
                 <span id="label-pista-actual">🎵 Pista 1/7:</span>
                 <button class="btn-musica-ctrl" onclick="toggleReproduccionMusica()" id="btn-play-pause">▶️ Play</button>
@@ -402,9 +409,11 @@
             <h2>Texas Poker West: Casino Pro</h2>
             
             <div class="poker-table" id="mesa-poker">
-                <!-- ANIMACIÓN DE VICTORIA EN VIDEO MP4 -->
+                <!-- ANIMACIÓN DE VICTORIA REDISEÑADA PARA INCLUIR LAS CARTAS -->
                 <div id="victoria-animacion">
-                    <video id="vid-victoria" src="winner-win.gif.mp4" autoplay loop muted playsinline style="width: 200px; border-radius: 10px; margin-bottom: 10px;"></video>
+                    <video id="vid-victoria" src="winner-win.gif.mp4" autoplay loop muted playsinline style="width: 200px; border-radius: 10px; margin-bottom: 0;"></video>
+                    <!-- Aquí se inyectarán las cartas de la mesa durante la victoria -->
+                    <div id="victoria-cartas" class="community-cards"></div>
                     <h2 id="victoria-texto">¡Gana El Gambusino!</h2>
                 </div>
 
@@ -417,7 +426,7 @@
                         <div class="seat-bottom-row"><div class="seat-cards" id="cartas-s1"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div><span id="timer-ui-1" class="timer-display">25s</span></div>
                         <div class="timer-bar-container"><div id="bar-1" class="timer-bar-fill"></div></div>
                     </div>
-                    <div class="avatar-box"><img src="avatar1.jpg" alt="Avatar"></div>
+                    <div class="avatar-box" onclick="abrirMenuAvatar(1)" title="Cambiar Avatar"><img src="avatar1.jpg" alt="Avatar"></div>
                 </div>
 
                 <div class="seat seat-2 bot-seat" id="asiento-2">
@@ -429,7 +438,7 @@
                         <div class="seat-bottom-row"><div class="seat-cards" id="cartas-s2"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div><span id="timer-ui-2" class="timer-display">25s</span></div>
                         <div class="timer-bar-container"><div id="bar-2" class="timer-bar-fill"></div></div>
                     </div>
-                    <div class="avatar-box"><img src="avatar2.jpg" alt="Avatar"></div>
+                    <div class="avatar-box" onclick="abrirMenuAvatar(2)" title="Cambiar Avatar"><img src="avatar2.jpg" alt="Avatar"></div>
                 </div>
 
                 <div class="seat seat-3 bot-seat" id="asiento-3">
@@ -441,7 +450,7 @@
                         <div class="seat-bottom-row"><div class="seat-cards" id="cartas-s3"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div><span id="timer-ui-3" class="timer-display">25s</span></div>
                         <div class="timer-bar-container"><div id="bar-3" class="timer-bar-fill"></div></div>
                     </div>
-                    <div class="avatar-box"><img src="avatar3.jpg" alt="Avatar"></div>
+                    <div class="avatar-box" onclick="abrirMenuAvatar(3)" title="Cambiar Avatar"><img src="avatar3.jpg" alt="Avatar"></div>
                 </div>
 
                 <div class="seat seat-4" id="asiento-4">
@@ -453,7 +462,7 @@
                         <div class="seat-bottom-row"><div class="seat-cards" id="cartas-s4"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div><span id="timer-ui-4" class="timer-display">25s</span></div>
                         <div class="timer-bar-container"><div id="bar-4" class="timer-bar-fill"></div></div>
                     </div>
-                    <div class="avatar-box"><img src="avatar4.jpg" alt="Avatar"></div>
+                    <div class="avatar-box" onclick="abrirMenuAvatar(4)" title="Cambiar Avatar"><img src="avatar4.jpg" alt="Avatar"></div>
                     <button id="btn-sentarse-asiento" class="btn-sentarse-mesa" onclick="togglePausaJugador()">🟢 Sentarse</button>
                     <button id="btn-retornar-mesa" class="btn-sentarse-mesa" style="display:none; bottom: -44px; background: #e67e22; border-color: #f1c40f;" onclick="forzarRetornoMesa()">🤠 Retornar a Mesa</button>
                 </div>
@@ -467,7 +476,7 @@
                         <div class="seat-bottom-row"><div class="seat-cards" id="cartas-s5"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div><span id="timer-ui-5" class="timer-display">25s</span></div>
                         <div class="timer-bar-container"><div id="bar-5" class="timer-bar-fill"></div></div>
                     </div>
-                    <div class="avatar-box"><img src="avatar5.jpg" alt="Avatar"></div>
+                    <div class="avatar-box" onclick="abrirMenuAvatar(5)" title="Cambiar Avatar"><img src="avatar5.jpg" alt="Avatar"></div>
                 </div>
 
                 <div class="seat seat-6 bot-seat" id="asiento-6">
@@ -479,7 +488,7 @@
                         <div class="seat-bottom-row"><div class="seat-cards" id="cartas-s6"><div class="card card-back">🂠</div><div class="card card-back">🂠</div></div><span id="timer-ui-6" class="timer-display">25s</span></div>
                         <div class="timer-bar-container"><div id="bar-6" class="timer-bar-fill"></div></div>
                     </div>
-                    <div class="avatar-box"><img src="avatar6.jpg" alt="Avatar"></div>
+                    <div class="avatar-box" onclick="abrirMenuAvatar(6)" title="Cambiar Avatar"><img src="avatar6.jpg" alt="Avatar"></div>
                 </div>
 
                 <div class="table-center" id="centro-mesa">
@@ -544,6 +553,20 @@
             <button class="btn-mofa-opt" onclick="ejecutarMofa(7)">Gif 7</button>
         </div>
         <button class="btn-cerrar-tienda" onclick="cerrarMenuMofarse()">Cancelar</button>
+    </div>
+
+    <!-- MODAL DE SELECCIÓN DE AVATAR -->
+    <div id="modal-avatar">
+        <h3>🎩 Elige tu Avatar</h3>
+        <div class="avatar-grid">
+            <img src="avatar1.jpg" onclick="seleccionarAvatar('avatar1.jpg')" alt="Avatar 1">
+            <img src="avatar2.jpg" onclick="seleccionarAvatar('avatar2.jpg')" alt="Avatar 2">
+            <img src="avatar3.jpg" onclick="seleccionarAvatar('avatar3.jpg')" alt="Avatar 3">
+            <img src="avatar4.jpg" onclick="seleccionarAvatar('avatar4.jpg')" alt="Avatar 4">
+            <img src="avatar5.jpg" onclick="seleccionarAvatar('avatar5.jpg')" alt="Avatar 5">
+            <img src="avatar6.jpg" onclick="seleccionarAvatar('avatar6.jpg')" alt="Avatar 6">
+        </div>
+        <button class="btn-cerrar-tienda" onclick="cerrarMenuAvatar()">Cancelar</button>
     </div>
 
     <div id="modal-torneo-espera">
@@ -618,7 +641,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Rediseño de Portada, Sistema LocalStorage, y Música Contínua Integrados.</div>
+        <div id="output-log">💬 [Saloon]: Modificación de Avatares y Cartas en el Panel de Victoria instaladas.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -626,27 +649,19 @@
     </div>
 
     <script>
-        // -------------------------------------------------------------
-        // MEMORIA DEL NAVEGADOR PARA EL NOMBRE DEL JUGADOR
-        // -------------------------------------------------------------
         document.addEventListener("DOMContentLoaded", () => {
             let nombreGuardado = localStorage.getItem('tpw_nombre_usuario');
-            if (nombreGuardado) {
-                document.getElementById('nombreJugador').value = nombreGuardado;
-            }
+            if (nombreGuardado) { document.getElementById('nombreJugador').value = nombreGuardado; }
         });
 
         function iniciarConNombre() {
             let nombre = document.getElementById('nombreJugador').value.trim();
             if(nombre !== "") {
-                localStorage.setItem('tpw_nombre_usuario', nombre); // Guarda el nombre en el navegador
+                localStorage.setItem('tpw_nombre_usuario', nombre);
                 document.getElementById('nombre-etiqueta-tu').innerText = nombre + " [ID: 4]";
                 entrarAlSaloon();
-            } else {
-                alert("⚠️ Por favor, escribe un nombre de jugador antes de entrar.");
-            }
+            } else { alert("⚠️ Por favor, escribe un nombre de jugador antes de entrar."); }
         }
-        // -------------------------------------------------------------
 
         let idUsuarioActual = 4;
         let fichasJugador = 1000;
@@ -778,6 +793,21 @@
             log(`💬 [Saloon]: ¡Mofa enviada!`);
         }
 
+        // CONTROL DE AVATARES
+        let avatarTargetActual = null;
+        function abrirMenuAvatar(targetId) { avatarTargetActual = targetId; document.getElementById('modal-avatar').style.display = 'block'; }
+        function cerrarMenuAvatar() { document.getElementById('modal-avatar').style.display = 'none'; }
+        function seleccionarAvatar(src) {
+            if(avatarTargetActual) {
+                let imgElem = document.querySelector(`#asiento-${avatarTargetActual} .avatar-box img`);
+                if(imgElem) {
+                    imgElem.src = src;
+                    log(`[Sistema]: Avatar del asiento ${avatarTargetActual} actualizado.`);
+                }
+            }
+            cerrarMenuAvatar();
+        }
+
         function lanzarSticker(targetSeatId, emoji) {
             const asientoOrigen = document.getElementById(`asiento-4`); const asientoDestino = document.getElementById(`asiento-${targetSeatId}`);
             const mesa = document.getElementById('mesa-poker'); const sticker = document.createElement('div');
@@ -820,10 +850,27 @@
         }
         
         function mostrarGifVictoria(textoGanador) {
-            let contenedor = document.getElementById('victoria-animacion'); let texto = document.getElementById('victoria-texto');
+            let contenedor = document.getElementById('victoria-animacion'); 
+            let texto = document.getElementById('victoria-texto');
+            let cartasV = document.getElementById('victoria-cartas');
+            let cartasMesa = document.getElementById('community-container');
+
             if(contenedor && texto) {
-                texto.innerText = textoGanador; contenedor.style.display = 'block';
-                setTimeout(() => { contenedor.style.display = 'none'; }, 9000);
+                texto.innerText = textoGanador; 
+                
+                // ABSORBER LAS CARTAS DE LA MESA AL PANEL DE VICTORIA
+                if(cartasV && cartasMesa) {
+                    cartasV.innerHTML = cartasMesa.innerHTML;
+                    cartasMesa.style.opacity = '0'; // Ocultamos las del fondo
+                }
+
+                contenedor.style.display = 'flex'; // Usamos flex para apilarlas
+                
+                setTimeout(() => { 
+                    contenedor.style.display = 'none'; 
+                    // Devolver la opacidad a la mesa para la siguiente mano
+                    if(cartasMesa) cartasMesa.style.opacity = '1'; 
+                }, 9000);
             }
         }
 
@@ -927,6 +974,9 @@
         function repartirCartasAPI() {
             apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
             
+            // Garantizamos que las cartas regresan al centro por si acaso
+            document.getElementById('community-container').style.opacity = '1';
+
             for (let i = 1; i <= 6; i++) {
                 allInJugadores[i] = false;
                 let asDiv = document.getElementById(`asiento-${i}`);
