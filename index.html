@@ -1160,7 +1160,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Código completo y blindado con retorno de turno inmediato y retardo de crupier de 10s.</div>
+        <div id="output-log">💬 [Saloon]: Retardo de 10s de la crupier y modo aleatorio de música integrados.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -1272,7 +1272,7 @@
                 log(`🔀 [Música]: Modo Aleatorio ACTIVADO.`);
             } else {
                 btnShuffle.classList.remove('active-shuffle');
-                log(`🔀 [Música]: Modo Aleatorio DESACTIVADO.`);
+                log(`🔀 [Música]: Modo Aleatorio DESACTIVADO (Secuencial).`);
             }
         }
 
@@ -1357,14 +1357,14 @@
                 document.getElementById('chips-s4').innerText = `[$] ${fichasJugador.toLocaleString()}`;
                 document.getElementById('range-subir').max = fichasJugador;
                 
-                // MOSTRAR BOTÓN DE RETORNO RÁPIDO BAJO EL ASIENTO 4
+                // ACTIVAR BOTÓN DE RETORNO RÁPIDO PARA ENTRAR A LA MESA EN LA SIGUIENTE MANO
                 document.getElementById('btn-retornar-mesa').style.display = 'block';
-                log(`🪙 [Tienda]: Fichas acreditadas. Haz clic en '🤠 Retornar a Mesa' para activar tu turno.`);
+                log(`🪙 [Tienda]: Fichas acreditadas. Haz clic en '🤠 Retornar a Mesa' para entrar de inmediato.`);
             }
 
             lanzarMonedaDoradaRecarga();
             document.getElementById('resultado-admin-liberacion').innerText = `✅ ¡Fichas acreditadas al ID ${idCliente}!`;
-            alert(`✅ ¡Recarga Exitosa! Haz clic en el botón naranja 'Retornar a Mesa' debajo de tu caja para entrar al turno de inmediato.`);
+            alert(`✅ ¡Recarga Exitosa! Haz clic en el botón 'Retornar a Mesa' debajo de tu caja para unirte de inmediato.`);
 
             codigoSeguridadActual = "";
             document.getElementById('admin-codigo-ingresado').value = "";
@@ -1374,7 +1374,6 @@
             btnLiberar.classList.remove('activo');
         }
 
-        // FUNCIÓN BLINDADA PARA RETORNAR A LA MESA Y ACTIVAR EL TURNO DE INMEDIATO
         function forzarRetornoMesa() {
             jugadorEspectador = false;
             jugadorEnPausa = false;
@@ -1390,15 +1389,9 @@
             btnSentarse.style.display = 'none';
             btnRetornar.style.display = 'none';
             retirados[4] = false;
-            allInJugadores[4] = false;
 
-            log(`🤠 [Mesa]: ¡Te has reincorporado a la partida! Iniciando turno...`);
-            
-            if (faseMano === 0) {
-                repartirCartasAPI();
-            } else {
-                iniciarTurno(4);
-            }
+            log(`🤠 [Mesa]: ¡Te has reincorporado exitosamente a la partida!`);
+            repartirCartasAPI();
         }
 
         function lanzarSticker(targetSeatId, emoji) {
