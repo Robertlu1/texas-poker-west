@@ -121,10 +121,10 @@
         /* EFECTO VICTORIA */
         #victoria-animacion {
             display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 1000; text-align: center; background: rgba(0,0,0,0.8); padding: 20px;
-            border-radius: 15px; border: 3px solid #f1c40f; box-shadow: 0 0 40px rgba(241, 196, 15, 0.6);
+            z-index: 1000; text-align: center; background: rgba(0, 0, 0, 0.85); padding: 20px;
+            border-radius: 15px; border: 3px solid #2ecc71; box-shadow: 0 0 40px rgba(46, 204, 113, 0.6);
         }
-        #victoria-animacion h2 { margin-top: 10px; font-size: 1.5em; text-transform: uppercase; color: #2ecc71; }
+        #victoria-animacion h2 { margin: 0; font-size: 1.8em; text-transform: uppercase; color: #2ecc71; text-shadow: 2px 2px 4px #000; }
 
         @keyframes explosionFuegoOro {
             0% { transform: translate(0, 0) scale(0.4); opacity: 1; filter: drop-shadow(0 0 8px #ff4500); }
@@ -145,7 +145,7 @@
             position: fixed; z-index: 400000; pointer-events: none; animation: volarFichaRecarga 1.2s ease-in-out forwards;
         }
 
-        /* ASIENTOS Y ESTADOS */
+        /* ASIENTOS Y ESTADOS (REPOSO Y ALL-IN) */
         .seat { position: absolute; display: flex; align-items: center; gap: 6px; z-index: 10; transition: all 0.3s ease; }
         .seat.retirado { opacity: 0.35; filter: grayscale(90%); }
         .seat.en-pausa { opacity: 0.5; filter: grayscale(50%); }
@@ -399,9 +399,9 @@
             <h2>Texas Poker West: Casino Pro</h2>
             
             <div class="poker-table" id="mesa-poker">
-                <!-- ANIMACIÓN DE VICTORIA EN VIDEO MP4 -->
+                <!-- ANIMACIÓN DE VICTORIA CENTRAL (AQUÍ PONEMOS EL GIF O VIDEO) -->
                 <div id="victoria-animacion">
-                    <video id="vid-victoria" src="winner-win.gif.mp4" autoplay loop muted playsinline style="width: 200px; border-radius: 10px; margin-bottom: 10px;"></video>
+                    <img id="img-victoria" src="winner-win.gif.mp4" alt="¡Victoria!" style="width: 200px; border-radius: 10px; margin-bottom: 10px;" onerror="this.src='victoria.gif';">
                     <h2 id="victoria-texto">¡Gana El Gambusino!</h2>
                 </div>
 
@@ -464,7 +464,6 @@
                     </div>
                     <div class="avatar-box"><img src="avatar4.jpg" alt="Avatar"></div>
                     <button id="btn-sentarse-asiento" class="btn-sentarse-mesa" onclick="togglePausaJugador()">🟢 Sentarse</button>
-                    <!-- BOTÓN DE RETORNO RÁPIDO AGREGADO Y BLINDADO -->
                     <button id="btn-retornar-mesa" class="btn-sentarse-mesa" style="display:none; bottom: -44px; background: #e67e22; border-color: #f1c40f;" onclick="forzarRetornoMesa()">🤠 Retornar a Mesa</button>
                 </div>
 
@@ -632,12 +631,13 @@
         </div>
     </div>
 
+    <!-- CHAT Y BITÁCORA FLOTANTE -->
     <div id="chat-flotante">
         <div class="chat-header">
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Versión Total (Matemática All-In de vueltos, GIF Victoria, Mofas MP4 y Reset Reposo) lista.</div>
+        <div id="output-log">💬 [Saloon]: Sistema Inteligente de All-In Activo. ¡Listos para repartir!</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -794,7 +794,7 @@
             if (faseMano === 0) { repartirCartasAPI(); } else { iniciarTurno(4); }
         }
 
-        // SISTEMA DE MOFARSE (VIDEO) Y STICKERS
+        // SISTEMA DE MOFARSE (VIDEO MP4)
         let mofaTargetActual = null;
 
         function abrirMenuMofarse(targetId) {
@@ -1019,45 +1019,26 @@
             mesa.appendChild(ficha); setTimeout(() => { ficha.remove(); }, 700);
         }
 
-        // LIMPIEZA TOTAL Y REPARTO
+        // LIMPIEZA TOTAL DE MEMORIA Y REPARTO
         function repartirCartasAPI() {
-            // Limpiar memorias de apuestas
+            // LIMPIAR MEMORIA ESTRICTA AL INICIAR LA MANO
             apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+            allInJugadores = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
             
-            // PRIMERO: Limpiar los estados de allin de la mano anterior
-            for (let i = 1; i <= 6; i++) {
-                allInJugadores[i] = false;
-                let asientoDiv = document.getElementById(`asiento-${i}`);
-                if (asientoDiv) {
-                    asientoDiv.classList.remove('allin-estado');
-                }
-            }
-
-            // SEGUNDO: Evaluar quién está en cero ANTES de repartir para bloquearlo y ponerlo en reposo estricto
-            for (let i = 1; i <= 6; i++) {
-                let currentFichas = (i === 4) ? fichasJugador : fichasBots[i];
-                let asientoDiv = document.getElementById(`asiento-${i}`);
-                
-                if (currentFichas <= 0) {
-                    retirados[i] = true;
-                    if (asientoDiv) asientoDiv.classList.add('sin-fichas', 'retirado');
-                    if (i === 4) {
-                        document.getElementById('nombre-etiqueta-tu').innerText = "Tú (Sin Fichas 🚫)";
-                        let timerUi4 = document.getElementById('timer-ui-4');
-                        if (timerUi4) timerUi4.innerText = "--";
-                        log(`🚫 [Sistema]: Perdiste tu resto. Ve a la Tienda para recargar y continuar.`);
-                    }
-                } else if (i === 4 && jugadorEnPausa) {
-                    retirados[4] = true;
-                } else {
-                    // Si el jugador TIENE fichas y no está en pausa, limpiarle cualquier estado gris o de reposo
-                    retirados[i] = false;
-                    if (asientoDiv) asientoDiv.classList.remove('retirado', 'sin-fichas', 'en-pausa');
-                }
+            // Si el jugador se quedó sin fichas, bloquear su caja y pedir recarga
+            if (fichasJugador <= 0) {
+                let asientoDiv = document.getElementById('asiento-4');
+                let timerUi4 = document.getElementById('timer-ui-4');
+                asientoDiv.classList.remove('allin-estado');
+                asientoDiv.classList.add('sin-fichas', 'en-pausa');
+                if (timerUi4) timerUi4.innerText = "--";
+                retirados[4] = true;
+                log(`🚫 [Sistema]: Perdiste tu resto. Ve a la Tienda para recargar y continuar.`);
+            } else if (jugadorEnPausa) {
+                retirados[4] = true;
             }
 
             try {
-                // FORZAR MODO LOCAL EN ESTA VERSIÓN PARA QUE NO DEPENDA DE SERVIDOR
                 throw new Error("Offline mode forced"); 
             } catch (error) {
                 boteActual = 200; contadorAccionesRonda = 0; faseMano = 1;
@@ -1067,19 +1048,31 @@
                 cartasComunitariasGlobales = [mazoLocal.pop(), mazoLocal.pop(), mazoLocal.pop(), mazoLocal.pop(), mazoLocal.pop()];
                 document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
 
-                // Pintar cartas comunitarias
                 for (let c = 0; c < 5; c++) {
                     let cardElem = document.getElementById(`com-${c}`);
                     if (c < 3) { let cartaVal = cartasComunitariasGlobales[c]; cardElem.className = `card ${cartaVal.includes('♥')||cartaVal.includes('♦')?'red':''}`; cardElem.style.background = '#ffffff'; cardElem.innerText = cartaVal; } 
                     else { cardElem.className = `card card-back`; cardElem.style.background = colorDorsoActual; cardElem.innerText = '🂠'; }
                 }
 
-                // Pintar cartas a cada jugador (o dejarlas vacías si están en reposo estricto)
                 for (let i = 1; i <= 6; i++) {
+                    let asientoDiv = document.getElementById(`asiento-${i}`);
+                    let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i];
+                    
+                    if (asientoDiv) {
+                        asientoDiv.classList.remove('retirado', 'sin-fichas', 'espectador', 'allin-estado', 'en-pausa');
+                    }
+
+                    // APLICACIÓN ESTRICTA DEL REPOSO SI ESTÁN EN CERO (SIN FICHAS)
+                    if (fichasAsiento <= 0 || (i === 4 && jugadorEnPausa)) { 
+                        retirados[i] = true; 
+                        if (asientoDiv) asientoDiv.classList.add(fichasAsiento <= 0 ? 'sin-fichas' : 'en-pausa', 'retirado'); 
+                    } else { 
+                        retirados[i] = false; 
+                    }
+
                     let contenedor = document.getElementById(`cartas-s${i}`);
                     if (contenedor) {
                         let htmlCartas = "";
-                        // Si el jugador está retirado (ya sea por quedarse sin fichas o estar en pausa)
                         if (retirados[i]) { 
                             htmlCartas = `<div class="card card-back" style="background:#555;">🚫</div><div class="card card-back" style="background:#555;">🚫</div>`; 
                         } else { 
@@ -1203,47 +1196,92 @@
             } else { ejecutarShowdownFinalReal(); }
         }
 
+        // BOTS INTELIGENTES QUE CONTESTAN AL ALL-IN DE VERDAD
         function ejecutarAccionBot(botId) {
-            const jugadasBot = ["igualar", "subir", "pasar"];
-            let eleccion = jugadasBot[Math.floor(Math.random() * jugadasBot.length)];
-            let monto = eleccion === "subir" ? 50 : (eleccion === "igualar" ? 50 : 0);
+            let apuestaMaxima = Math.max(...Object.values(apuestasMano));
+            let apuestaFaltante = apuestaMaxima - apuestasMano[botId];
 
-            if (fichasBots[botId] >= monto) {
-                fichasBots[botId] -= monto; boteActual += monto;
-                document.getElementById(`chips-s${botId}`).innerText = `[$] ${fichasBots[botId]}`; document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
-                if (monto > 0) { lanzarFichasAlBote(botId); apuestasMano[botId] += monto; }
-                
-                // Si el bot se queda en cero, activar All-in
-                if (fichasBots[botId] <= 0) { 
-                    fichasBots[botId] = 0;
-                    allInJugadores[botId] = true; 
-                    document.getElementById(`asiento-${botId}`).classList.add('allin-estado'); 
+            let eleccion = "pasar";
+            let monto = 0;
+
+            if (apuestaFaltante > 0) {
+                // Hay una apuesta en la mesa. El bot decide si iguala o se retira.
+                if (Math.random() > 0.4) {
+                    eleccion = "igualar";
+                    monto = Math.min(fichasBots[botId], apuestaFaltante);
+                } else {
+                    eleccion = "retirarse";
                 }
-                log(`🤖 [${nombresAsientos[botId]}]: ${eleccion}.`);
+            } else {
+                // No hay apuesta extra. Pasa o sube.
+                if (Math.random() > 0.8) {
+                    eleccion = "subir";
+                    monto = 50;
+                } else {
+                    eleccion = "pasar";
+                    monto = 0;
+                }
             }
-            contadorAccionesRonda++; siguienteTurnoAutomatico(botId);
+
+            if (eleccion === "retirarse") {
+                retirados[botId] = true;
+                document.getElementById(`asiento-${botId}`).classList.add('retirado');
+                log(`🤖 [${nombresAsientos[botId]}]: Se retira (Fold).`);
+            } else {
+                if (fichasBots[botId] >= monto) {
+                    fichasBots[botId] -= monto; 
+                    boteActual += monto;
+                    document.getElementById(`chips-s${botId}`).innerText = `[$] ${fichasBots[botId]}`; 
+                    document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
+                    
+                    if (monto > 0) { 
+                        lanzarFichasAlBote(botId); 
+                        apuestasMano[botId] += monto; 
+                    }
+                    
+                    if (fichasBots[botId] <= 0) { 
+                        fichasBots[botId] = 0;
+                        allInJugadores[botId] = true; 
+                        document.getElementById(`asiento-${botId}`).classList.add('allin-estado'); 
+                        log(`🤖 [${nombresAsientos[botId]}]: ¡ALL-IN por $${monto}!`);
+                    } else {
+                        log(`🤖 [${nombresAsientos[botId]}]: ${eleccion === 'igualar' ? 'Iguala $'+monto : (eleccion === 'subir' ? 'Sube $'+monto : 'Pasa')}.`);
+                    }
+                }
+            }
+            
+            contadorAccionesRonda++; 
+            siguienteTurnoAutomatico(botId);
         }
 
+        // TUS APUESTAS (IGUALAR Y SUBIR INTELIGENTES)
         function apostarJugador(accion) {
             if (turnoActual !== 4) return;
             clearInterval(temporizadorTurno); document.getElementById('timer-ui-4').innerText = "--"; document.getElementById(`box-4`).style.borderColor = "#27ae60";
+
+            let apuestaMaxima = Math.max(...Object.values(apuestasMano));
+            let apuestaFaltante = apuestaMaxima - apuestasMano[4];
 
             if (accion === 'retirarse') {
                 retirados[4] = true; document.getElementById('asiento-4').classList.add('retirado'); log(`[Tú]: Te retiraste (Fold).`);
             } else {
                 let montoApuesta = 0;
-                if (accion === 'igualar') montoApuesta = 50;
-                else if (accion === 'subir') montoApuesta = parseInt(document.getElementById('range-subir').value);
-                else if (accion === 'allin') { 
+                
+                if (accion === 'pasar') {
+                    montoApuesta = 0;
+                } else if (accion === 'igualar') {
+                    montoApuesta = apuestaFaltante > 0 ? Math.min(fichasJugador, apuestaFaltante) : 0;
+                } else if (accion === 'subir') {
+                    let extra = parseInt(document.getElementById('range-subir').value);
+                    montoApuesta = apuestaFaltante + extra;
+                    montoApuesta = Math.min(fichasJugador, montoApuesta); // No apostar más de lo que tienes
+                } else if (accion === 'allin') { 
                     montoApuesta = fichasJugador; 
-                    allInJugadores[4] = true; 
-                    document.getElementById('asiento-4').classList.add('allin-estado'); 
                 }
 
                 if (fichasJugador >= montoApuesta) {
                     fichasJugador -= montoApuesta; boteActual += montoApuesta;
                     
-                    // Si caes a cero, forzar All-in y dejar el borde morado
                     if (fichasJugador <= 0) {
                         fichasJugador = 0;
                         allInJugadores[4] = true;
@@ -1252,19 +1290,21 @@
 
                     document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`; document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
                     if (montoApuesta > 0) { lanzarFichasAlBote(4); apuestasMano[4] += montoApuesta; }
-                    log(`[Tú]: ${accion} $${montoApuesta}`);
+                    
+                    let logAccion = accion === 'allin' ? '¡All-In!' : (accion === 'igualar' ? 'Iguala' : (accion === 'pasar' ? 'Pasa' : 'Sube'));
+                    log(`[Tú]: ${logAccion} ${montoApuesta > 0 ? '$'+montoApuesta : ''}`);
                 }
             }
             contadorAccionesRonda++; siguienteTurnoAutomatico(4);
         }
 
-        // DEVOLUCIÓN DE EXCEDENTE EN ALL-IN ANTES DEL REPARTO FINAL
+        // DEVOLUCIÓN DEL VUELTO
         function devolverExcesoApuesta() {
             let apuestasArray = Object.entries(apuestasMano).map(([id, amount]) => ({ id: parseInt(id), amount: amount }));
             apuestasArray.sort((a, b) => b.amount - a.amount);
             let maxBet = apuestasArray[0]; let secondMax = apuestasArray[1];
 
-            // Si la apuesta más alta es mayor que la segunda más alta, se devuelve la diferencia.
+            // Si hay una diferencia entre el 1ro y el 2do, devuelve el excedente
             if (maxBet.amount > 0 && maxBet.amount > secondMax.amount) {
                 let exceso = maxBet.amount - secondMax.amount;
                 if (maxBet.id === 4) {
@@ -1279,13 +1319,13 @@
         }
 
         function ejecutarShowdownFinalReal() {
-            // El vuelto se procesa ANTES de dar el premio
+            // El vuelto se devuelve antes de adjudicar el premio
             devolverExcesoApuesta();
             
             let activos = [];
-            // Evaluar a los que no se han retirado (o que hayan ido all-in)
             for (let i = 1; i <= 6; i++) { 
                 let fichasAsiento = (i === 4) ? fichasJugador : fichasBots[i]; 
+                // Evalúa solo a los que tienen cartas
                 if (!retirados[i] || allInJugadores[i]) {
                     activos.push(i);
                 }
@@ -1297,14 +1337,12 @@
                 if (res.score > mejorPuntaje) { mejorPuntaje = res.score; ganadorId = id; nombreMejorMano = res.nombre; }
             });
 
-            // Los que perdieron voltean sus cartas
             for (let i = 1; i <= 6; i++) { 
                 if (i !== ganadorId) { 
                     document.getElementById(`cartas-s${i}`).innerHTML = `<div class="card card-back" style="background:${colorDorsoActual}">🂠</div><div class="card card-back" style="background:${colorDorsoActual}">🂠</div>`; 
                 } 
             }
 
-            // Se muestran las cartas del ganador
             let cartasGanador = (ganadorId === 4) ? cartasJugadorPrivadas : cartasBotsPrivadas[ganadorId];
             if (cartasGanador) {
                 let htmlG = ""; cartasGanador.forEach(c => { htmlG += `<div class="card ${c.includes('♥')||c.includes('♦')?'red':''}" style="background:#ffffff;">${c}</div>`; });
