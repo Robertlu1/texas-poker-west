@@ -12,6 +12,7 @@
         }
         h2 { color: #f1c40f; text-shadow: 1px 1px #000; margin: 2px 0; font-size: 1.1em; }
         
+        /* PORTADA ORIGINAL REESTRUCTURADA CON EL PANEL DE REGISTRO */
         #pantalla-portada {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-image: url('portada_bandido.jpg'); background-size: cover; background-position: center;
@@ -19,31 +20,36 @@
             z-index: 999999;
         }
         
+        /* PANEL DE INGRESO ESTILO VIEJO OESTE / DORADO */
         .center-panel {
-            background: rgba(4, 30, 66, 0.85);
-            border: 2px solid #2980b9; padding: 30px 50px; border-radius: 12px;
-            text-align: center; box-shadow: 0 0 20px rgba(0, 150, 255, 0.3), inset 0 0 15px rgba(0,0,0,0.8);
+            background: rgba(30, 15, 5, 0.9); /* Madera oscura y cálida */
+            border: 2px solid #f1c40f; /* Borde Dorado */
+            padding: 30px 50px; border-radius: 12px;
+            text-align: center; 
+            box-shadow: 0 0 25px rgba(241, 196, 15, 0.4), inset 0 0 15px rgba(0,0,0,0.9);
             display: flex; flex-direction: column; align-items: center; gap: 20px;
         }
         .center-panel label {
-            color: #45b6fe; font-size: 1.2rem; font-weight: bold;
+            color: #f1c40f; font-size: 1.2rem; font-weight: bold;
             text-transform: uppercase; letter-spacing: 1px;
+            text-shadow: 2px 2px 4px #000;
         }
         .input-row { display: flex; gap: 10px; justify-content: center; }
         .input-row input {
-            padding: 12px 15px; font-size: 16px; border: 1px solid #34495e;
-            border-radius: 4px; width: 250px; background: rgba(255,255,255,0.9);
-            color: #000; outline: none;
+            padding: 12px 15px; font-size: 16px; border: 2px solid #d4ac0d;
+            border-radius: 4px; width: 250px; background: rgba(255, 255, 255, 0.95);
+            color: #000; outline: none; font-weight: bold; text-align: center;
         }
-        .input-row input:focus { border-color: #2ecc71; }
+        .input-row input:focus { border-color: #f39c12; box-shadow: 0 0 10px rgba(241,196,15,0.6); }
         
         .btn-jugar {
-            background: linear-gradient(to bottom, #2ecc71, #27ae60);
-            color: white; border: 1px solid #1e8449; padding: 12px 25px;
+            background: linear-gradient(to bottom, #f1c40f, #e67e22);
+            color: #000; border: 1px solid #d35400; padding: 12px 25px;
             font-size: 16px; font-weight: bold; border-radius: 4px; cursor: pointer;
-            display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+            display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+            transition: all 0.2s ease;
         }
-        .btn-jugar:hover { background: #27ae60; transform: translateY(-1px); }
+        .btn-jugar:hover { background: #e67e22; color: #fff; transform: translateY(-2px); }
 
         .footer-text {
             position: absolute; bottom: 10px; width: 100%; text-align: center;
@@ -70,6 +76,7 @@
         }
         .btn-ampliar-top:hover { background-color: #2ecc71; }
 
+        /* PASARELA DE MÚSICA */
         .music-panel-top {
             position: absolute; top: 4px; left: 10px; background: rgba(15, 23, 36, 0.95);
             border: 1px solid #f1c40f; padding: 4px 8px; border-radius: 6px;
@@ -84,6 +91,7 @@
         .btn-musica-ctrl:hover { background: #f1c40f; }
         .btn-musica-ctrl.active-shuffle { background: #27ae60; color: #fff; border-color: #2ecc71; }
 
+        /* PAÑO DE PÓKER */
         .poker-table {
             background: #0d4a22; border: 10px solid #3d2314; border-radius: 140px;
             width: 82vw; height: 52vh; margin: 2px auto; position: relative;
@@ -114,6 +122,7 @@
         .card.red { color: #e74c3c; }
         .card-back { background: #c0392b; color: #f1c40f; border: 1px solid #f1c40f; font-size: 13px; }
 
+        /* EFECTO VICTORIA */
         #victoria-animacion {
             display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             z-index: 1000; text-align: center; background: rgba(0, 0, 0, 0.85); padding: 20px;
@@ -140,6 +149,7 @@
             position: fixed; z-index: 400000; pointer-events: none; animation: volarFichaRecarga 1.2s ease-in-out forwards;
         }
 
+        /* ASIENTOS Y ESTADOS */
         .seat { position: absolute; display: flex; align-items: center; gap: 6px; z-index: 10; transition: all 0.3s ease; }
         .seat.retirado { opacity: 0.35; filter: grayscale(90%); }
         .seat.en-pausa { opacity: 0.5; filter: grayscale(50%); }
@@ -193,6 +203,7 @@
         }
         .btn-sentarse-mesa:hover { background: #2ecc71; }
 
+        /* POSICIONES */
         .seat-1 { top: 2px; left: 16%; }
         .seat-2 { top: 2px; right: 16%; }
         .seat-3 { top: 48%; right: 18px; transform: rotate(-90deg); transform-origin: center; width: 75px; height: 165px; }
@@ -260,6 +271,7 @@
         .btn-mic.active { background-color: #27ae60; border-color: #2ecc71; }
         #mic-status { font-size: 10px; color: #bdc3c7; margin-left: 5px; }
 
+        /* MENÚ MOFARSE */
         #modal-mofarse {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: rgba(10, 18, 28, 0.98); border: 3px solid #e67e22; padding: 20px; border-radius: 12px;
@@ -273,12 +285,14 @@
         }
         .btn-mofa-opt:hover { background: #f1c40f; color: #000; }
 
+        /* MODALES ESPERA */
         #modal-torneo-espera, #modal-multijugador-espera {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: rgba(12, 18, 25, 0.98); border: 3px solid #f39c12; padding: 35px; border-radius: 16px;
             z-index: 500000; text-align: center; box-shadow: 0 0 60px rgba(0,0,0,0.95); width: 460px; max-width: 95vw;
         }
 
+        /* PERSONALIZADOR Y TIENDA ORO */
         .customizer-panel {
             position: fixed; bottom: 12px; right: 12px; background: rgba(15, 23, 36, 0.95);
             border: 1px solid #f1c40f; padding: 6px 10px; border-radius: 8px; display: flex;
@@ -293,6 +307,7 @@
         }
         .btn-tienda-oro:hover { background-color: #f1c40f; }
 
+        /* TIENDA Y ADMIN */
         #modal-tienda-oro {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: rgba(12, 18, 25, 0.98); border: 3px solid #f1c40f; padding: 20px; border-radius: 12px;
@@ -320,6 +335,7 @@
         .btn-cerrar-tienda { background: #c0392b; color: white; border: none; padding: 6px 12px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 4px; width: 100%; margin-top: 5px; }
         .btn-cerrar-tienda:hover { background: #e74c3c; }
 
+        /* CARTAS Y CHAT */
         #modal-mostrar-cartas {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: rgba(10, 18, 28, 0.96); border: 3px solid #f1c40f; padding: 15px 25px; border-radius: 10px;
@@ -344,15 +360,18 @@
 </head>
 <body>
 
-    <audio id="audio-fondo" onended="reproducirSiguienteMusicaAutompetica()" loop>
+    <!-- MÚSICA LOCAL (SIN 'loop' PARA QUE PUEDA SALTAR A LA SIGUIENTE) -->
+    <audio id="audio-fondo" onended="siguientePistaMusica()">
         <source src="musica_saloon1.mp3" type="audio/mp3">
+        Tu navegador no soporta audio ambiental.
     </audio>
 
+    <!-- PORTADA ORIGINAL REESTILIZADA CON PANEL DE MADERA/ORO -->
     <div id="pantalla-portada">
         <div class="center-panel">
             <label for="nombreJugador">ELIJA SU NOMBRE DE JUGADOR</label>
             <div class="input-row">
-                <input type="text" id="nombreJugador" placeholder="Nombre">
+                <input type="text" id="nombreJugador" placeholder="Nombre de Vaquero">
                 <button class="btn-jugar" onclick="iniciarConNombre()">⚔️ Jugar</button>
             </div>
         </div>
@@ -362,8 +381,10 @@
         </div>
     </div>
 
+    <!-- SALÓN PRINCIPAL -->
     <div id="pantalla-salon">
         <div class="saloon-container">
+            <!-- PANEL MÚSICA -->
             <div class="music-panel-top">
                 <span id="label-pista-actual">🎵 Pista 1/7:</span>
                 <button class="btn-musica-ctrl" onclick="toggleReproduccionMusica()" id="btn-play-pause">▶️ Play</button>
@@ -525,7 +546,6 @@
         <button class="btn-cerrar-tienda" onclick="cerrarMenuMofarse()">Cancelar</button>
     </div>
 
-    <!-- MODALES VARIOS -->
     <div id="modal-torneo-espera">
         <h3 style="color: #f39c12; font-size: 1.6em; margin-top: 0;">🤠 Sala de Espera - Torneo 🌵</h3>
         <div id="reloj-torneo-gigante" style="font-size: 3em; color: #e74c3c; font-weight: bold; margin: 15px 0;">15:00</div>
@@ -598,7 +618,7 @@
             <span>💬 Salón & Bitácora</span>
             <button class="btn-minimizar" id="btn-toggle-chat" onclick="toggleChat()">▲ Ocultar</button>
         </div>
-        <div id="output-log">💬 [Saloon]: Matemática de All-In reparada. Jugadores All-In entran al Showdown con victoria por abandono arreglada.</div>
+        <div id="output-log">💬 [Saloon]: Rediseño de Portada, Sistema LocalStorage, y Música Contínua Integrados.</div>
         <div class="chat-input-box" id="chat-input-area">
             <input type="text" id="input-mensaje" placeholder="Escribe al salón..." onkeypress="enviarConEnter(event)">
             <button class="btn-enviar-chat" onclick="enviarMensajeChat()">Enviar</button>
@@ -606,6 +626,28 @@
     </div>
 
     <script>
+        // -------------------------------------------------------------
+        // MEMORIA DEL NAVEGADOR PARA EL NOMBRE DEL JUGADOR
+        // -------------------------------------------------------------
+        document.addEventListener("DOMContentLoaded", () => {
+            let nombreGuardado = localStorage.getItem('tpw_nombre_usuario');
+            if (nombreGuardado) {
+                document.getElementById('nombreJugador').value = nombreGuardado;
+            }
+        });
+
+        function iniciarConNombre() {
+            let nombre = document.getElementById('nombreJugador').value.trim();
+            if(nombre !== "") {
+                localStorage.setItem('tpw_nombre_usuario', nombre); // Guarda el nombre en el navegador
+                document.getElementById('nombre-etiqueta-tu').innerText = nombre + " [ID: 4]";
+                entrarAlSaloon();
+            } else {
+                alert("⚠️ Por favor, escribe un nombre de jugador antes de entrar.");
+            }
+        }
+        // -------------------------------------------------------------
+
         let idUsuarioActual = 4;
         let fichasJugador = 1000;
         let fichasBots = { 1: 1000, 2: 1000, 3: 1000, 5: 1000, 6: 1000 };
@@ -642,14 +684,6 @@
         let indicePistaActual = 0;
         let modoAleatorioMusica = false;
 
-        function iniciarConNombre() {
-            let nombre = document.getElementById('nombreJugador').value.trim();
-            if(nombre !== "") {
-                document.getElementById('nombre-etiqueta-tu').innerText = nombre + " [ID: 4]";
-                entrarAlSaloon();
-            } else { alert("⚠️ Por favor, escribe un nombre de jugador antes de entrar."); }
-        }
-
         function cambiarVolumenMusica(valor) { let audio = document.getElementById('audio-fondo'); if (audio) { audio.volume = parseFloat(valor); log(`🎵 [Música]: Volumen a ${Math.round(valor * 100)}%`); } }
         function toggleReproduccionMusica() {
             let audio = document.getElementById('audio-fondo'); let btn = document.getElementById('btn-play-pause');
@@ -660,7 +694,11 @@
             let audio = document.getElementById('audio-fondo');
             if (audio) {
                 audio.pause();
-                if (modoAleatorioMusica) { indicePistaActual = Math.floor(Math.random() * playlistMusica.length); } else { indicePistaActual = (indicePistaActual + 1) % playlistMusica.length; }
+                if (modoAleatorioMusica) {
+                    indicePistaActual = Math.floor(Math.random() * playlistMusica.length);
+                } else {
+                    indicePistaActual = (indicePistaActual + 1) % playlistMusica.length;
+                }
                 audio.src = playlistMusica[indicePistaActual]; audio.load();
                 audio.play().then(() => {
                     document.getElementById('btn-play-pause').innerText = "⏸️ Pausa";
@@ -668,7 +706,9 @@
                 }).catch(e => log(`⚠️ [Música]: Falta archivo local ${playlistMusica[indicePistaActual]}.`));
             }
         }
-        function reproducirSiguienteMusicaAutompetica() { siguientePistaMusica(); }
+        function reproducirSiguienteMusicaAutompetica() {
+            siguientePistaMusica();
+        }
         function toggleAleatorioMusica() {
             modoAleatorioMusica = !modoAleatorioMusica;
             let btnShuffle = document.getElementById('btn-shuffle');
@@ -893,11 +933,10 @@
                 if (asDiv) asDiv.classList.remove('allin-estado');
             }
             
-            // Si el jugador se quedó en 0 en la mano anterior, se bloquea permanentemente
             if (fichasJugador <= 0) {
                 let asientoDiv = document.getElementById('asiento-4');
                 let timerUi4 = document.getElementById('timer-ui-4');
-                asientoDiv.classList.add('sin-fichas');
+                asientoDiv.classList.add('sin-fichas', 'en-pausa');
                 if (timerUi4) timerUi4.innerText = "--";
                 retirados[4] = true;
                 log(`🚫 [Sistema]: Perdiste tu resto. Ve a la Tienda para recargar y continuar.`);
@@ -976,7 +1015,6 @@
         }
 
         function iniciarTurno(asientoNum) {
-            // SI ESTÁ RETIRADO DE VERDAD O EN ALL-IN, SE SALTA AUTOMÁTICO
             if (retirados[asientoNum] || allInJugadores[asientoNum]) {
                 siguienteTurnoAutomatico(asientoNum);
                 return;
@@ -1021,25 +1059,20 @@
             }
         }
 
-        // LA CLAVE DEL ARREGLO ESTÁ AQUÍ, EL ALL-IN YA NO SE CONSIDERA ELIMINADO
         function siguienteTurnoAutomatico(asientoActual) {
             let activos = [];
             for (let i = 1; i <= 6; i++) {
-                // LOS ALL-IN SIGUEN ACTIVOS EN LA MANO AUNQUE TENGAN 0 FICHAS
                 if (!retirados[i]) activos.push(i);
             }
 
-            // Victoria por abandono real (solo si 5 se retiran)
             if (activos.length === 1) {
                 if (temporizadorTurno) clearInterval(temporizadorTurno);
                 setTimeout(() => { verificarGanadorPorAbandono(activos[0]); }, 800);
                 return;
             }
 
-            // Filtrar quiénes aún deben tomar decisiones (que no se han retirado y no están en All-in)
             let pendientesAccion = activos.filter(id => !allInJugadores[id]);
             
-            // Si nadie queda por actuar o solo queda 1 persona pero todos ya completaron la ronda
             if (pendientesAccion.length === 0 || (pendientesAccion.length === 1 && contadorAccionesRonda >= activos.length)) {
                 if (temporizadorTurno) clearInterval(temporizadorTurno);
                 setTimeout(() => { avanzarFaseComunitariaCompleta(); }, 1000);
@@ -1073,11 +1106,10 @@
             let eleccion = ""; let monto = 0;
 
             if (alguienAllIn) {
-                // INTELIGENCIA PARA REACCIONAR A UN ALL-IN
                 let maxApuesta = Math.max(...Object.values(apuestasMano));
                 let diferencia = maxApuesta - apuestasMano[botId];
                 
-                if (Math.random() < 0.4) { // 40% de igualarte
+                if (Math.random() < 0.4) { 
                     eleccion = "igualar";
                     monto = (fichasBots[botId] <= diferencia) ? fichasBots[botId] : diferencia;
                 } else {
@@ -1155,7 +1187,6 @@
             devolverExcesoApuesta();
             let activos = [];
             
-            // LOS ALL-IN TAMBIÉN ENTRAN AL SHOWDOWN AUNQUE TENGAN CERO FICHAS
             for (let i = 1; i <= 6; i++) { if (!retirados[i]) activos.push(i); }
 
             let mejorPuntaje = -1, ganadorId = activos[0] || 1, nombreMejorMano = "";
