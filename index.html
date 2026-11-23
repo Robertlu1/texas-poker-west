@@ -1568,8 +1568,11 @@
                 log(`🎉 ¡VICTORIA! Ganaste ${boteActual} USDT con ${nombreMejorMano}!`);
                 mostrarGifVictoria(`¡Ganaste con ${nombreMejorMano}!`);
             } else {
-                fichasBots[ganadorId] += boteActual; document.getElementById(`chips-s${ganadorId}`).innerText = `[$] ${fichasBots[ganadorId]}`; 
-                log(`🏠 Gana **${nombresAsientos[ganadorId]}** con ${nombreMejorMano}.`);
+                fichasBots[ganadorId] += boteActual;
+                let chipGanador = document.getElementById(`chips-s${ganadorId}`);
+                if (chipGanador) chipGanador.innerText = `[$] ${fichasBots[ganadorId]}`;
+                guardarFichasLocal();
+                log(`🏠 Gana **${nombresAsientos[ganadorId]}** (${boteActual} USDT) con ${nombreMejorMano}. Tu vuelto quedó acreditado en tu saldo.`);
                 mostrarGifVictoria(`¡Gana ${nombresAsientos[ganadorId]}!`);
             }
 
