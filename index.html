@@ -659,8 +659,20 @@
             let nombreGuardado = localStorage.getItem('tpw_nombre_usuario');
             if (nombreGuardado) {
                 document.getElementById('nombreJugador').value = nombreGuardado;
+                document.getElementById('nombre-etiqueta-tu').innerText = nombreGuardado + " [ID: 4]";
+            }
+            let fichasGuardadas = localStorage.getItem('tpw_fichas_usuario');
+            if (fichasGuardadas !== null && !isNaN(parseInt(fichasGuardadas))) {
+                fichasJugador = Math.max(0, parseInt(fichasGuardadas));
+                document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
             }
         });
+
+        function guardarFichasLocal() {
+            localStorage.setItem('tpw_fichas_usuario', fichasJugador.toString());
+            document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
+            document.getElementById('range-subir').max = Math.max(50, fichasJugador);
+        }
 
         function iniciarConNombre() {
             let nombre = document.getElementById('nombreJugador').value.trim();
@@ -770,14 +782,29 @@
         }
 
         function liberarRecargaAdmin() {
-            let idCliente = document.getElementById('admin-id-comprador').value.trim(); let cantidad = parseInt(document.getElementById('admin-cantidad-fichas').value);
+            let idCliente = document.getElementById('admin-id-comprador').value.trim();
+            let cantidad = parseInt(document.getElementById('admin-cantidad-fichas').value);
             if (!idCliente || isNaN(cantidad) || cantidad <= 0) { alert("⚠️ Verifica el ID y la cantidad."); return; }
-            if (idCliente === "4" || idCliente === idUsuarioActual.toString() || idCliente.toLowerCase() === "vaquero") {
-                fichasJugador += cantidad; document.getElementById('chips-s4').innerText = `[$] ${fichasJugador.toLocaleString()}`; document.getElementById('range-subir').max = fichasJugador;
-                document.getElementById('btn-retornar-mesa').style.display = 'block'; log(`🪙 [Tienda]: Fichas acreditadas. Haz clic en '🤠 Retornar a Mesa'.`);
+            let numId = parseInt(idCliente);
+            if (numId === 4 || idCliente === idUsuarioActual.toString() || idCliente.toLowerCase() === "vaquero") {
+                fichasJugador += cantidad;
+                guardarFichasLocal();
+                document.getElementById('btn-retornar-mesa').style.display = 'block';
+                log(`🪙 [Tienda]: +${cantidad} fichas acreditadas solo al ID 4. Haz clic en '🤠 Retornar a Mesa'.`);
+            } else if ([1, 2, 3, 5, 6].includes(numId)) {
+                fichasBots[numId] += cantidad;
+                document.getElementById(`chips-s${numId}`).innerText = `[$] ${fichasBots[numId]}`;
+                document.getElementById(`asiento-${numId}`).classList.remove('sin-fichas', 'retirado', 'allin-estado');
+                retirados[numId] = false;
+                allInJugadores[numId] = false;
+                log(`🪙 [Tienda]: +${cantidad} fichas acreditadas solo al ID ${numId}.`);
+            } else {
+                alert("⚠️ ID no válido.");
+                return;
             }
-            lanzarMonedaDoradaRecarga(); document.getElementById('resultado-admin-liberacion').innerText = `✅ ¡Fichas acreditadas al ID ${idCliente}!`;
-            alert(`✅ ¡Recarga Exitosa! Haz clic en 'Retornar a Mesa'.`);
+            lanzarMonedaDoradaRecarga();
+            document.getElementById('resultado-admin-liberacion').innerText = `✅ ¡Fichas acreditadas al ID ${idCliente}!`;
+            alert(`✅ ¡Recarga Exitosa!`);
             codigoSeguridadActual = ""; document.getElementById('admin-codigo-ingresado').value = ""; document.getElementById('display-codigo-privado').innerHTML = "";
             let btnLiberar = document.getElementById('btn-liberar-fichas-id'); btnLiberar.setAttribute('disabled', 'true'); btnLiberar.classList.remove('activo');
         }
@@ -1088,7 +1115,9 @@
             } else if (faseMano === 3) {
                 let cartaVal = cartasComunitariasGlobales[4]; let cardElem = document.getElementById(`com-4`);
                 cardElem.className = `card ${cartaVal.includes('♥')||cartaVal.includes('♦')?'red':''}`; cardElem.style.background = '#ffffff'; cardElem.innerText = cartaVal;
-                setTimeout(() => { ejecutarShowdownFinalReal(); }, 1200);
+                iniciarTurno(1);
+            } else {
+                setTimeout(() => { ejecutarShowdownFinalReal(); }, 800);
             }
         }
 
@@ -1232,18 +1261,20 @@
                     document.getElementById('asiento-4').classList.add('allin-estado'); 
                 }
 
-                if (fichasJugador >= montoApuesta) {
+                if (fichasJugador >= montoApuesta && montoApuesta >= 0) {
                     fichasJugador -= montoApuesta; boteActual += montoApuesta;
-                    if (fichasJugador <= 0) { fichasJugador = 0; allInJugadores[4] = true; document.getElementById('asiento-4').classList.add('allin-estado'); }
-                    document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`; document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
+                    if (fichasJugador <= 0 || accion === 'allin') { fichasJugador = 0; allInJugadores[4] = true; document.getElementById('asiento-4').classList.add('allin-estado'); }
+                    guardarFichasLocal();
+                    document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
                     if (montoApuesta > 0) { lanzarFichasAlBote(4); apuestasMano[4] += montoApuesta; }
-                    log(`[Tú]: ${accion} $${montoApuesta}`);
+                    log(`[Tú]: ${accion === 'allin' ? '¡ALL-IN con todo tu resto!' : accion} $${montoApuesta}`);
                 }
             }
             contadorAccionesRonda++; siguienteTurnoAutomatico(4);
         }
 
         function devolverExcesoApuesta() {
+            if (Object.values(allInJugadores).some(v => v === true)) return;
             let apuestasArray = Object.entries(apuestasMano).map(([id, amount]) => ({ id: parseInt(id), amount: amount }));
             apuestasArray.sort((a, b) => b.amount - a.amount);
             let maxBet = apuestasArray[0]; let secondMax = apuestasArray[1];
@@ -1283,7 +1314,7 @@
             lanzarBengalasMajestuosas(ganadorId);
 
             if (ganadorId === 4) {
-                fichasJugador += boteActual; document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`; 
+                fichasJugador += boteActual; guardarFichasLocal(); 
                 log(`🎉 ¡VICTORIA! Ganaste ${boteActual} USDT con ${nombreMejorMano}!`);
                 mostrarGifVictoria(`¡Ganaste con ${nombreMejorMano}!`);
             } else {
@@ -1312,7 +1343,7 @@
 
         function responderMostrarCartas(mostrar) {
             document.getElementById('modal-mostrar-cartas').style.display = 'none';
-            fichasJugador += boteActual; document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`; log(`🏆 ¡Ganaste por abandono!`);
+            fichasJugador += boteActual; guardarFichasLocal(); log(`🏆 ¡Ganaste por abandono!`);
             mostrarGifVictoria(`¡Ganaste por abandono!`);
             boteActual = 0; document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
             setTimeout(() => { repartirCartasAPI(); }, 10000);
