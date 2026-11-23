@@ -361,6 +361,31 @@
         #input-mensaje { flex-grow: 1; background: #111a24; border: 1px solid #4f5d73; color: #ffffff; padding: 5px 8px; font-size: 11px; border-radius: 4px; outline: none; }
         .btn-enviar-chat { background: #27ae60; color: #fff; border: none; padding: 5px 10px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 4px; }
         .btn-enviar-chat:hover { background: #2ecc71; }
+        #modal-mostrar-cartas {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(12, 18, 25, 0.98); border: 3px solid #f1c40f; padding: 22px; border-radius: 14px;
+            z-index: 450000; text-align: center; box-shadow: 0 0 40px rgba(0,0,0,0.95); width: 350px; max-width: 92vw;
+        }
+        #modal-mostrar-cartas h3 { color: #f1c40f; margin-top: 0; font-size: 1.15em; }
+        .paquetes-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin: 8px 0; }
+        .btn-paquete-fichas {
+            background: rgba(241, 196, 15, 0.14); color: #f1c40f; border: 1px solid #f1c40f;
+            padding: 6px 8px; border-radius: 5px; font-size: 10px; font-weight: bold; cursor: pointer;
+            text-align: left; transition: all 0.2s ease;
+        }
+        .btn-paquete-fichas:hover { background: #f1c40f; color: #000; }
+        .fila-dato-pago { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin: 4px 0; }
+        .btn-copiar-dato {
+            background: #2980b9; color: #fff; border: 1px solid #3498db; border-radius: 4px;
+            padding: 2px 7px; font-size: 9px; font-weight: bold; cursor: pointer; flex-shrink: 0;
+        }
+        .btn-copiar-dato:hover { background: #3498db; }
+        #aviso-copiado-tienda {
+            display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+            background: #27ae60; color: #fff; border: 1px solid #2ecc71; padding: 6px 14px;
+            border-radius: 8px; font-size: 11px; font-weight: bold; z-index: 600000;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.8);
+        }
     </style>
 </head>
 <body>
@@ -600,26 +625,46 @@
         <button class="btn-tienda-oro" onclick="abrirTiendaOro()">🛒 Tienda Fichas Oro</button>
     </div>
 
+    <div id="aviso-copiado-tienda">✅ Copiado al portapapeles</div>
     <div id="modal-tienda-oro">
         <h3>🛒 Tienda Oficial - Fichas Oro</h3>
         <div class="tienda-seccion">
             <h4>💳 Métodos de Pago Disponibles</h4>
             <p style="margin: 4px 0; color: #2ecc71; font-weight: bold;">🇻🇪 Pago Móvil (Moneda Nacional):</p>
-            <p style="margin: 2px 0;"><b>Mercantil:</b> 10.044.076 | 0424-9266340</p>
-            <p style="font-size: 10px; color: #f1c40f; margin-top: 3px;"><b>Nota importante:</b> Colocar en el concepto: <b style="color: #fff;">PAGO NADA MAS</b></p>
+            <div class="fila-dato-pago">
+                <span style="margin: 2px 0;"><b>Mercantil:</b> 10.044.076 | 0424-9266340</span>
+                <button class="btn-copiar-dato" onclick="copiarDatoPago('10.044.076 | 0424-9266340', 'Pago Móvil Mercantil')">📋 Copiar</button>
+            </div>
+            <div class="fila-dato-pago">
+                <span style="font-size: 10px; color: #f1c40f;"><b>Concepto:</b> <b style="color: #fff;">PAGO NADA MAS</b></span>
+                <button class="btn-copiar-dato" onclick="copiarDatoPago('PAGO NADA MAS', 'Concepto Pago Móvil')">📋 Copiar</button>
+            </div>
             <hr style="border-color: #2c3e50; margin: 8px 0;">
             <p style="margin: 4px 0; color: #2ecc71; font-weight: bold;">🌍 Pagos en USD:</p>
-            <p style="margin: 3px 0;"><b>Airtm:</b> <a href="https://airtm.me/robertlu" target="_blank" style="color: #2ecc71;">airtm.me/robertlu</a></p>
+            <div class="fila-dato-pago">
+                <span style="margin: 3px 0;"><b>Airtm:</b> <a href="https://airtm.me/robertlu" target="_blank" style="color: #2ecc71;">airtm.me/robertlu</a></span>
+                <button class="btn-copiar-dato" onclick="copiarDatoPago('https://airtm.me/robertlu', 'Enlace Airtm')">📋 Copiar</button>
+            </div>
             <hr style="border-color: #2c3e50; margin: 8px 0;">
             <p style="margin: 4px 0; color: #2ecc71; font-weight: bold;">🪙 Criptomonedas (Red BEP20):</p>
-            <p style="font-size: 9px; color: #aaa; word-break: break-all; background: #000; padding: 4px; border-radius: 3px; user-select: all;">0x46cd21e74126076f224beda7ed3b2c93ced4022d</p>
+            <div class="fila-dato-pago">
+                <span style="font-size: 9px; color: #aaa; word-break: break-all; background: #000; padding: 4px; border-radius: 3px; user-select: all; flex-grow: 1;">0x46cd21e74126076f224beda7ed3b2c93ced4022d</span>
+                <button class="btn-copiar-dato" onclick="copiarDatoPago('0x46cd21e74126076f224beda7ed3b2c93ced4022d', 'Billetera BEP20')">📋 Copiar</button>
+            </div>
         </div>
         <div class="tienda-seccion" style="border-color: #f39c12; background: rgba(40, 30, 10, 0.4);">
             <h4 style="color: #f39c12;">🔐 Tu Panel Admin (Aprobación Segura)</h4>
-            <label style="font-size: 10px;">ID del Comprador:</label>
+            <label style="font-size: 10px;">ID del Comprador (1-6):</label>
             <input type="text" id="admin-id-comprador" class="input-admin" value="4">
+            <label style="font-size: 10px;">Paquetes Rápidos de Fichas Oro:</label>
+            <div class="paquetes-grid">
+                <button type="button" class="btn-paquete-fichas" onclick="seleccionarPaqueteFichas(2500)">🪙 2,500 Fichas (Básico)</button>
+                <button type="button" class="btn-paquete-fichas" onclick="seleccionarPaqueteFichas(5000)">🪙 5,000 Fichas (Saloon)</button>
+                <button type="button" class="btn-paquete-fichas" onclick="seleccionarPaqueteFichas(15000)">💰 15,000 Fichas (Sheriff)</button>
+                <button type="button" class="btn-paquete-fichas" onclick="seleccionarPaqueteFichas(50000)">👑 50,000 Fichas (Gran Vaquero)</button>
+            </div>
             <label style="font-size: 10px;">Fichas Oro a Liberar:</label>
-            <input type="number" id="admin-cantidad-fichas" class="input-admin" value="5000" step="1000">
+            <input type="number" id="admin-cantidad-fichas" class="input-admin" value="5000" step="500">
             <button class="btn-generar-codigo" onclick="generarCodigoSeguridadUnico()">🔑 Generar Código de Seguridad Único</button>
             <div id="display-codigo-privado" style="font-size: 11px; color: #f1c40f; margin-bottom: 6px; font-weight: bold;"></div>
             <label style="font-size: 10px;">Introduce el Código de Seguridad:</label>
@@ -663,8 +708,26 @@
             }
             let fichasGuardadas = localStorage.getItem('tpw_fichas_usuario');
             if (fichasGuardadas !== null && !isNaN(parseInt(fichasGuardadas))) {
-                fichasJugador = Math.max(0, parseInt(fichasGuardadas));
-                document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
+                let parsedFichas = parseInt(fichasGuardadas);
+                fichasJugador = parsedFichas > 0 ? parsedFichas : 1000;
+            } else {
+                fichasJugador = 1000;
+            }
+            localStorage.setItem('tpw_fichas_usuario', fichasJugador.toString());
+            document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`;
+            let rng = document.getElementById('range-subir');
+            if (rng) rng.max = Math.max(50, fichasJugador);
+            let panoGuardado = localStorage.getItem('tpw_color_pano');
+            if (panoGuardado) {
+                document.getElementById('mesa-poker').style.background = panoGuardado;
+                let selPano = document.getElementById('select-pano');
+                if (selPano) selPano.value = panoGuardado;
+            }
+            let dorsoGuardado = localStorage.getItem('tpw_color_dorso');
+            if (dorsoGuardado) {
+                colorDorsoActual = dorsoGuardado;
+                let selDorso = document.getElementById('select-dorso');
+                if (selDorso) selDorso.value = dorsoGuardado;
             }
         });
 
@@ -679,6 +742,17 @@
             if(nombre !== "") {
                 localStorage.setItem('tpw_nombre_usuario', nombre); // Guarda el nombre en el navegador
                 document.getElementById('nombre-etiqueta-tu').innerText = nombre + " [ID: 4]";
+                if (!fichasJugador || fichasJugador <= 0) {
+                    fichasJugador = 1000;
+                }
+                jugadorEnPausa = false;
+                retirados[4] = false;
+                allInJugadores[4] = false;
+                let asiento4 = document.getElementById('asiento-4');
+                if (asiento4) asiento4.classList.remove('en-pausa', 'sin-fichas', 'retirado', 'allin-estado');
+                let btnSent = document.getElementById('btn-sentarse-asiento');
+                if (btnSent) btnSent.style.display = 'none';
+                guardarFichasLocal();
                 entrarAlSaloon();
             } else {
                 alert("⚠️ Por favor, escribe un nombre de jugador antes de entrar.");
@@ -761,8 +835,55 @@
         const nombresAsientos = { 1: "El Gambusino", 2: "Don Aurelio", 3: "Forajido Joe", 4: "Tú", 5: "Sheriff Miller", 6: "El Forastero" };
         const valoresCartas = { "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10": 10, "J": 11, "Q": 12, "K": 13, "A": 14 };
 
-        function cambiarColorPano(colorHex) { document.getElementById('mesa-poker').style.background = colorHex; }
-        function cambiarColorDorso(colorHex) { colorDorsoActual = colorHex; document.querySelectorAll('.card-back').forEach(d => { d.style.background = colorHex; }); }
+        function mostrarAvisoCopiado(etiqueta) {
+            let aviso = document.getElementById('aviso-copiado-tienda');
+            if (aviso) {
+                aviso.innerText = `✅ ${etiqueta} copiado al portapapeles`;
+                aviso.style.display = 'block';
+                clearTimeout(aviso._timer);
+                aviso._timer = setTimeout(() => { aviso.style.display = 'none'; }, 2200);
+            }
+        }
+
+        function copiarDatoPago(texto, etiqueta) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(texto).then(() => {
+                    mostrarAvisoCopiado(etiqueta);
+                }).catch(() => {
+                    copiarFallback(texto, etiqueta);
+                });
+            } else {
+                copiarFallback(texto, etiqueta);
+            }
+        }
+
+        function copiarFallback(texto, etiqueta) {
+            let temp = document.createElement('textarea');
+            temp.value = texto;
+            document.body.appendChild(temp);
+            temp.select();
+            try { document.execCommand('copy'); } catch (e) {}
+            document.body.removeChild(temp);
+            mostrarAvisoCopiado(etiqueta);
+        }
+
+        function seleccionarPaqueteFichas(cantidad) {
+            let inputCant = document.getElementById('admin-cantidad-fichas');
+            if (inputCant) {
+                inputCant.value = cantidad;
+                log(`🪙 [Tienda]: Paquete rápido de ${cantidad.toLocaleString()} fichas seleccionado.`);
+            }
+        }
+
+        function cambiarColorPano(colorHex) {
+            document.getElementById('mesa-poker').style.background = colorHex;
+            try { localStorage.setItem('tpw_color_pano', colorHex); } catch (e) {}
+        }
+        function cambiarColorDorso(colorHex) {
+            colorDorsoActual = colorHex;
+            document.querySelectorAll('.card-back').forEach(d => { d.style.background = colorHex; });
+            try { localStorage.setItem('tpw_color_dorso', colorHex); } catch (e) {}
+        }
         function abrirTiendaOro() { document.getElementById('modal-tienda-oro').style.display = 'block'; }
         function cerrarTiendaOro() { document.getElementById('modal-tienda-oro').style.display = 'none'; }
         function generarCodigoSeguridadUnico() {
@@ -997,10 +1118,42 @@
             }
         }
         function enviarConEnter(event) { if (event.key === 'Enter') { enviarMensajeChat(); } }
+        function forzarInicioBotsTorneo() {
+            let mTorneo = document.getElementById('modal-torneo-espera');
+            if (mTorneo) mTorneo.style.display = 'none';
+            if (temporizadorEsperaTorneo) { clearInterval(temporizadorEsperaTorneo); temporizadorEsperaTorneo = null; }
+            modoActual = 'Práctica';
+            actualizarVisibilidadBots();
+            reponerOponentesSinFichas();
+            log(`🤠 [Torneo]: Partida iniciada con oponentes del salón.`);
+            repartirCartasAPI();
+        }
+
         function seleccionarModo(modo) {
             modoActual = modo;
-            document.getElementById('btn-practica').classList.remove('selected'); document.getElementById('btn-campana').classList.remove('selected'); document.getElementById('btn-multijugador').classList.remove('selected');
-            if (modo === 'Práctica') { document.getElementById('btn-practica').classList.add('selected'); document.getElementById('torneo-panel').style.display = 'none'; log(`[Modo]: Práctica libre.`); actualizarVisibilidadBots(); }
+            document.getElementById('btn-practica').classList.remove('selected');
+            document.getElementById('btn-campana').classList.remove('selected');
+            document.getElementById('btn-multijugador').classList.remove('selected');
+            if (modo === 'Práctica') {
+                document.getElementById('btn-practica').classList.add('selected');
+                document.getElementById('torneo-panel').style.display = 'none';
+                document.getElementById('modal-torneo-espera').style.display = 'none';
+                document.getElementById('modal-multijugador-espera').style.display = 'none';
+                log(`[Modo]: Práctica libre.`);
+                actualizarVisibilidadBots();
+            } else if (modo === 'Campaña') {
+                document.getElementById('btn-campana').classList.add('selected');
+                document.getElementById('torneo-panel').style.display = 'flex';
+                document.getElementById('modal-multijugador-espera').style.display = 'none';
+                document.getElementById('modal-torneo-espera').style.display = 'block';
+                log(`🤠 [Campaña]: Sala de torneo abierta.`);
+            } else if (modo === 'Multijugador') {
+                document.getElementById('btn-multijugador').classList.add('selected');
+                document.getElementById('torneo-panel').style.display = 'none';
+                document.getElementById('modal-torneo-espera').style.display = 'none';
+                document.getElementById('modal-multijugador-espera').style.display = 'block';
+                log(`🌐 [Multijugador]: Buscando vaqueros en línea...`);
+            }
         }
 
         let localStream = null; let micActivo = false;
@@ -1027,7 +1180,38 @@
             mesa.appendChild(ficha); setTimeout(() => { ficha.remove(); }, 700);
         }
 
+        function reponerOponentesSinFichas() {
+            let repuestos = 0;
+            for (let b = 1; b <= 6; b++) {
+                if (b !== 4 && fichasBots[b] <= 0) {
+                    fichasBots[b] = 1000;
+                    retirados[b] = false;
+                    allInJugadores[b] = false;
+                    let chipElem = document.getElementById(`chips-s${b}`);
+                    if (chipElem) chipElem.innerText = `[$] ${fichasBots[b]}`;
+                    let asientoElem = document.getElementById(`asiento-${b}`);
+                    if (asientoElem) asientoElem.classList.remove('sin-fichas', 'retirado', 'allin-estado');
+                    repuestos++;
+                }
+            }
+            if (repuestos > 0) {
+                log(`🤠 [Mesa]: ${repuestos} oponente(s) volvieron a la mesa con $1,000 para mantener la acción.`);
+            }
+        }
+
+        function verificarMesaUnSoloJugador() {
+            let conFichas = [];
+            if (fichasJugador > 0 && !jugadorEnPausa) conFichas.push(4);
+            for (let b = 1; b <= 6; b++) {
+                if (b !== 4 && fichasBots[b] > 0) conFichas.push(b);
+            }
+            if (conFichas.length <= 1) {
+                reponerOponentesSinFichas();
+            }
+        }
+
         function repartirCartasAPI() {
+            if (temporizadorTurno) { clearInterval(temporizadorTurno); temporizadorTurno = null; }
             apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
             
             document.getElementById('community-container').style.opacity = '1';
@@ -1100,6 +1284,36 @@
                         contenedor.innerHTML = htmlCartas;
                     }
                 }
+                let activosAlRepartir = [];
+                for (let i = 1; i <= 6; i++) { if (!retirados[i]) activosAlRepartir.push(i); }
+                if (activosAlRepartir.length === 0) {
+                    reponerOponentesSinFichas();
+                    for (let b = 1; b <= 6; b++) {
+                        if (b !== 4 && fichasBots[b] > 0) {
+                            retirados[b] = false;
+                            let asDiv = document.getElementById(`asiento-${b}`);
+                            if (asDiv) asDiv.classList.remove('retirado', 'sin-fichas');
+                            let c1 = mazoLocal.pop(), c2 = mazoLocal.pop();
+                            cartasBotsPrivadas[b] = [c1, c2];
+                            let cont = document.getElementById(`cartas-s${b}`);
+                            if (cont) cont.innerHTML = `<div class="card card-back" style="background:${colorDorsoActual}">🂠</div><div class="card card-back" style="background:${colorDorsoActual}">🂠</div>`;
+                            activosAlRepartir.push(b);
+                        }
+                    }
+                }
+                if (activosAlRepartir.length === 1) {
+                    let unico = activosAlRepartir[0];
+                    if (unico === 4) {
+                        log(`🤠 [Mesa]: Eres el último jugador en pie en la mesa. Cobras el bote y se reponen rivales.`);
+                        fichasJugador += boteActual; guardarFichasLocal(); boteActual = 0;
+                        document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
+                        reponerOponentesSinFichas();
+                        setTimeout(() => { repartirCartasAPI(); }, 2500);
+                        return;
+                    } else {
+                        reponerOponentesSinFichas();
+                    }
+                }
                 log(`🃏 [Doncella]: Nueva mano repartida.`);
                 iniciarTurno(primerTurnoRotativo);
                 primerTurnoRotativo = (primerTurnoRotativo % 6) + 1;
@@ -1167,13 +1381,19 @@
         }
 
         function siguienteTurnoAutomatico(asientoActual) {
+            if (temporizadorTurno) { clearInterval(temporizadorTurno); temporizadorTurno = null; }
             let activos = [];
             for (let i = 1; i <= 6; i++) {
                 if (!retirados[i]) activos.push(i);
             }
 
+            if (activos.length === 0) {
+                log(`⚠️ [Mesa]: Todos los jugadores se retiraron. Repartiendo nueva mano...`);
+                setTimeout(() => { repartirCartasAPI(); }, 1500);
+                return;
+            }
+
             if (activos.length === 1) {
-                if (temporizadorTurno) clearInterval(temporizadorTurno);
                 setTimeout(() => { verificarGanadorPorAbandono(activos[0]); }, 800);
                 return;
             }
@@ -1274,19 +1494,29 @@
         }
 
         function devolverExcesoApuesta() {
-            if (Object.values(allInJugadores).some(v => v === true)) return;
-            let apuestasArray = Object.entries(apuestasMano).map(([id, amount]) => ({ id: parseInt(id), amount: amount }));
+            let apuestasArray = Object.entries(apuestasMano).map(([id, amount]) => ({
+                id: parseInt(id),
+                amount: Number(amount) || 0
+            }));
             apuestasArray.sort((a, b) => b.amount - a.amount);
-            let maxBet = apuestasArray[0]; let secondMax = apuestasArray[1];
+            if (apuestasArray.length < 2) return;
+            let maxBet = apuestasArray[0];
+            let secondMax = apuestasArray[1];
 
             if (maxBet.amount > 0 && maxBet.amount > secondMax.amount) {
                 let exceso = maxBet.amount - secondMax.amount;
                 if (maxBet.id === 4) {
-                    fichasJugador += exceso; document.getElementById('chips-s4').innerText = `[$] ${fichasJugador}`; log(`💸 [Mesa]: Se devolvió tu vuelto de $${exceso} (apuesta no igualada).`);
+                    fichasJugador += exceso;
+                    guardarFichasLocal();
+                    log(`💸 [Mesa]: Se devolvió tu vuelto de $${exceso} (apuesta no igualada).`);
                 } else {
-                    fichasBots[maxBet.id] += exceso; document.getElementById(`chips-s${maxBet.id}`).innerText = `[$] ${fichasBots[maxBet.id]}`;
+                    fichasBots[maxBet.id] += exceso;
+                    let chipBot = document.getElementById(`chips-s${maxBet.id}`);
+                    if (chipBot) chipBot.innerText = `[$] ${fichasBots[maxBet.id]}`;
+                    log(`💸 [Mesa]: Se devolvió $${exceso} no igualados a ${nombresAsientos[maxBet.id]}.`);
                 }
-                boteActual -= exceso; if (boteActual < 0) boteActual = 0;
+                boteActual -= exceso;
+                if (boteActual < 0) boteActual = 0;
                 document.getElementById('pot-display').innerText = `BOTE: ${boteActual} USDT`;
                 apuestasMano[maxBet.id] = secondMax.amount;
             }
@@ -1329,24 +1559,54 @@
         }
 
         function verificarGanadorPorAbandono(ganadorId) {
+            if (temporizadorTurno) { clearInterval(temporizadorTurno); temporizadorTurno = null; }
             devolverExcesoApuesta();
-            if (ganadorId === 4) { document.getElementById('modal-mostrar-cartas').style.display = 'block'; }
-            else {
-                fichasBots[ganadorId] += boteActual; document.getElementById(`chips-s${ganadorId}`).innerText = `[$] ${fichasBots[ganadorId]}`;
-                log(`🏆 ${nombresAsientos[ganadorId]} gana por abandono.`);
+            for (let i = 1; i <= 6; i++) {
+                let tElem = document.getElementById(`timer-ui-${i}`);
+                if (tElem) tElem.innerText = "--";
+            }
+            if (ganadorId === 4) {
+                let modalCartas = document.getElementById('modal-mostrar-cartas');
+                if (modalCartas) modalCartas.style.display = 'block';
+            } else {
+                fichasBots[ganadorId] += boteActual;
+                let chipBot = document.getElementById(`chips-s${ganadorId}`);
+                if (chipBot) chipBot.innerText = `[$] ${fichasBots[ganadorId]}`;
+                log(`🏆 ${nombresAsientos[ganadorId]} gana por abandono (${boteActual} USDT).`);
                 mostrarGifVictoria(`¡Gana ${nombresAsientos[ganadorId]} por abandono!`);
-                
-                boteActual = 0; document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
-                setTimeout(() => { repartirCartasAPI(); }, 10000);
+                lanzarBengalasMajestuosas(ganadorId);
+                boteActual = 0;
+                document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
+                faseMano = 0;
+                verificarMesaUnSoloJugador();
+                setTimeout(() => { repartirCartasAPI(); }, 9500);
             }
         }
 
         function responderMostrarCartas(mostrar) {
-            document.getElementById('modal-mostrar-cartas').style.display = 'none';
-            fichasJugador += boteActual; guardarFichasLocal(); log(`🏆 ¡Ganaste por abandono!`);
+            let modalCartas = document.getElementById('modal-mostrar-cartas');
+            if (modalCartas) modalCartas.style.display = 'none';
+            if (mostrar && cartasJugadorPrivadas && cartasJugadorPrivadas.length === 2) {
+                let cont4 = document.getElementById('cartas-s4');
+                if (cont4) {
+                    cont4.innerHTML = cartasJugadorPrivadas.map(c =>
+                        `<div class="card ${c.includes('♥')||c.includes('♦')?'red':''}" style="background:#ffffff;">${c}</div>`
+                    ).join('');
+                }
+                log(`🃏 [Tú]: Mostraste tus cartas privadas a la mesa (${cartasJugadorPrivadas.join(' ')}).`);
+            } else {
+                log(`🙈 [Tú]: Guardaste tus cartas (Muck).`);
+            }
+            fichasJugador += boteActual;
+            guardarFichasLocal();
+            log(`🏆 ¡Ganaste ${boteActual} USDT por abandono! Eres el último jugador activo en la mano.`);
             mostrarGifVictoria(`¡Ganaste por abandono!`);
-            boteActual = 0; document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
-            setTimeout(() => { repartirCartasAPI(); }, 10000);
+            lanzarBengalasMajestuosas(4);
+            boteActual = 0;
+            document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
+            faseMano = 0;
+            verificarMesaUnSoloJugador();
+            setTimeout(() => { repartirCartasAPI(); }, 9500);
         }
 
         async function toggleMicrofono() {
