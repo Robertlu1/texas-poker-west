@@ -782,6 +782,23 @@
         let cartasComunitariasGlobales = [];
         let cartasJugadorPrivadas = [];
         let temporizadorTurno = null;
+        let timerSiguienteMano = null;
+        let partidaIniciada = false;
+
+        function programarSiguienteMano(delayMs, mensaje) {
+            if (timerSiguienteMano) { clearTimeout(timerSiguienteMano); timerSiguienteMano = null; }
+            timerSiguienteMano = setTimeout(() => {
+                timerSiguienteMano = null;
+                if (mensaje) log(mensaje);
+                let portada = document.getElementById('pantalla-portada');
+                let salon = document.getElementById('pantalla-salon');
+                if (partidaIniciada && portada && salon) {
+                    portada.style.display = 'none';
+                    salon.style.display = 'flex';
+                }
+                repartirCartasAPI();
+            }, delayMs);
+        }
         let segundosRestantes = 25;
         let apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
         
@@ -1083,7 +1100,9 @@
         }
 
         function regresarAlLobby() {
+            partidaIniciada = false;
             if (temporizadorTurno) clearInterval(temporizadorTurno);
+            if (timerSiguienteMano) { clearTimeout(timerSiguienteMano); timerSiguienteMano = null; }
             document.getElementById('pantalla-salon').style.display = 'none'; document.getElementById('pantalla-portada').style.display = 'flex';
             fichasJugador = 1000; boteActual = 200; jugadorEnPausa = false; faseMano = 0;
             apuestasMano = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 }; allInJugadores = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
@@ -1097,6 +1116,7 @@
         }
 
         function entrarAlSaloon() {
+            partidaIniciada = true;
             document.getElementById('pantalla-portada').style.display = 'none'; document.getElementById('pantalla-salon').style.display = 'flex';
             let audio = document.getElementById('audio-fondo'); if (audio) { audio.volume = 0.3; audio.play().then(() => { document.getElementById('btn-play-pause').innerText = "⏸️ Pausa"; }).catch(e => console.log("Audio bloqueado")); }
             actualizarVisibilidadBots(); cambiarColorDorso(colorDorsoActual);
@@ -1308,7 +1328,7 @@
                         fichasJugador += boteActual; guardarFichasLocal(); boteActual = 0;
                         document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
                         reponerOponentesSinFichas();
-                        setTimeout(() => { repartirCartasAPI(); }, 2500);
+                        programarSiguienteMano(2500, null);
                         return;
                     } else {
                         reponerOponentesSinFichas();
@@ -1555,7 +1575,7 @@
 
             boteActual = 0; document.getElementById('pot-display').innerText = `BOTE: 0 USDT`; faseMano = 0;
             
-            setTimeout(() => { log(`💃 [Crupier]: ¡10 segundos cumplidos! Repartiendo nueva mano...`); repartirCartasAPI(); }, 10000);
+            programarSiguienteMano(9000, `💃 [Crupier]: ¡Nueva mano lista! Repartiendo...`);
         }
 
         function verificarGanadorPorAbandono(ganadorId) {
@@ -1579,7 +1599,7 @@
                 document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
                 faseMano = 0;
                 verificarMesaUnSoloJugador();
-                setTimeout(() => { repartirCartasAPI(); }, 9500);
+                programarSiguienteMano(9000, `💃 [Crupier]: Repartiendo nueva mano...`);
             }
         }
 
@@ -1606,7 +1626,7 @@
             document.getElementById('pot-display').innerText = `BOTE: 0 USDT`;
             faseMano = 0;
             verificarMesaUnSoloJugador();
-            setTimeout(() => { repartirCartasAPI(); }, 9500);
+            programarSiguienteMano(9000, `💃 [Crupier]: Repartiendo nueva mano...`);
         }
 
         async function toggleMicrofono() {
